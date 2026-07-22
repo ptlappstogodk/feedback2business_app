@@ -1,7 +1,7 @@
 // File: App.xaml
 <?xml version="1.0" encoding="UTF-8" ?>
 <Application
-    x:Class="SurveyHub.App"
+    x:Class="Feedback2Business.App"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <Application.Resources>
@@ -16,7 +16,7 @@
 
 
 // File: App.xaml.cs
-namespace SurveyHub;
+namespace Feedback2Business;
 
 public partial class App : Application
 {
@@ -31,20 +31,20 @@ public partial class App : Application
 // File: AppShell.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <Shell
-    x:Class="SurveyHub.AppShell"
+    x:Class="Feedback2Business.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:views="clr-namespace:SurveyHub.Views"
+    xmlns:views="clr-namespace:Feedback2Business.Views"
     FlyoutBehavior="Disabled">
 
     <ShellContent
-        Title="SurveyHub"
+        Title="Feedback2Business"
         ContentTemplate="{DataTemplate views:DashboardShellPage}" />
 </Shell>
 
 
 // File: AppShell.xaml.cs
-namespace SurveyHub;
+namespace Feedback2Business;
 
 public partial class AppShell : Shell
 {
@@ -58,18 +58,18 @@ public partial class AppShell : Shell
 // File: MauiProgram.cs
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SurveyHub.Services;
-using SurveyHub.ViewModels;
-using SurveyHub.Views;
-using SurveyHub.Views.ActivityLog;
-using SurveyHub.Views.Media;
-using SurveyHub.Views.Organizations;
-using SurveyHub.Views.Roles;
-using SurveyHub.Views.Settings;
-using SurveyHub.Views.Templates;
-using SurveyHub.Views.Variables;
+using Feedback2Business.Services;
+using Feedback2Business.ViewModels;
+using Feedback2Business.Views;
+using Feedback2Business.Views.ActivityLog;
+using Feedback2Business.Views.Media;
+using Feedback2Business.Views.Organizations;
+using Feedback2Business.Views.Roles;
+using Feedback2Business.Views.Settings;
+using Feedback2Business.Views.Templates;
+using Feedback2Business.Views.Variables;
 
-namespace SurveyHub;
+namespace Feedback2Business;
 
 public static class MauiProgram
 {
@@ -228,7 +228,7 @@ public static class MauiProgram
 
 
 // File: Models/NavigationItem.cs
-namespace SurveyHub.Models;
+namespace Feedback2Business.Models;
 
 public class NavigationItem
 {
@@ -238,7 +238,7 @@ public class NavigationItem
 
 
 // File: Models/UserModel.cs
-namespace SurveyHub.Models;
+namespace Feedback2Business.Models;
 
 public class UserModel
 {
@@ -253,7 +253,7 @@ public class UserModel
 
 
 // File: Models/OrganizationModel.cs
-namespace SurveyHub.Models;
+namespace Feedback2Business.Models;
 
 public class OrganizationModel
 {
@@ -268,7 +268,7 @@ public class OrganizationModel
 
 
 // File: Models/BrandModel.cs
-namespace SurveyHub.Models;
+namespace Feedback2Business.Models;
 
 public class BrandModel
 {
@@ -279,7 +279,7 @@ public class BrandModel
 
 
 // File: Models/SurveyModel.cs
-namespace SurveyHub.Models;
+namespace Feedback2Business.Models;
 
 public class SurveyModel
 {
@@ -292,7 +292,7 @@ public class SurveyModel
 
 
 // File: Models/SurveyQuestionModel.cs
-namespace SurveyHub.Models;
+namespace Feedback2Business.Models;
 
 public class SurveyQuestionModel
 {
@@ -310,7 +310,7 @@ public class SurveyQuestionModel
 
 
 // File: Models/TemplateModel.cs
-namespace SurveyHub.Models;
+namespace Feedback2Business.Models;
 
 public class TemplateModel
 {
@@ -324,7 +324,7 @@ public class TemplateModel
 
 
 // File: Models/VariableModel.cs
-namespace SurveyHub.Models;
+namespace Feedback2Business.Models;
 
 public class VariableModel
 {
@@ -339,7 +339,7 @@ public class VariableModel
 
 
 // File: Models/MediaItemModel.cs
-namespace SurveyHub.Models;
+namespace Feedback2Business.Models;
 
 public class MediaItemModel
 {
@@ -350,7 +350,7 @@ public class MediaItemModel
 
 
 // File: Models/PermissionModels.cs
-namespace SurveyHub.Models;
+namespace Feedback2Business.Models;
 
 public class PermissionModel
 {
@@ -373,7 +373,7 @@ public class RoleModel
 
 
 // File: Models/ActivityEventModel.cs
-namespace SurveyHub.Models;
+namespace Feedback2Business.Models;
 
 public class ActivityEventModel
 {
@@ -387,7 +387,7 @@ public class ActivityEventModel
 
 
 // File: Models/MobilePreviewModel.cs
-namespace SurveyHub.Models;
+namespace Feedback2Business.Models;
 
 public class MobilePreviewModel
 {
@@ -400,9 +400,9 @@ public class MobilePreviewModel
 
 
 // File: Services/IMockDataService.cs
-using SurveyHub.Models;
+using Feedback2Business.Models;
 
-namespace SurveyHub.Services;
+namespace Feedback2Business.Services;
 
 public interface IMockDataService
 {
@@ -423,9 +423,9 @@ public interface IMockDataService
 
 
 // File: Services/MockDataService.cs
-using SurveyHub.Models;
+using Feedback2Business.Models;
 
-namespace SurveyHub.Services;
+namespace Feedback2Business.Services;
 
 public class MockDataService : IMockDataService
 {
@@ -558,7 +558,7 @@ public class MockDataService : IMockDataService
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public abstract class ObservableObject : INotifyPropertyChanged
 {
@@ -584,7 +584,7 @@ public abstract class ObservableObject : INotifyPropertyChanged
 // File: ViewModels/RelayCommand.cs
 using System.Windows.Input;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public class RelayCommand : ICommand
 {
@@ -605,9 +605,9 @@ public class RelayCommand : ICommand
 
 // File: ViewModels/MainShellViewModel.cs
 using System.Collections.ObjectModel;
-using SurveyHub.Models;
+using Feedback2Business.Models;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public class MainShellViewModel : ObservableObject
 {
@@ -647,10 +647,10 @@ public class MainShellViewModel : ObservableObject
 
 // File: ViewModels/OrganizationsViewModel.cs
 using System.Collections.ObjectModel;
-using SurveyHub.Models;
-using SurveyHub.Services;
+using Feedback2Business.Models;
+using Feedback2Business.Services;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public class OrganizationsViewModel : ObservableObject
 {
@@ -674,9 +674,9 @@ public class OrganizationsViewModel : ObservableObject
 
 // File: ViewModels/SurveyQuestionEditorViewModel.cs
 using System.Collections.ObjectModel;
-using SurveyHub.Models;
+using Feedback2Business.Models;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public class SurveyQuestionEditorViewModel : ObservableObject
 {
@@ -757,10 +757,10 @@ public class SurveyQuestionEditorViewModel : ObservableObject
 
 // File: ViewModels/OrganizationBrandsViewModel.cs
 using System.Collections.ObjectModel;
-using SurveyHub.Models;
-using SurveyHub.Services;
+using Feedback2Business.Models;
+using Feedback2Business.Services;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public class OrganizationBrandsViewModel : ObservableObject
 {
@@ -791,10 +791,10 @@ public class OrganizationBrandsViewModel : ObservableObject
 
 // File: ViewModels/OrganizationUsersViewModel.cs
 using System.Collections.ObjectModel;
-using SurveyHub.Models;
-using SurveyHub.Services;
+using Feedback2Business.Models;
+using Feedback2Business.Services;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public class OrganizationUsersViewModel : ObservableObject
 {
@@ -820,10 +820,10 @@ public class OrganizationUsersViewModel : ObservableObject
 
 // File: ViewModels/TemplatesViewModel.cs
 using System.Collections.ObjectModel;
-using SurveyHub.Models;
-using SurveyHub.Services;
+using Feedback2Business.Models;
+using Feedback2Business.Services;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public class TemplatesViewModel : ObservableObject
 {
@@ -847,10 +847,10 @@ public class TemplatesViewModel : ObservableObject
 
 // File: ViewModels/VariablesViewModel.cs
 using System.Collections.ObjectModel;
-using SurveyHub.Models;
-using SurveyHub.Services;
+using Feedback2Business.Models;
+using Feedback2Business.Services;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public class VariablesViewModel : ObservableObject
 {
@@ -866,10 +866,10 @@ public class VariablesViewModel : ObservableObject
 
 // File: ViewModels/MediaLibraryViewModel.cs
 using System.Collections.ObjectModel;
-using SurveyHub.Models;
-using SurveyHub.Services;
+using Feedback2Business.Models;
+using Feedback2Business.Services;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public class MediaLibraryViewModel : ObservableObject
 {
@@ -895,7 +895,7 @@ public class MediaLibraryViewModel : ObservableObject
 // File: ViewModels/SettingsGeneralViewModel.cs
 using System.Collections.ObjectModel;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public class SettingsGeneralViewModel : ObservableObject
 {
@@ -943,7 +943,7 @@ public class SettingsGeneralViewModel : ObservableObject
 // File: ViewModels/SettingsAppViewModel.cs
 using System.Collections.ObjectModel;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public class SettingsAppViewModel : ObservableObject
 {
@@ -1010,10 +1010,10 @@ public class SettingsAppViewModel : ObservableObject
 
 // File: ViewModels/RolesPermissionsViewModel.cs
 using System.Collections.ObjectModel;
-using SurveyHub.Models;
-using SurveyHub.Services;
+using Feedback2Business.Models;
+using Feedback2Business.Services;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public class RolesPermissionsViewModel : ObservableObject
 {
@@ -1045,10 +1045,10 @@ public class RolesPermissionsViewModel : ObservableObject
 
 // File: ViewModels/ActivityLogViewModel.cs
 using System.Collections.ObjectModel;
-using SurveyHub.Models;
-using SurveyHub.Services;
+using Feedback2Business.Models;
+using Feedback2Business.Services;
 
-namespace SurveyHub.ViewModels;
+namespace Feedback2Business.ViewModels;
 
 public class ActivityLogViewModel : ObservableObject
 {
@@ -1077,10 +1077,10 @@ public class ActivityLogViewModel : ObservableObject
 // File: Views/DashboardShellPage.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="SurveyHub.Views.DashboardShellPage"
+    x:Class="Feedback2Business.Views.DashboardShellPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:shell="clr-namespace:SurveyHub.Views.Shell"
+    xmlns:shell="clr-namespace:Feedback2Business.Views.Shell"
     BackgroundColor="{StaticResource PageBackground}">
 
     <Grid ColumnDefinitions="250,*">
@@ -1095,16 +1095,16 @@ public class ActivityLogViewModel : ObservableObject
 
 // File: Views/DashboardShellPage.xaml.cs
 using Microsoft.Extensions.DependencyInjection;
-using SurveyHub.ViewModels;
-using SurveyHub.Views.ActivityLog;
-using SurveyHub.Views.Media;
-using SurveyHub.Views.Organizations;
-using SurveyHub.Views.Roles;
-using SurveyHub.Views.Settings;
-using SurveyHub.Views.Templates;
-using SurveyHub.Views.Variables;
+using Feedback2Business.ViewModels;
+using Feedback2Business.Views.ActivityLog;
+using Feedback2Business.Views.Media;
+using Feedback2Business.Views.Organizations;
+using Feedback2Business.Views.Roles;
+using Feedback2Business.Views.Settings;
+using Feedback2Business.Views.Templates;
+using Feedback2Business.Views.Variables;
 
-namespace SurveyHub.Views;
+namespace Feedback2Business.Views;
 
 public partial class DashboardShellPage : ContentPage
 {
@@ -1217,14 +1217,14 @@ public partial class DashboardShellPage : ContentPage
 // File: Views/Shell/SidebarView.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView
-    x:Class="SurveyHub.Views.Shell.SidebarView"
+    x:Class="Feedback2Business.Views.Shell.SidebarView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     BackgroundColor="{StaticResource SidebarBackground}">
 
     <Grid Padding="16" RowDefinitions="Auto,*,Auto">
         <VerticalStackLayout Spacing="6">
-            <Label Text="SurveyHub" TextColor="White" FontSize="20" FontAttributes="Bold" />
+            <Label Text="Feedback2Business" TextColor="White" FontSize="20" FontAttributes="Bold" />
             <Label Text="Konfiguration" TextColor="#B8C7E0" FontSize="12" />
         </VerticalStackLayout>
 
@@ -1271,7 +1271,7 @@ public partial class DashboardShellPage : ContentPage
 
 
 // File: Views/Shell/SidebarView.xaml.cs
-namespace SurveyHub.Views.Shell;
+namespace Feedback2Business.Views.Shell;
 
 public partial class SidebarView : ContentView
 {
@@ -1300,7 +1300,7 @@ public partial class SidebarView : ContentView
 // File: Views/Shell/TopHeaderView.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView
-    x:Class="SurveyHub.Views.Shell.TopHeaderView"
+    x:Class="Feedback2Business.Views.Shell.TopHeaderView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
@@ -1328,7 +1328,7 @@ public partial class SidebarView : ContentView
 
 
 // File: Views/Shell/TopHeaderView.xaml.cs
-namespace SurveyHub.Views.Shell;
+namespace Feedback2Business.Views.Shell;
 
 public partial class TopHeaderView : ContentView
 {
@@ -1342,7 +1342,7 @@ public partial class TopHeaderView : ContentView
 // File: Views/Shared/StatusBadgeView.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView
-    x:Class="SurveyHub.Views.Shared.StatusBadgeView"
+    x:Class="Feedback2Business.Views.Shared.StatusBadgeView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Name="This">
@@ -1358,7 +1358,7 @@ public partial class TopHeaderView : ContentView
 
 
 // File: Views/Shared/StatusBadgeView.xaml.cs
-namespace SurveyHub.Views.Shared;
+namespace Feedback2Business.Views.Shared;
 
 public partial class StatusBadgeView : ContentView
 {
@@ -1399,7 +1399,7 @@ public partial class StatusBadgeView : ContentView
 // File: Views/Shared/MobilePreviewView.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView
-    x:Class="SurveyHub.Views.Shared.MobilePreviewView"
+    x:Class="Feedback2Business.Views.Shared.MobilePreviewView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
@@ -1433,7 +1433,7 @@ public partial class StatusBadgeView : ContentView
 
 
 // File: Views/Shared/MobilePreviewView.xaml.cs
-namespace SurveyHub.Views.Shared;
+namespace Feedback2Business.Views.Shared;
 
 public partial class MobilePreviewView : ContentView
 {
@@ -1447,7 +1447,7 @@ public partial class MobilePreviewView : ContentView
 // File: Views/Shared/SectionCardView.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView
-    x:Class="SurveyHub.Views.Shared.SectionCardView"
+    x:Class="Feedback2Business.Views.Shared.SectionCardView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Name="This">
@@ -1482,7 +1482,7 @@ public partial class MobilePreviewView : ContentView
 // File: Views/Shared/SectionCardView.xaml.cs
 using System.Collections;
 
-namespace SurveyHub.Views.Shared;
+namespace Feedback2Business.Views.Shared;
 
 public partial class SectionCardView : ContentView
 {
@@ -1514,7 +1514,7 @@ public partial class SectionCardView : ContentView
 // File: Views/Shared/QuestionPropertyPanel.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView
-    x:Class="SurveyHub.Views.Shared.QuestionPropertyPanel"
+    x:Class="Feedback2Business.Views.Shared.QuestionPropertyPanel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
@@ -1557,7 +1557,7 @@ public partial class SectionCardView : ContentView
 
 
 // File: Views/Shared/QuestionPropertyPanel.xaml.cs
-namespace SurveyHub.Views.Shared;
+namespace Feedback2Business.Views.Shared;
 
 public partial class QuestionPropertyPanel : ContentView
 {
@@ -1571,7 +1571,7 @@ public partial class QuestionPropertyPanel : ContentView
 // File: Views/Shared/SettingsNavView.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView
-    x:Class="SurveyHub.Views.Shared.SettingsNavView"
+    x:Class="Feedback2Business.Views.Shared.SettingsNavView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
@@ -1589,7 +1589,7 @@ public partial class QuestionPropertyPanel : ContentView
 
 
 // File: Views/Shared/SettingsNavView.xaml.cs
-namespace SurveyHub.Views.Shared;
+namespace Feedback2Business.Views.Shared;
 
 public partial class SettingsNavView : ContentView
 {
@@ -1603,7 +1603,7 @@ public partial class SettingsNavView : ContentView
 // File: Views/Organizations/OrganizationsPage.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="SurveyHub.Views.Organizations.OrganizationsPage"
+    x:Class="Feedback2Business.Views.Organizations.OrganizationsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     BackgroundColor="{StaticResource PageBackground}">
@@ -1660,9 +1660,9 @@ public partial class SettingsNavView : ContentView
 
 
 // File: Views/Organizations/OrganizationsPage.xaml.cs
-using SurveyHub.ViewModels;
+using Feedback2Business.ViewModels;
 
-namespace SurveyHub.Views.Organizations;
+namespace Feedback2Business.Views.Organizations;
 
 public partial class OrganizationsPage : ContentPage
 {
@@ -1677,10 +1677,10 @@ public partial class OrganizationsPage : ContentPage
 // File: Views/Organizations/OrganizationBrandsPage.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="SurveyHub.Views.Organizations.OrganizationBrandsPage"
+    x:Class="Feedback2Business.Views.Organizations.OrganizationBrandsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:shared="clr-namespace:SurveyHub.Views.Shared"
+    xmlns:shared="clr-namespace:Feedback2Business.Views.Shared"
     BackgroundColor="{StaticResource PageBackground}">
 
     <Grid RowDefinitions="Auto,*" Padding="24">
@@ -1833,9 +1833,9 @@ public partial class OrganizationsPage : ContentPage
 
 
 // File: Views/Organizations/OrganizationBrandsPage.xaml.cs
-using SurveyHub.ViewModels;
+using Feedback2Business.ViewModels;
 
-namespace SurveyHub.Views.Organizations;
+namespace Feedback2Business.Views.Organizations;
 
 public partial class OrganizationBrandsPage : ContentPage
 {
@@ -1850,10 +1850,10 @@ public partial class OrganizationBrandsPage : ContentPage
 // File: Views/Organizations/OrganizationUsersPage.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="SurveyHub.Views.Organizations.OrganizationUsersPage"
+    x:Class="Feedback2Business.Views.Organizations.OrganizationUsersPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:shared="clr-namespace:SurveyHub.Views.Shared"
+    xmlns:shared="clr-namespace:Feedback2Business.Views.Shared"
     BackgroundColor="{StaticResource PageBackground}">
 
     <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="24">
@@ -1914,9 +1914,9 @@ public partial class OrganizationBrandsPage : ContentPage
 
 
 // File: Views/Organizations/OrganizationUsersPage.xaml.cs
-using SurveyHub.ViewModels;
+using Feedback2Business.ViewModels;
 
-namespace SurveyHub.Views.Organizations;
+namespace Feedback2Business.Views.Organizations;
 
 public partial class OrganizationUsersPage : ContentPage
 {
@@ -1931,7 +1931,7 @@ public partial class OrganizationUsersPage : ContentPage
 // File: Views/Templates/TemplatesPage.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="SurveyHub.Views.Templates.TemplatesPage"
+    x:Class="Feedback2Business.Views.Templates.TemplatesPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     BackgroundColor="{StaticResource PageBackground}">
@@ -1983,9 +1983,9 @@ public partial class OrganizationUsersPage : ContentPage
 
 
 // File: Views/Templates/TemplatesPage.xaml.cs
-using SurveyHub.ViewModels;
+using Feedback2Business.ViewModels;
 
-namespace SurveyHub.Views.Templates;
+namespace Feedback2Business.Views.Templates;
 
 public partial class TemplatesPage : ContentPage
 {
@@ -2000,7 +2000,7 @@ public partial class TemplatesPage : ContentPage
 // File: Views/Variables/VariablesPage.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="SurveyHub.Views.Variables.VariablesPage"
+    x:Class="Feedback2Business.Views.Variables.VariablesPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     BackgroundColor="{StaticResource PageBackground}">
@@ -2050,9 +2050,9 @@ public partial class TemplatesPage : ContentPage
 
 
 // File: Views/Variables/VariablesPage.xaml.cs
-using SurveyHub.ViewModels;
+using Feedback2Business.ViewModels;
 
-namespace SurveyHub.Views.Variables;
+namespace Feedback2Business.Views.Variables;
 
 public partial class VariablesPage : ContentPage
 {
@@ -2067,7 +2067,7 @@ public partial class VariablesPage : ContentPage
 // File: Views/Media/MediaCardView.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView
-    x:Class="SurveyHub.Views.Media.MediaCardView"
+    x:Class="Feedback2Business.Views.Media.MediaCardView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
@@ -2089,7 +2089,7 @@ public partial class VariablesPage : ContentPage
 
 
 // File: Views/Media/MediaCardView.xaml.cs
-namespace SurveyHub.Views.Media;
+namespace Feedback2Business.Views.Media;
 
 public partial class MediaCardView : ContentView
 {
@@ -2103,10 +2103,10 @@ public partial class MediaCardView : ContentView
 // File: Views/Media/MediaLibraryPage.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="SurveyHub.Views.Media.MediaLibraryPage"
+    x:Class="Feedback2Business.Views.Media.MediaLibraryPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:media="clr-namespace:SurveyHub.Views.Media"
+    xmlns:media="clr-namespace:Feedback2Business.Views.Media"
     BackgroundColor="{StaticResource PageBackground}">
 
     <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="24">
@@ -2152,9 +2152,9 @@ public partial class MediaCardView : ContentView
 
 
 // File: Views/Media/MediaLibraryPage.xaml.cs
-using SurveyHub.ViewModels;
+using Feedback2Business.ViewModels;
 
-namespace SurveyHub.Views.Media;
+namespace Feedback2Business.Views.Media;
 
 public partial class MediaLibraryPage : ContentPage
 {
@@ -2169,10 +2169,10 @@ public partial class MediaLibraryPage : ContentPage
 // File: Views/Settings/SettingsGeneralPage.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="SurveyHub.Views.Settings.SettingsGeneralPage"
+    x:Class="Feedback2Business.Views.Settings.SettingsGeneralPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:shared="clr-namespace:SurveyHub.Views.Shared"
+    xmlns:shared="clr-namespace:Feedback2Business.Views.Shared"
     BackgroundColor="{StaticResource PageBackground}">
 
     <Grid ColumnDefinitions="220,*" Padding="24" ColumnSpacing="16">
@@ -2226,9 +2226,9 @@ public partial class MediaLibraryPage : ContentPage
 
 
 // File: Views/Settings/SettingsGeneralPage.xaml.cs
-using SurveyHub.ViewModels;
+using Feedback2Business.ViewModels;
 
-namespace SurveyHub.Views.Settings;
+namespace Feedback2Business.Views.Settings;
 
 public partial class SettingsGeneralPage : ContentPage
 {
@@ -2243,10 +2243,10 @@ public partial class SettingsGeneralPage : ContentPage
 // File: Views/Settings/SettingsAppPage.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="SurveyHub.Views.Settings.SettingsAppPage"
+    x:Class="Feedback2Business.Views.Settings.SettingsAppPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:shared="clr-namespace:SurveyHub.Views.Shared"
+    xmlns:shared="clr-namespace:Feedback2Business.Views.Shared"
     BackgroundColor="{StaticResource PageBackground}">
 
     <Grid ColumnDefinitions="220,*" Padding="24" ColumnSpacing="16">
@@ -2324,9 +2324,9 @@ public partial class SettingsGeneralPage : ContentPage
 
 
 // File: Views/Settings/SettingsAppPage.xaml.cs
-using SurveyHub.ViewModels;
+using Feedback2Business.ViewModels;
 
-namespace SurveyHub.Views.Settings;
+namespace Feedback2Business.Views.Settings;
 
 public partial class SettingsAppPage : ContentPage
 {
@@ -2341,7 +2341,7 @@ public partial class SettingsAppPage : ContentPage
 // File: Views/Roles/RolesPermissionsPage.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="SurveyHub.Views.Roles.RolesPermissionsPage"
+    x:Class="Feedback2Business.Views.Roles.RolesPermissionsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     BackgroundColor="{StaticResource PageBackground}">
@@ -2420,9 +2420,9 @@ public partial class SettingsAppPage : ContentPage
 
 
 // File: Views/Roles/RolesPermissionsPage.xaml.cs
-using SurveyHub.ViewModels;
+using Feedback2Business.ViewModels;
 
-namespace SurveyHub.Views.Roles;
+namespace Feedback2Business.Views.Roles;
 
 public partial class RolesPermissionsPage : ContentPage
 {
@@ -2437,7 +2437,7 @@ public partial class RolesPermissionsPage : ContentPage
 // File: Views/ActivityLog/ActivityLogPage.xaml
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="SurveyHub.Views.ActivityLog.ActivityLogPage"
+    x:Class="Feedback2Business.Views.ActivityLog.ActivityLogPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     BackgroundColor="{StaticResource PageBackground}">
@@ -2490,9 +2490,9 @@ public partial class RolesPermissionsPage : ContentPage
 
 
 // File: Views/ActivityLog/ActivityLogPage.xaml.cs
-using SurveyHub.ViewModels;
+using Feedback2Business.ViewModels;
 
-namespace SurveyHub.Views.ActivityLog;
+namespace Feedback2Business.Views.ActivityLog;
 
 public partial class ActivityLogPage : ContentPage
 {

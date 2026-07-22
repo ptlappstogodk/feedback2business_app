@@ -1,0 +1,1798 @@
+Searching 102 files for "SurveyHub"
+
+~/Projects/feedback2business/feedback2business_app/AGENTS.md:
+    4  
+    5  ## Codebase Architecture
+    6: * **MVVM Setup**: Built on a clean, custom MVVM scaffolding using `ObservableObject` and `RelayCommand` under the `SurveyHub` namespace.
+    7  * **Desktop-First Administrative Shell**: The user interface is driven by `DashboardShellPage.xaml` which implements a persistent left-hand sidebar navigation layout (`SidebarView.xaml`) and a dynamic page host.
+    8  * **Explicit Content Swapping**: Navigation switches pages dynamically inside the shell by setting `PageHost.Content = page.Content;`. All target views must subclass `ContentPage` so that their internal contents are accessible.
+    9: * **Danish Mock Data**: Use `IMockDataService` and `MockDataService` under the `SurveyHub.Services` namespace to populate standard widgets and list controls. Keep text labels and badges translated to Danish (e.g. `"Aktiv"`, `"Inviteret"`, `"Skabeloner"`, `"Butiksinspektion"`).
+   10  
+   11  ## Project Directory Map
+   12: * `SurveyHub/`: Direct source root containing app startup and configuration.
+   13    * `Models/`: Strongly-typed model definitions for system objects (e.g., `UserModel`, `OrganizationModel`, `SurveyQuestionModel`).
+   14    * `Services/`: Mock data providers and dependency injection registrations.
+   ..
+   24  * **Mac Catalyst Compilation**: For local execution and verification on macOS, build the project with:
+   25    ```bash
+   26:   dotnet build SurveyHub/SurveyHub.csproj -f net9.0-maccatalyst
+   27    ```
+   28  
+
+~/Projects/feedback2business/feedback2business_app/Documentation/Concept/01 - SurveyHub Configuration App – UI Description.md:
+    1: SurveyHub Configuration App – UI Description
+    2  Overview
+    3: This UI represents a desktop administrative configuration application called SurveyHub, used to manage organizations, users, roles, templates, variables, media assets, application settings, and activity logs related to survey-based workflows.
+    4  The application follows a dashboard/admin panel pattern with:
+    5  •	a persistent left navigation sidebar
+    .
+   34  Top
+   35  Contains:
+   36: •	SurveyHub logo/icon
+   37: •	title: SurveyHub
+   38  •	subtitle: Konfiguration
+   39  Navigation Items
+   ..
+  510  Short Updated Implementation Prompt
+  511  Use this if you want a concise implementation brief for an AI coding agent:
+  512: Build a desktop admin web app called SurveyHub for configuring survey-based programs across organizations. Use a shared shell with a dark navy left sidebar and a white main content area. Include top-level navigation for Overview, Organizations, Users, Roles & Permissions, Templates, Variables, Media Library, Settings, and Activity Log. Implement the following page types:
+  513  •	Organizations list page with searchable table and create button
+  514  •	Organization detail pages with top tabs: Overview, Brands, Users, Settings, App Publishing
+  ...
+  529  convert it into a MAUI/XAML screen description.
+  530  
+  531: Below is a MAUI/XAML-oriented screen description of the complete SurveyHub configuration app based on the images. It is written so an AI coding agent can translate it into .NET MAUI XAML + MVVM structure.
+  532  
+  533: SurveyHub Configuration App – MAUI/XAML Screen Description
+  534  Goal
+  535  Implement a desktop-first administrative app UI in .NET MAUI using XAML and MVVM. The UI should resemble a modern web-style admin dashboard, but built with MAUI layouts and controls.
+  ...
+  575  Contains:
+  576  •	app logo/icon
+  577: •	Label for SurveyHub
+  578  •	smaller Label for Konfiguration
+  579  Use:
+  ...
+ 1251  24. Short MAUI/XAML Implementation Prompt
+ 1252  You can give this directly to an AI coding agent:
+ 1253: Build a desktop-style .NET MAUI admin application called SurveyHub using XAML and MVVM. Use a root two-column shell layout with a fixed dark navy sidebar on the left and a dynamic content area on the right. Implement reusable XAML views for sidebar, top breadcrumb/header, page headers, tabs, search bars, tables, status badges, settings navigation, media cards, and... <skipped 41 characters> ...
+ 1254  •	Organizations list
+ 1255  •	Organization Brands/Survey Builder
+
+~/Projects/feedback2business/feedback2business_app/Documentation/Concept/02 - MAUI XAML Page Skeletons.md:
+    8  1.1 AppShell.xaml
+    9  xml
+   10: <?xml version="1.0" encoding="utf-8" ?> <Shell x:Class="SurveyHub.AppShell" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:views="clr-namespace:SurveyHub.Views" FlyoutBehavior="Disabled"> <ShellContent Title="SurveyHub" ContentTemplate="{DataTemplate views:DashboardShellPage}" /> </Shell> 
+   11   
+   12  1.2 DashboardShellPage.xaml
+   13  xml
+   14: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.DashboardShellPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shell="clr-namespace:SurveyHub.Views.Shell" xmlns:org="clr-namespace:SurveyHub.Views.Organizations" BackgroundColor="{StaticResource PageBackground}"> <Grid ColumnDefinitions="250,*"> <shell:SidebarView Grid.Column="0" /> <Grid Grid.Column="1" RowDefinitions="Auto,*"> <shell:TopHeaderView Grid.Row="0" /> <ContentView Grid.Row="1" Padding="0"> <!-- Replace with routed content ... <skipped 114 characters> ...
+   15   
+   16  1.3 SidebarView.xaml
+   17  xml
+   18: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shell.SidebarView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <Grid BackgroundColor="{StaticResource SidebarBackground}" Padding="16" RowDefinitions="Auto,*,Auto"> <VerticalStackLayout Spacing="6"> <Label Text="SurveyHub" TextColor="White" FontSize="20" FontAttributes="Bold" /> <Label Text="Konfiguration" TextColor="#B8C7E0" FontSize="12" /> </VerticalStackLayout> <CollectionView Grid.Row="1" Margin="0,20,0,20" ItemsSource="{Binding NavigationItems}" SelectionMode="Single" SelectedItem="{Binding SelectedNavigationI... <skipped 1077 characters> ...
+   19   
+   20  1.4 TopHeaderView.xaml
+   21  xml
+   22: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shell.TopHeaderView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <Grid Padding="24,16" ColumnDefinitions="*,Auto" BackgroundColor="White"> <HorizontalStackLayout Spacing="8"> <Label Text="{Binding BreadcrumbPrimary}" TextColor=... <skipped 562 characters> ...
+   23   
+   24  1.5 OrganizationBrandsPage.xaml
+   25  xml
+   26: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Organizations.OrganizationBrandsPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shared="clr-namespace:SurveyHub.Views.Shared" Title="Brands" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,*" Padding="24"> <!-- Header --> <Grid RowDefinitions="Auto,Auto" Grid.Row="0"> <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16"> <Border WidthRequest="56" HeightRequest="56" Backgroun... <skipped 5462 characters> ...
+   27   
+   28  1.6 MobilePreviewView.xaml
+   29  xml
+   30: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.MobilePreviewView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <VerticalStackLayout Spacing="12"> <HorizontalStackLayout Spacing="6"> <Label Text="App preview" FontAttributes="Bold" /> <Label Text="ⓘ" FontSize="12" TextC... <skipped 1018 characters> ...
+   31   
+   32  1.7 SectionCardView.xaml
+   33  xml
+   34: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.SectionCardView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Name="This"> <Border Style="{StaticResource InnerCardStyle}"> <VerticalStackLayout> <Grid Padding="12" ColumnDefinitions="Auto,*,Auto"> <Label Text="⌄" /> <La... <skipped 606 characters> ...
+   35  Code-behind bindable properties will be added later in the scaffolding section.
+   36   
+   37  1.8 QuestionPropertyPanel.xaml
+   38  xml
+   39: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.QuestionPropertyPanel" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <Border Style="{StaticResource InnerCardStyle}"> <ScrollView> <VerticalStackLayout Padding="16" Spacing="14"> <Label Text="Spørgsmålstype" Style="{Static... <skipped 1602 characters> ...
+   40   
+   41  1.9 OrganizationsPage.xaml
+   42  xml
+   43: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Organizations.OrganizationsPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalSta... <skipped 1788 characters> ...
+   44   
+   45  1.10 OrganizationUsersPage.xaml
+   46  xml
+   47: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Organizations.OrganizationUsersPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shared="clr-namespace:SurveyHub.Views.Shared" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="24"> <VerticalStackLayout> <Label Text="Brugere" Style="{StaticResource PageTitleStyle}" /> <Label Text="Administrer brugere i organisationen." Style="{StaticResource PageSubtitleS... <skipped 1975 characters> ...
+   48   
+   49  1.11 TemplatesPage.xaml
+   50  xml
+   51: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Templates.TemplatesPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalStackL... <skipped 1670 characters> ...
+   52   
+   53  1.12 VariablesPage.xaml
+   54  xml
+   55: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Variables.VariablesPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalStackLayout... <skipped 1619 characters> ...
+   56   
+   57  1.13 MediaLibraryPage.xaml
+   58  xml
+   59: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Media.MediaLibraryPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:media="clr-namespace:SurveyHub.Views.Media" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalStackLayout> <Label Text="Mediebibliotek" Style="{StaticResource PageTitleStyle}" /> <Label Text="Upload og administrer billeder og f... <skipped 1211 characters> ...
+   60   
+   61  1.14 MediaCardView.xaml
+   62  xml
+   63: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Media.MediaCardView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <Border Style="{StaticResource InnerCardStyle}" Padding="8" Margin="6"> <VerticalStackLayout Spacing="8"> <Border HeightRequest="110" BackgroundColor="#F3F6FB" St... <skipped 348 characters> ...
+   64   
+   65  1.15 SettingsGeneralPage.xaml
+   66  xml
+   67: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Settings.SettingsGeneralPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shared="clr-namespace:SurveyHub.Views.Shared" BackgroundColor="{StaticResource PageBackground}"> <Grid ColumnDefinitions="220,*" Padding="24" ColumnSpacing="16"> <shared:SettingsNavView Grid.Column="0" SelectedKey="General" /> <Grid Grid.Column="1" RowDefinitions="Auto,*"> <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16"> <Labe... <skipped 1518 characters> ...
+   68   
+   69  1.16 SettingsAppPage.xaml
+   70  xml
+   71: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Settings.SettingsAppPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shared="clr-namespace:SurveyHub.Views.Shared" BackgroundColor="{StaticResource PageBackground}"> <Grid ColumnDefinitions="220,*" Padding="24" ColumnSpacing="16"> <shared:SettingsNavView Grid.Column="0" SelectedKey="AppSettings" /> <Grid Grid.Column="1" RowDefinitions="Auto,*"> <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16"> <... <skipped 2517 characters> ...
+   72   
+   73  1.17 RolesPermissionsPage.xaml
+   74  xml
+   75: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Roles.RolesPermissionsPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,*" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalStackLayout> ... <skipped 2301 characters> ...
+   76   
+   77  1.18 ActivityLogPage.xaml
+   78  xml
+   79: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.ActivityLog.ActivityLogPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="24"> <VerticalStackLayout> <Label Text="Aktivitetslog" ... <skipped 1689 characters> ...
+   80   
+   81  2. Control Hierarchy Per Page
+   ..
+  299  ObservableObject.cs
+  300  csharp
+  301: using System.ComponentModel; using System.Runtime.CompilerServices; namespace SurveyHub.ViewModels; public abstract class ObservableObject : INotifyPropertyChanged { public event PropertyChangedEventHandler? PropertyChanged; protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string? propertyName = null) { if (EqualityComparer<T>.Default.Equals(backingStore, ... <skipped 254 characters> ...
+  302  RelayCommand.cs
+  303  csharp
+  304: using System.Windows.Input; namespace SurveyHub.ViewModels; public class RelayCommand : ICommand { private readonly Action _execute; private readonly Func<bool>? _canExecute; public RelayCommand(Action execute, Func<bool>? canExecute = null) { _execute = execute; _canExecute = canExecute; } public bool CanExecute(object? parameter) => _canExecut... <skipped 758 characters> ...
+  305   
+  306  3.2 Models
+  307  NavigationItem.cs
+  308  csharp
+  309: namespace SurveyHub.Models; public class NavigationItem { public string Key { get; set; } = string.Empty; public string Title { get; set; } = string.Empty; public string IconGlyph { get; set; } = string.Empty; public bool IsSelected { get; set; } public string BackgroundColor => IsSelected ? "#12345F" : "Transparent"; } 
+  310  UserModel.cs
+  311  csharp
+  312: namespace SurveyHub.Models; public class UserModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public string Email { get; set; } = string.Empty; public string Role { get; set; } = string.Empty; public string Status { get; set; } = string.Empty; public ... <skipped 115 characters> ...
+  313  OrganizationModel.cs
+  314  csharp
+  315: namespace SurveyHub.Models; public class OrganizationModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public int BrandCount { get; set; } public int SurveyCount { get; set; } public int UserCount { get; set; } public DateTime UpdatedAt { get; set; } p... <skipped 66 characters> ...
+  316  BrandModel.cs
+  317  csharp
+  318: namespace SurveyHub.Models; public class BrandModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public string LogoUrl { get; set; } = string.Empty; public int SurveyCount { get; set; } public bool IsSelected { get; set; } public string SurveyCountText ... <skipped 103 characters> ...
+  319  SurveyModel.cs
+  320  csharp
+  321: namespace SurveyHub.Models; public class SurveyModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public int Version { get; set; } public int QuestionCount { get; set; } public bool IsSelected { get; set; } public string VersionText => $"Version {Versio... <skipped 107 characters> ...
+  322  SurveySectionModel.cs
+  323  csharp
+  324: namespace SurveyHub.Models; public class SurveySectionModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Title { get; set; } = string.Empty; public bool IsExpanded { get; set; } = true; public List<SurveyQuestionModel> Questions { get; set; } = new(); } 
+  325  SurveyQuestionModel.cs
+  326  csharp
+  327: namespace SurveyHub.Models; public class SurveyQuestionModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string NumberLabel { get; set; } = string.Empty; public string Title { get; set; } = string.Empty; public string Description { get; set; } = string.Empty; public string Type { get; set; } =... <skipped 254 characters> ...
+  328  TemplateModel.cs
+  329  csharp
+  330: namespace SurveyHub.Models; public class TemplateModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public string Type { get; set; } = string.Empty; public string Description { get; set; } = string.Empty; public DateTime UpdatedAt { get; set; } public s... <skipped 59 characters> ...
+  331  VariableModel.cs
+  332  csharp
+  333: namespace SurveyHub.Models; public class VariableModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public string Key { get; set; } = string.Empty; public string Type { get; set; } = string.Empty; public string DefaultValue { get; set; } = string.Empty;... <skipped 96 characters> ...
+  334  MediaItemModel.cs
+  335  csharp
+  336: namespace SurveyHub.Models; public class MediaItemModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public string ThumbnailUrl { get; set; } = string.Empty; public string FileType { get; set; } = string.Empty; public string MetaText { get; set; } = string.Empty; } 
+  337  Permission Models
+  338  csharp
+  339: namespace SurveyHub.Models; public class PermissionModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Label { get; set; } = string.Empty; public bool IsEnabled { get; set; } } public class PermissionGroupModel { public string Name { get; set; } = string.Empty; public List<PermissionModel... <skipped 305 characters> ...
+  340  ActivityEventModel.cs
+  341  csharp
+  342: namespace SurveyHub.Models; public class ActivityEventModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public DateTime Timestamp { get; set; } public string Action { get; set; } = string.Empty; public string UserName { get; set; } = string.Empty; public string Details { get; set; } = string.Empty; p... <skipped 75 characters> ...
+  343  MobilePreviewModel.cs
+  344  csharp
+  345: namespace SurveyHub.Models; public class MobilePreviewModel { public string SurveyTitle { get; set; } = string.Empty; public string ProgressText { get; set; } = string.Empty; public string PercentText { get; set; } = string.Empty; public string QuestionNumberTitle { get; set; } = string.Empty; public string Descriptio... <skipped 34 characters> ...
+  346   
+  347  3.3 ViewModels
+  348  MainShellViewModel.cs
+  349  csharp
+  350: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class MainShellViewModel : ObservableObject { private NavigationItem? _selectedNavigationItem; public ObservableCollection<NavigationItem> NavigationItems { get; } = new(); public UserModel CurrentUser { get; } = new() { Name = "Anders Kirk", Role = "Admin" }; public string Bread... <skipped 1281 characters> ...
+  351  OrganizationsViewModel.cs
+  352  csharp
+  353: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class OrganizationsViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<OrganizationModel> Organizations { get; } = new(); public RelayCom... <skipped 615 characters> ...
+  354  OrganizationBrandsViewModel.cs
+  355  csharp
+  356: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class OrganizationBrandsViewModel : ObservableObject { private BrandModel? _selectedBrand; private SurveyModel? _selectedSurvey; private SurveyQuestionEditorViewModel? _selectedQuestion; public ObservableCollection<BrandModel> Brands { get; } = new(); public ObservableCollection<... <skipped 3719 characters> ...
+  357  SurveyQuestionEditorViewModel.cs
+  358  csharp
+  359: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class SurveyQuestionEditorViewModel : ObservableObject { private string _selectedQuestionType = "Ja / Nej"; private string _title = string.Empty; private string _description = string.Empty; private bool _isRequired; private string _variableName = string.Empty; private bool _isSta... <skipped 1613 characters> ...
+  360  OrganizationUsersViewModel.cs
+  361  csharp
+  362: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class OrganizationUsersViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<string> Roles { get; } = new() { "Alle", "Admin", "Manager", "... <skipped 819 characters> ...
+  363  TemplatesViewModel.cs
+  364  csharp
+  365: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class TemplatesViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<TemplateModel> Templates { get; } = new(); public TemplatesViewModel()... <skipped 529 characters> ...
+  366  VariablesViewModel.cs
+  367  csharp
+  368: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class VariablesViewModel : ObservableObject { public ObservableCollection<VariableModel> Variables { get; } = new(); public VariablesViewModel() { Variables.Add(new VariableModel { Name = "Organisationsnavn", Key = "org_name", Type = "Tekst", DefaultValue = "Retail Group A", Usag... <skipped 411 characters> ...
+  369  MediaLibraryViewModel.cs
+  370  csharp
+  371: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class MediaLibraryViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<string> FileTypes { get; } = new() { "Alle", "Billeder", "PDF", "DO... <skipped 707 characters> ...
+  372  SettingsGeneralViewModel.cs
+  373  csharp
+  374: using System.Collections.ObjectModel; namespace SurveyHub.ViewModels; public class SettingsGeneralViewModel : ObservableObject { private string _organizationName = "Retail Group A"; private string _selectedLanguage = "Dansk"; private string _selectedTimezone = "UTC+01:00 København"; private string _dashboardName = "Dashboard"; private string _dateFormat =... <skipped 752 characters> ...
+  375  SettingsAppViewModel.cs
+  376  csharp
+  377: using System.Collections.ObjectModel; namespace SurveyHub.ViewModels; public class SettingsAppViewModel : ObservableObject { private bool _offlineEnabled = true; private bool _autoSyncEnabled = true; private bool _requireLocationAtStart = true; private bool _useLocationOnObservations = false; private bool _compressImages = true; private string _selectedMa... <skipped 1131 characters> ...
+  378  RolesPermissionsViewModel.cs
+  379  csharp
+  380: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class RolesPermissionsViewModel : ObservableObject { private RoleModel _selectedRole = new(); public ObservableCollection<RoleModel> Roles { get; } = new(); public RoleModel SelectedRole { get => _selectedRole; set { if (SetProperty(ref _selectedRole, value)) OnPropertyChanged(na... <skipped 1390 characters> ...
+  381  ActivityLogViewModel.cs
+  382  csharp
+  383: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class ActivityLogViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<string> Actions { get; } = new() { "Alle", "Opdateret", "Oprettet", ... <skipped 881 characters> ...
+  384   
+  385  3.4 Shared View Code-Behind Scaffolding
+  386  StatusBadgeView.xaml
+  387  xml
+  388: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.StatusBadgeView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Name="This"> <Border BackgroundColor="{Binding BadgeColor, Source={x:Reference This}}" StrokeThickness="0" Padding="8,4" StrokeShape="RoundRectangle 12"> <Lab... <skipped 153 characters> ...
+  389  StatusBadgeView.xaml.cs
+  390  csharp
+  391: namespace SurveyHub.Views.Shared; public partial class StatusBadgeView : ContentView { public static readonly BindableProperty TextProperty = BindableProperty.Create(nameof(Text), typeof(string), typeof(StatusBadgeView), string.Empty); public static readonly BindableProperty BadgeColorProperty = BindableProperty.Creat... <skipped 622 characters> ...
+  392  SectionCardView.xaml.cs
+  393  csharp
+  394: using System.Collections; namespace SurveyHub.Views.Shared; public partial class SectionCardView : ContentView { public static readonly BindableProperty TitleProperty = BindableProperty.Create(nameof(Title), typeof(string), typeof(SectionCardView), string.Empty); public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Cr... <skipped 367 characters> ...
+  395  SettingsNavView.xaml
+  396  xml
+  397: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.SettingsNavView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Name="This"> <Border Style="{StaticResource CardStyle}"> <VerticalStackLayout Padding="12" Spacing="8"> <Label Text="Generelt" /> <Label Text="App-indstilling... <skipped 181 characters> ...
+  398  SettingsNavView.xaml.cs
+  399  csharp
+  400: namespace SurveyHub.Views.Shared; public partial class SettingsNavView : ContentView { public static readonly BindableProperty SelectedKeyProperty = BindableProperty.Create(nameof(SelectedKey), typeof(string), typeof(SettingsNavView), string.Empty); public string SelectedKey { get => (string)GetValue(SelectedKeyProper... <skipped 106 characters> ...
+  401   
+  402  3.5 Sample Styles.xaml
+
+~/Projects/feedback2business/feedback2business_app/Documentation/Concept/03 - Ready-to-paste .NET MAUI project structure.md:
+    8  1.1 AppShell.xaml
+    9  xml
+   10: <?xml version="1.0" encoding="utf-8" ?> <Shell x:Class="SurveyHub.AppShell" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:views="clr-namespace:SurveyHub.Views" FlyoutBehavior="Disabled"> <ShellContent Title="SurveyHub" ContentTemplate="{DataTemplate views:DashboardShellPage}" /> </Shell> 
+   11   
+   12  1.2 DashboardShellPage.xaml
+   13  xml
+   14: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.DashboardShellPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shell="clr-namespace:SurveyHub.Views.Shell" xmlns:org="clr-namespace:SurveyHub.Views.Organizations" BackgroundColor="{StaticResource PageBackground}"> <Grid ColumnDefinitions="250,*"> <shell:SidebarView Grid.Column="0" /> <Grid Grid.Column="1" RowDefinitions="Auto,*"> <shell:TopHeaderView Grid.Row="0" /> <ContentView Grid.Row="1" Padding="0"> <!-- Replace with routed content ... <skipped 114 characters> ...
+   15   
+   16  1.3 SidebarView.xaml
+   17  xml
+   18: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shell.SidebarView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <Grid BackgroundColor="{StaticResource SidebarBackground}" Padding="16" RowDefinitions="Auto,*,Auto"> <VerticalStackLayout Spacing="6"> <Label Text="SurveyHub" TextColor="White" FontSize="20" FontAttributes="Bold" /> <Label Text="Konfiguration" TextColor="#B8C7E0" FontSize="12" /> </VerticalStackLayout> <CollectionView Grid.Row="1" Margin="0,20,0,20" ItemsSource="{Binding NavigationItems}" SelectionMode="Single" SelectedItem="{Binding SelectedNavigationI... <skipped 1077 characters> ...
+   19   
+   20  1.4 TopHeaderView.xaml
+   21  xml
+   22: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shell.TopHeaderView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <Grid Padding="24,16" ColumnDefinitions="*,Auto" BackgroundColor="White"> <HorizontalStackLayout Spacing="8"> <Label Text="{Binding BreadcrumbPrimary}" TextColor=... <skipped 562 characters> ...
+   23   
+   24  1.5 OrganizationBrandsPage.xaml
+   25  xml
+   26: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Organizations.OrganizationBrandsPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shared="clr-namespace:SurveyHub.Views.Shared" Title="Brands" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,*" Padding="24"> <!-- Header --> <Grid RowDefinitions="Auto,Auto" Grid.Row="0"> <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16"> <Border WidthRequest="56" HeightRequest="56" Backgroun... <skipped 5462 characters> ...
+   27   
+   28  1.6 MobilePreviewView.xaml
+   29  xml
+   30: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.MobilePreviewView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <VerticalStackLayout Spacing="12"> <HorizontalStackLayout Spacing="6"> <Label Text="App preview" FontAttributes="Bold" /> <Label Text="ⓘ" FontSize="12" TextC... <skipped 1018 characters> ...
+   31   
+   32  1.7 SectionCardView.xaml
+   33  xml
+   34: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.SectionCardView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Name="This"> <Border Style="{StaticResource InnerCardStyle}"> <VerticalStackLayout> <Grid Padding="12" ColumnDefinitions="Auto,*,Auto"> <Label Text="⌄" /> <La... <skipped 606 characters> ...
+   35  Code-behind bindable properties will be added later in the scaffolding section.
+   36   
+   37  1.8 QuestionPropertyPanel.xaml
+   38  xml
+   39: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.QuestionPropertyPanel" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <Border Style="{StaticResource InnerCardStyle}"> <ScrollView> <VerticalStackLayout Padding="16" Spacing="14"> <Label Text="Spørgsmålstype" Style="{Static... <skipped 1602 characters> ...
+   40   
+   41  1.9 OrganizationsPage.xaml
+   42  xml
+   43: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Organizations.OrganizationsPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalSta... <skipped 1788 characters> ...
+   44   
+   45  1.10 OrganizationUsersPage.xaml
+   46  xml
+   47: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Organizations.OrganizationUsersPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shared="clr-namespace:SurveyHub.Views.Shared" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="24"> <VerticalStackLayout> <Label Text="Brugere" Style="{StaticResource PageTitleStyle}" /> <Label Text="Administrer brugere i organisationen." Style="{StaticResource PageSubtitleS... <skipped 1975 characters> ...
+   48   
+   49  1.11 TemplatesPage.xaml
+   50  xml
+   51: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Templates.TemplatesPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalStackL... <skipped 1670 characters> ...
+   52   
+   53  1.12 VariablesPage.xaml
+   54  xml
+   55: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Variables.VariablesPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalStackLayout... <skipped 1619 characters> ...
+   56   
+   57  1.13 MediaLibraryPage.xaml
+   58  xml
+   59: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Media.MediaLibraryPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:media="clr-namespace:SurveyHub.Views.Media" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalStackLayout> <Label Text="Mediebibliotek" Style="{StaticResource PageTitleStyle}" /> <Label Text="Upload og administrer billeder og f... <skipped 1211 characters> ...
+   60   
+   61  1.14 MediaCardView.xaml
+   62  xml
+   63: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Media.MediaCardView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <Border Style="{StaticResource InnerCardStyle}" Padding="8" Margin="6"> <VerticalStackLayout Spacing="8"> <Border HeightRequest="110" BackgroundColor="#F3F6FB" St... <skipped 348 characters> ...
+   64   
+   65  1.15 SettingsGeneralPage.xaml
+   66  xml
+   67: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Settings.SettingsGeneralPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shared="clr-namespace:SurveyHub.Views.Shared" BackgroundColor="{StaticResource PageBackground}"> <Grid ColumnDefinitions="220,*" Padding="24" ColumnSpacing="16"> <shared:SettingsNavView Grid.Column="0" SelectedKey="General" /> <Grid Grid.Column="1" RowDefinitions="Auto,*"> <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16"> <Labe... <skipped 1518 characters> ...
+   68   
+   69  1.16 SettingsAppPage.xaml
+   70  xml
+   71: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Settings.SettingsAppPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shared="clr-namespace:SurveyHub.Views.Shared" BackgroundColor="{StaticResource PageBackground}"> <Grid ColumnDefinitions="220,*" Padding="24" ColumnSpacing="16"> <shared:SettingsNavView Grid.Column="0" SelectedKey="AppSettings" /> <Grid Grid.Column="1" RowDefinitions="Auto,*"> <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16"> <... <skipped 2517 characters> ...
+   72   
+   73  1.17 RolesPermissionsPage.xaml
+   74  xml
+   75: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Roles.RolesPermissionsPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,*" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalStackLayout> ... <skipped 2301 characters> ...
+   76   
+   77  1.18 ActivityLogPage.xaml
+   78  xml
+   79: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.ActivityLog.ActivityLogPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="24"> <VerticalStackLayout> <Label Text="Aktivitetslog" ... <skipped 1689 characters> ...
+   80   
+   81  2. Control Hierarchy Per Page
+   ..
+  299  ObservableObject.cs
+  300  csharp
+  301: using System.ComponentModel; using System.Runtime.CompilerServices; namespace SurveyHub.ViewModels; public abstract class ObservableObject : INotifyPropertyChanged { public event PropertyChangedEventHandler? PropertyChanged; protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string? propertyName = null) { if (EqualityComparer<T>.Default.Equals(backingStore, ... <skipped 254 characters> ...
+  302  RelayCommand.cs
+  303  csharp
+  304: using System.Windows.Input; namespace SurveyHub.ViewModels; public class RelayCommand : ICommand { private readonly Action _execute; private readonly Func<bool>? _canExecute; public RelayCommand(Action execute, Func<bool>? canExecute = null) { _execute = execute; _canExecute = canExecute; } public bool CanExecute(object? parameter) => _canExecut... <skipped 758 characters> ...
+  305   
+  306  3.2 Models
+  307  NavigationItem.cs
+  308  csharp
+  309: namespace SurveyHub.Models; public class NavigationItem { public string Key { get; set; } = string.Empty; public string Title { get; set; } = string.Empty; public string IconGlyph { get; set; } = string.Empty; public bool IsSelected { get; set; } public string BackgroundColor => IsSelected ? "#12345F" : "Transparent"; } 
+  310  UserModel.cs
+  311  csharp
+  312: namespace SurveyHub.Models; public class UserModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public string Email { get; set; } = string.Empty; public string Role { get; set; } = string.Empty; public string Status { get; set; } = string.Empty; public ... <skipped 115 characters> ...
+  313  OrganizationModel.cs
+  314  csharp
+  315: namespace SurveyHub.Models; public class OrganizationModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public int BrandCount { get; set; } public int SurveyCount { get; set; } public int UserCount { get; set; } public DateTime UpdatedAt { get; set; } p... <skipped 66 characters> ...
+  316  BrandModel.cs
+  317  csharp
+  318: namespace SurveyHub.Models; public class BrandModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public string LogoUrl { get; set; } = string.Empty; public int SurveyCount { get; set; } public bool IsSelected { get; set; } public string SurveyCountText ... <skipped 103 characters> ...
+  319  SurveyModel.cs
+  320  csharp
+  321: namespace SurveyHub.Models; public class SurveyModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public int Version { get; set; } public int QuestionCount { get; set; } public bool IsSelected { get; set; } public string VersionText => $"Version {Versio... <skipped 107 characters> ...
+  322  SurveySectionModel.cs
+  323  csharp
+  324: namespace SurveyHub.Models; public class SurveySectionModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Title { get; set; } = string.Empty; public bool IsExpanded { get; set; } = true; public List<SurveyQuestionModel> Questions { get; set; } = new(); } 
+  325  SurveyQuestionModel.cs
+  326  csharp
+  327: namespace SurveyHub.Models; public class SurveyQuestionModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string NumberLabel { get; set; } = string.Empty; public string Title { get; set; } = string.Empty; public string Description { get; set; } = string.Empty; public string Type { get; set; } =... <skipped 254 characters> ...
+  328  TemplateModel.cs
+  329  csharp
+  330: namespace SurveyHub.Models; public class TemplateModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public string Type { get; set; } = string.Empty; public string Description { get; set; } = string.Empty; public DateTime UpdatedAt { get; set; } public s... <skipped 59 characters> ...
+  331  VariableModel.cs
+  332  csharp
+  333: namespace SurveyHub.Models; public class VariableModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public string Key { get; set; } = string.Empty; public string Type { get; set; } = string.Empty; public string DefaultValue { get; set; } = string.Empty;... <skipped 96 characters> ...
+  334  MediaItemModel.cs
+  335  csharp
+  336: namespace SurveyHub.Models; public class MediaItemModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Name { get; set; } = string.Empty; public string ThumbnailUrl { get; set; } = string.Empty; public string FileType { get; set; } = string.Empty; public string MetaText { get; set; } = string.Empty; } 
+  337  Permission Models
+  338  csharp
+  339: namespace SurveyHub.Models; public class PermissionModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public string Label { get; set; } = string.Empty; public bool IsEnabled { get; set; } } public class PermissionGroupModel { public string Name { get; set; } = string.Empty; public List<PermissionModel... <skipped 305 characters> ...
+  340  ActivityEventModel.cs
+  341  csharp
+  342: namespace SurveyHub.Models; public class ActivityEventModel { public string Id { get; set; } = Guid.NewGuid().ToString(); public DateTime Timestamp { get; set; } public string Action { get; set; } = string.Empty; public string UserName { get; set; } = string.Empty; public string Details { get; set; } = string.Empty; p... <skipped 75 characters> ...
+  343  MobilePreviewModel.cs
+  344  csharp
+  345: namespace SurveyHub.Models; public class MobilePreviewModel { public string SurveyTitle { get; set; } = string.Empty; public string ProgressText { get; set; } = string.Empty; public string PercentText { get; set; } = string.Empty; public string QuestionNumberTitle { get; set; } = string.Empty; public string Descriptio... <skipped 34 characters> ...
+  346   
+  347  3.3 ViewModels
+  348  MainShellViewModel.cs
+  349  csharp
+  350: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class MainShellViewModel : ObservableObject { private NavigationItem? _selectedNavigationItem; public ObservableCollection<NavigationItem> NavigationItems { get; } = new(); public UserModel CurrentUser { get; } = new() { Name = "Anders Kirk", Role = "Admin" }; public string Bread... <skipped 1281 characters> ...
+  351  OrganizationsViewModel.cs
+  352  csharp
+  353: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class OrganizationsViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<OrganizationModel> Organizations { get; } = new(); public RelayCom... <skipped 615 characters> ...
+  354  OrganizationBrandsViewModel.cs
+  355  csharp
+  356: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class OrganizationBrandsViewModel : ObservableObject { private BrandModel? _selectedBrand; private SurveyModel? _selectedSurvey; private SurveyQuestionEditorViewModel? _selectedQuestion; public ObservableCollection<BrandModel> Brands { get; } = new(); public ObservableCollection<... <skipped 3719 characters> ...
+  357  SurveyQuestionEditorViewModel.cs
+  358  csharp
+  359: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class SurveyQuestionEditorViewModel : ObservableObject { private string _selectedQuestionType = "Ja / Nej"; private string _title = string.Empty; private string _description = string.Empty; private bool _isRequired; private string _variableName = string.Empty; private bool _isSta... <skipped 1613 characters> ...
+  360  OrganizationUsersViewModel.cs
+  361  csharp
+  362: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class OrganizationUsersViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<string> Roles { get; } = new() { "Alle", "Admin", "Manager", "... <skipped 819 characters> ...
+  363  TemplatesViewModel.cs
+  364  csharp
+  365: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class TemplatesViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<TemplateModel> Templates { get; } = new(); public TemplatesViewModel()... <skipped 529 characters> ...
+  366  VariablesViewModel.cs
+  367  csharp
+  368: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class VariablesViewModel : ObservableObject { public ObservableCollection<VariableModel> Variables { get; } = new(); public VariablesViewModel() { Variables.Add(new VariableModel { Name = "Organisationsnavn", Key = "org_name", Type = "Tekst", DefaultValue = "Retail Group A", Usag... <skipped 411 characters> ...
+  369  MediaLibraryViewModel.cs
+  370  csharp
+  371: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class MediaLibraryViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<string> FileTypes { get; } = new() { "Alle", "Billeder", "PDF", "DO... <skipped 707 characters> ...
+  372  SettingsGeneralViewModel.cs
+  373  csharp
+  374: using System.Collections.ObjectModel; namespace SurveyHub.ViewModels; public class SettingsGeneralViewModel : ObservableObject { private string _organizationName = "Retail Group A"; private string _selectedLanguage = "Dansk"; private string _selectedTimezone = "UTC+01:00 København"; private string _dashboardName = "Dashboard"; private string _dateFormat =... <skipped 752 characters> ...
+  375  SettingsAppViewModel.cs
+  376  csharp
+  377: using System.Collections.ObjectModel; namespace SurveyHub.ViewModels; public class SettingsAppViewModel : ObservableObject { private bool _offlineEnabled = true; private bool _autoSyncEnabled = true; private bool _requireLocationAtStart = true; private bool _useLocationOnObservations = false; private bool _compressImages = true; private string _selectedMa... <skipped 1131 characters> ...
+  378  RolesPermissionsViewModel.cs
+  379  csharp
+  380: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class RolesPermissionsViewModel : ObservableObject { private RoleModel _selectedRole = new(); public ObservableCollection<RoleModel> Roles { get; } = new(); public RoleModel SelectedRole { get => _selectedRole; set { if (SetProperty(ref _selectedRole, value)) OnPropertyChanged(na... <skipped 1390 characters> ...
+  381  ActivityLogViewModel.cs
+  382  csharp
+  383: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class ActivityLogViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<string> Actions { get; } = new() { "Alle", "Opdateret", "Oprettet", ... <skipped 881 characters> ...
+  384   
+  385  3.4 Shared View Code-Behind Scaffolding
+  386  StatusBadgeView.xaml
+  387  xml
+  388: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.StatusBadgeView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Name="This"> <Border BackgroundColor="{Binding BadgeColor, Source={x:Reference This}}" StrokeThickness="0" Padding="8,4" StrokeShape="RoundRectangle 12"> <Lab... <skipped 153 characters> ...
+  389  StatusBadgeView.xaml.cs
+  390  csharp
+  391: namespace SurveyHub.Views.Shared; public partial class StatusBadgeView : ContentView { public static readonly BindableProperty TextProperty = BindableProperty.Create(nameof(Text), typeof(string), typeof(StatusBadgeView), string.Empty); public static readonly BindableProperty BadgeColorProperty = BindableProperty.Creat... <skipped 622 characters> ...
+  392  SectionCardView.xaml.cs
+  393  csharp
+  394: using System.Collections; namespace SurveyHub.Views.Shared; public partial class SectionCardView : ContentView { public static readonly BindableProperty TitleProperty = BindableProperty.Create(nameof(Title), typeof(string), typeof(SectionCardView), string.Empty); public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Cr... <skipped 367 characters> ...
+  395  SettingsNavView.xaml
+  396  xml
+  397: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.SettingsNavView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Name="This"> <Border Style="{StaticResource CardStyle}"> <VerticalStackLayout Padding="12" Spacing="8"> <Label Text="Generelt" /> <Label Text="App-indstilling... <skipped 181 characters> ...
+  398  SettingsNavView.xaml.cs
+  399  csharp
+  400: namespace SurveyHub.Views.Shared; public partial class SettingsNavView : ContentView { public static readonly BindableProperty SelectedKeyProperty = BindableProperty.Create(nameof(SelectedKey), typeof(string), typeof(SettingsNavView), string.Empty); public string SelectedKey { get => (string)GetValue(SelectedKeyProper... <skipped 106 characters> ...
+  401   
+  402  3.5 Sample Styles.xaml
+
+~/Projects/feedback2business/feedback2business_app/Documentation/Concept/04 - compile-safer .NET MAUI project version.md:
+   13  Project Structure
+   14  text
+   15: SurveyHub/ App.xaml App.xaml.cs AppShell.xaml AppShell.xaml.cs MauiProgram.cs Resources/ Styles/ Colors.xaml Styles.xaml Models/ NavigationItem.cs UserModel.cs OrganizationModel.cs BrandModel.cs SurveyModel.cs SurveyQuestionModel.cs TemplateModel.cs VariableModel.cs MediaItemModel.cs PermissionModels.cs Acti... <skipped 1452 characters> ...
+   16   
+   17  1. Bootstrap Files
+   18  App.xaml
+   19  xml
+   20: <?xml version="1.0" encoding="UTF-8" ?> <Application x:Class="SurveyHub.App" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <Application.Resources> <ResourceDictionary> <ResourceDictionary.MergedDictionaries> <ResourceDictionary Source="Resources/Styles/Colors.xaml" /> <ResourceDictionary Source="Resources/... <skipped 126 characters> ...
+   21  App.xaml.cs
+   22  csharp
+   23: namespace SurveyHub; public partial class App : Application { public App(AppShell shell) { InitializeComponent(); MainPage = shell; } } 
+   24  AppShell.xaml
+   25  xml
+   26: <?xml version="1.0" encoding="utf-8" ?> <Shell x:Class="SurveyHub.AppShell" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:views="clr-namespace:SurveyHub.Views" FlyoutBehavior="Disabled"> <ShellContent Title="SurveyHub" ContentTemplate="{DataTemplate views:DashboardShellPage}" /> </Shell> 
+   27  AppShell.xaml.cs
+   28  csharp
+   29: namespace SurveyHub; public partial class AppShell : Shell { public AppShell() { InitializeComponent(); } } 
+   30  MauiProgram.cs
+   31  csharp
+   32: using Microsoft.Extensions.Logging; using SurveyHub.Services; using SurveyHub.ViewModels; using SurveyHub.Views; using SurveyHub.Views.ActivityLog; using SurveyHub.Views.Media; using SurveyHub.Views.Organizations; using SurveyHub.Views.Roles; using SurveyHub.Views.Settings; using SurveyHub.Views.Templates; using SurveyHub.Views.Variables; namespace SurveyHub; public static class MauiProgram { public static MauiApp CreateMauiApp() { var builder = MauiApp.CreateBuilder(); builder .UseMauiApp<App>() .ConfigureFonts(fonts => { fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular"); fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold"); }); #if DEBUG... <skipped 1373 characters> ...
+   33   
+   34  2. Resources
+   ..
+   43  Models/NavigationItem.cs
+   44  csharp
+   45: namespace SurveyHub.Models; public class NavigationItem { public string Key { get; set; } = string.Empty; public string Title { get; set; } = string.Empty; } 
+   46  Models/UserModel.cs
+   47  csharp
+   48: namespace SurveyHub.Models; public class UserModel { public string Name { get; set; } = string.Empty; public string Email { get; set; } = string.Empty; public string Role { get; set; } = string.Empty; public string Status { get; set; } = string.Empty; public DateTime? LastActiveAt { get; set; } public string LastActiv... <skipped 55 characters> ...
+   49  Models/OrganizationModel.cs
+   50  csharp
+   51: namespace SurveyHub.Models; public class OrganizationModel { public string Name { get; set; } = string.Empty; public int BrandCount { get; set; } public int SurveyCount { get; set; } public int UserCount { get; set; } public DateTime UpdatedAt { get; set; } public string UpdatedText => UpdatedAt.ToString("dd. MMM yyyy"); } 
+   52  Models/BrandModel.cs
+   53  csharp
+   54: namespace SurveyHub.Models; public class BrandModel { public string Name { get; set; } = string.Empty; public int SurveyCount { get; set; } public string SurveyCountText => $"{SurveyCount} surveys"; } 
+   55  Models/SurveyModel.cs
+   56  csharp
+   57: namespace SurveyHub.Models; public class SurveyModel { public string Name { get; set; } = string.Empty; public int Version { get; set; } public int QuestionCount { get; set; } public string VersionText => $"Version {Version} · {QuestionCount} spørgsmål"; } 
+   58  Models/SurveyQuestionModel.cs
+   59  csharp
+   60: namespace SurveyHub.Models; public class SurveyQuestionModel { public string NumberLabel { get; set; } = string.Empty; public string Title { get; set; } = string.Empty; public string Description { get; set; } = string.Empty; public string Type { get; set; } = string.Empty; public bool IsRequired { get; set; } public s... <skipped 194 characters> ...
+   61  Models/TemplateModel.cs
+   62  csharp
+   63: namespace SurveyHub.Models; public class TemplateModel { public string Name { get; set; } = string.Empty; public string Type { get; set; } = string.Empty; public string Description { get; set; } = string.Empty; public DateTime UpdatedAt { get; set; } public string UpdatedText => UpdatedAt.ToString("dd. MMM yyyy"); } 
+   64  Models/VariableModel.cs
+   65  csharp
+   66: namespace SurveyHub.Models; public class VariableModel { public string Name { get; set; } = string.Empty; public string Key { get; set; } = string.Empty; public string Type { get; set; } = string.Empty; public string DefaultValue { get; set; } = string.Empty; public int UsageCount { get; set; } public string UsageCoun... <skipped 36 characters> ...
+   67  Models/MediaItemModel.cs
+   68  csharp
+   69: namespace SurveyHub.Models; public class MediaItemModel { public string Name { get; set; } = string.Empty; public string ThumbnailUrl { get; set; } = string.Empty; public string MetaText { get; set; } = string.Empty; } 
+   70  Models/PermissionModels.cs
+   71  csharp
+   72: namespace SurveyHub.Models; public class PermissionModel { public string Label { get; set; } = string.Empty; public bool IsEnabled { get; set; } } public class PermissionGroupModel { public string Name { get; set; } = string.Empty; public List<PermissionModel> Permissions { get; set; } = new(); } public class RoleMode... <skipped 185 characters> ...
+   73  Models/ActivityEventModel.cs
+   74  csharp
+   75: namespace SurveyHub.Models; public class ActivityEventModel { public DateTime Timestamp { get; set; } public string Action { get; set; } = string.Empty; public string UserName { get; set; } = string.Empty; public string Details { get; set; } = string.Empty; public string TimestampText => Timestamp.ToString("dd. MMM yyyy, HH:mm"); } 
+   76  Models/MobilePreviewModel.cs
+   77  csharp
+   78: namespace SurveyHub.Models; public class MobilePreviewModel { public string SurveyTitle { get; set; } = string.Empty; public string ProgressText { get; set; } = string.Empty; public string PercentText { get; set; } = string.Empty; public string QuestionNumberTitle { get; set; } = string.Empty; public string Descriptio... <skipped 34 characters> ...
+   79   
+   80  4. Mock Data Service
+   81  Services/IMockDataService.cs
+   82  csharp
+   83: using SurveyHub.Models; namespace SurveyHub.Services; public interface IMockDataService { List<OrganizationModel> GetOrganizations(); List<BrandModel> GetBrands(); List<SurveyModel> GetSurveys(); List<SurveyQuestionModel> GetSection1Questions(); List<SurveyQuestionModel> GetSection2Questions(); List<SurveyQuestionModel> GetSection3Questions(... <skipped 250 characters> ...
+   84  Services/MockDataService.cs
+   85  csharp
+   86: using SurveyHub.Models; namespace SurveyHub.Services; public class MockDataService : IMockDataService { public List<OrganizationModel> GetOrganizations() => [ new() { Name = "Retail Group A", BrandCount = 3, SurveyCount = 20, UserCount = 5, UpdatedAt = DateTime.Today.AddDays(-2) }, new() { Name = "FoodCo Holding", BrandCount = 2, SurveyCount... <skipped 5202 characters> ...
+   87   
+   88  5. Base ViewModels
+   89  ViewModels/ObservableObject.cs
+   90  csharp
+   91: using System.ComponentModel; using System.Runtime.CompilerServices; namespace SurveyHub.ViewModels; public abstract class ObservableObject : INotifyPropertyChanged { public event PropertyChangedEventHandler? PropertyChanged; protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string? propertyName = null) { if (EqualityComparer<T>.Default.Equals(backingStore, ... <skipped 284 characters> ...
+   92  ViewModels/RelayCommand.cs
+   93  csharp
+   94: using System.Windows.Input; namespace SurveyHub.ViewModels; public class RelayCommand : ICommand { private readonly Action _execute; private readonly Func<bool>? _canExecute; public RelayCommand(Action execute, Func<bool>? canExecute = null) { _execute = execute; _canExecute = canExecute; } public bool CanExecute(object? parameter) => _canExecut... <skipped 123 characters> ...
+   95   
+   96  6. ViewModels
+   97  ViewModels/MainShellViewModel.cs
+   98  csharp
+   99: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class MainShellViewModel : ObservableObject { private string _breadcrumbPrimary = "Organisationer"; private string _breadcrumbSecondary = "Retail Group A"; public ObservableCollection<NavigationItem> NavigationItems { get; } = new(); public UserModel CurrentUser { get; } = new() ... <skipped 1182 characters> ...
+  100  ViewModels/OrganizationsViewModel.cs
+  101  csharp
+  102: using System.Collections.ObjectModel; using SurveyHub.Models; using SurveyHub.Services; namespace SurveyHub.ViewModels; public class OrganizationsViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<OrganizationModel> Organizations { get; } = new(); public Organiza... <skipped 115 characters> ...
+  103  ViewModels/SurveyQuestionEditorViewModel.cs
+  104  csharp
+  105: using System.Collections.ObjectModel; using SurveyHub.Models; namespace SurveyHub.ViewModels; public class SurveyQuestionEditorViewModel : ObservableObject { private string _selectedQuestionType = "Ja / Nej"; private string _title = string.Empty; private string _description = string.Empty; private bool _isRequired; private string _variableName = string.Empty; private bool _isSta... <skipped 1257 characters> ...
+  106  ViewModels/OrganizationBrandsViewModel.cs
+  107  csharp
+  108: using System.Collections.ObjectModel; using SurveyHub.Models; using SurveyHub.Services; namespace SurveyHub.ViewModels; public class OrganizationBrandsViewModel : ObservableObject { public ObservableCollection<BrandModel> Brands { get; } = new(); public ObservableCollection<SurveyModel> Surveys { get; } = new(); public ObservableCollection<SurveyQuestionModel> Section1Questions { get; } = new(); public O... <skipped 854 characters> ...
+  109  ViewModels/OrganizationUsersViewModel.cs
+  110  csharp
+  111: using System.Collections.ObjectModel; using SurveyHub.Models; using SurveyHub.Services; namespace SurveyHub.ViewModels; public class OrganizationUsersViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<string> Roles { get; } = new() { "Alle", "Admin", "Manager", "... <skipped 313 characters> ...
+  112  ViewModels/TemplatesViewModel.cs
+  113  csharp
+  114: using System.Collections.ObjectModel; using SurveyHub.Models; using SurveyHub.Services; namespace SurveyHub.ViewModels; public class TemplatesViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<TemplateModel> Templates { get; } = new(); public TemplatesViewModel(I... <skipped 91 characters> ...
+  115  ViewModels/VariablesViewModel.cs
+  116  csharp
+  117: using System.Collections.ObjectModel; using SurveyHub.Models; using SurveyHub.Services; namespace SurveyHub.ViewModels; public class VariablesViewModel : ObservableObject { public ObservableCollection<VariableModel> Variables { get; } = new(); public VariablesViewModel(IMockDataService data) { foreach (var item in data.GetVariables()) Variables.Add(item); } } 
+  118  ViewModels/MediaLibraryViewModel.cs
+  119  csharp
+  120: using System.Collections.ObjectModel; using SurveyHub.Models; using SurveyHub.Services; namespace SurveyHub.ViewModels; public class MediaLibraryViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<string> FileTypes { get; } = new() { "Alle", "Billeder", "PDF", "DO... <skipped 211 characters> ...
+  121  ViewModels/SettingsGeneralViewModel.cs
+  122  csharp
+  123: using System.Collections.ObjectModel; namespace SurveyHub.ViewModels; public class SettingsGeneralViewModel : ObservableObject { private string _organizationName = "Retail Group A"; private string _selectedLanguage = "Dansk"; private string _selectedTimezone = "UTC+01:00 København"; private string _dashboardName = "Dashboard"; private string _dateFormat =... <skipped 752 characters> ...
+  124  ViewModels/SettingsAppViewModel.cs
+  125  csharp
+  126: using System.Collections.ObjectModel; namespace SurveyHub.ViewModels; public class SettingsAppViewModel : ObservableObject { private bool _offlineEnabled = true; private bool _autoSyncEnabled = true; private bool _requireLocationAtStart = true; private bool _useLocationOnObservations = false; private bool _compressImages = true; private string _selectedMa... <skipped 1131 characters> ...
+  127  ViewModels/RolesPermissionsViewModel.cs
+  128  csharp
+  129: using System.Collections.ObjectModel; using SurveyHub.Models; using SurveyHub.Services; namespace SurveyHub.ViewModels; public class RolesPermissionsViewModel : ObservableObject { private RoleModel _selectedRole = new(); public ObservableCollection<RoleModel> Roles { get; } = new(); public RoleModel SelectedRole { get => _selectedRole; set { if (SetProperty(ref _selectedRole, value)) Raise(nameof(Permiss... <skipped 277 characters> ...
+  130  ViewModels/ActivityLogViewModel.cs
+  131  csharp
+  132: using System.Collections.ObjectModel; using SurveyHub.Models; using SurveyHub.Services; namespace SurveyHub.ViewModels; public class ActivityLogViewModel : ObservableObject { private string _searchText = string.Empty; public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); } public ObservableCollection<string> Actions { get; } = new() { "Alle", "Opdateret", "Oprettet", ... <skipped 456 characters> ...
+  133   
+  134  7. Dashboard Shell
+  135  Views/DashboardShellPage.xaml
+  136  xml
+  137: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.DashboardShellPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shell="clr-namespace:SurveyHub.Views.Shell" BackgroundColor="{StaticResource PageBackground}"> <Grid ColumnDefinitions="250,*"> <shell:SidebarView x:Name="Sidebar" Grid.Column="0" /> <Grid Grid.Column="1" RowDefinitions="Auto,*"> <shell:TopHeaderView x:Name="Header" Grid.Row="0" /> <ContentView x:Name="PageHost" Grid.Row="1" /> </Grid> </Grid> </ContentPage> 
+  138  Views/DashboardShellPage.xaml.cs
+  139  csharp
+  140: using SurveyHub.ViewModels; using SurveyHub.Views.ActivityLog; using SurveyHub.Views.Media; using SurveyHub.Views.Organizations; using SurveyHub.Views.Roles; using SurveyHub.Views.Settings; using SurveyHub.Views.Templates; using SurveyHub.Views.Variables; namespace SurveyHub.Views; public partial class DashboardShellPage : ContentPage { private readonly IServiceProvider _services; private readonly MainShellViewModel _vm; public DashboardShellPage(IServiceProvider services, MainShellViewModel vm) { InitializeComponent(); _services = services; _vm = vm; BindingContext = ... <skipped 2182 characters> ...
+  141   
+  142  8. Shell Views
+  143  Views/Shell/SidebarView.xaml
+  144  xml
+  145: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shell.SidebarView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource SidebarBackground}"> <Grid Padding="16" RowDefinitions="Auto,*,Auto"> <VerticalStackLayout Spacing="6"> <Label Text="SurveyHub" TextColor="White" FontSize="20" FontAttributes="Bold" /> <Label Text="Konfiguration" TextColor="#B8C7E0" FontSize="12" /> </VerticalStackLayout> <VerticalStackLayout Grid.Row="1" Margin="0,20,0,20" Spacing="8"> <Button Text="Organisationer" Clicked="Organizations_Clicked" /> <Button Text="Brands" ... <skipped 1211 characters> ...
+  146  Views/Shell/SidebarView.xaml.cs
+  147  csharp
+  148: namespace SurveyHub.Views.Shell; public partial class SidebarView : ContentView { public event EventHandler<string>? NavigationRequested; public SidebarView() { InitializeComponent(); } private void Raise(string key) => NavigationRequested?.Invoke(this, key); private void Organizations_Clicked(object sender, EventArgs... <skipped 761 characters> ...
+  149  Views/Shell/TopHeaderView.xaml
+  150  xml
+  151: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shell.TopHeaderView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <Grid Padding="24,16" ColumnDefinitions="*,Auto" BackgroundColor="White"> <HorizontalStackLayout Spacing="8"> <Label Text="{Binding BreadcrumbPrimary}" TextColor=... <skipped 562 characters> ...
+  152  Views/Shell/TopHeaderView.xaml.cs
+  153  csharp
+  154: namespace SurveyHub.Views.Shell; public partial class TopHeaderView : ContentView { public TopHeaderView() { InitializeComponent(); } } 
+  155   
+  156  9. Shared Views
+  157  Views/Shared/StatusBadgeView.xaml
+  158  xml
+  159: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.StatusBadgeView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Name="This"> <Border BackgroundColor="{Binding BadgeColor, Source={x:Reference This}}" StrokeThickness="0" Padding="8,4" StrokeShape="RoundRectangle 12"> <Lab... <skipped 158 characters> ...
+  160  Views/Shared/StatusBadgeView.xaml.cs
+  161  csharp
+  162: namespace SurveyHub.Views.Shared; public partial class StatusBadgeView : ContentView { public static readonly BindableProperty TextProperty = BindableProperty.Create(nameof(Text), typeof(string), typeof(StatusBadgeView), string.Empty); public static readonly BindableProperty BadgeColorProperty = BindableProperty.Creat... <skipped 647 characters> ...
+  163  Views/Shared/MobilePreviewView.xaml
+  164  xml
+  165: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.MobilePreviewView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <VerticalStackLayout Spacing="12"> <Label Text="App preview" FontAttributes="Bold" /> <Grid HorizontalOptions="Center"> <Border WidthRequest="220" HeightRequ... <skipped 758 characters> ...
+  166  Views/Shared/MobilePreviewView.xaml.cs
+  167  csharp
+  168: namespace SurveyHub.Views.Shared; public partial class MobilePreviewView : ContentView { public MobilePreviewView() { InitializeComponent(); } } 
+  169  Views/Shared/SectionCardView.xaml
+  170  xml
+  171: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.SectionCardView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Name="This"> <Border Style="{StaticResource InnerCardStyle}"> <VerticalStackLayout> <Grid Padding="12" ColumnDefinitions="Auto,*"> <Label Text="⌄" /> <Label G... <skipped 543 characters> ...
+  172  Views/Shared/SectionCardView.xaml.cs
+  173  csharp
+  174: using System.Collections; namespace SurveyHub.Views.Shared; public partial class SectionCardView : ContentView { public static readonly BindableProperty TitleProperty = BindableProperty.Create(nameof(Title), typeof(string), typeof(SectionCardView), string.Empty); public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Cr... <skipped 367 characters> ...
+  175  Views/Shared/QuestionPropertyPanel.xaml
+  176  xml
+  177: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.QuestionPropertyPanel" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <Border Style="{StaticResource InnerCardStyle}"> <ScrollView> <VerticalStackLayout Padding="16" Spacing="14"> <Label Text="Spørgsmålstype" Style="{Static... <skipped 1156 characters> ...
+  178  Views/Shared/QuestionPropertyPanel.xaml.cs
+  179  csharp
+  180: namespace SurveyHub.Views.Shared; public partial class QuestionPropertyPanel : ContentView { public QuestionPropertyPanel() { InitializeComponent(); } } 
+  181  Views/Shared/SettingsNavView.xaml
+  182  xml
+  183: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Shared.SettingsNavView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <Border Style="{StaticResource CardStyle}"> <VerticalStackLayout Padding="12" Spacing="8"> <Label Text="Generelt" /> <Label Text="App-indstillinger" /> <Label ... <skipped 167 characters> ...
+  184  Views/Shared/SettingsNavView.xaml.cs
+  185  csharp
+  186: namespace SurveyHub.Views.Shared; public partial class SettingsNavView : ContentView { public SettingsNavView() { InitializeComponent(); } } 
+  187   
+  188  10. Pages
+  189  Views/Organizations/OrganizationsPage.xaml
+  190  xml
+  191: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Organizations.OrganizationsPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalSta... <skipped 1788 characters> ...
+  192  Views/Organizations/OrganizationsPage.xaml.cs
+  193  csharp
+  194: using SurveyHub.ViewModels; namespace SurveyHub.Views.Organizations; public partial class OrganizationsPage : ContentPage { public OrganizationsPage(OrganizationsViewModel vm) { InitializeComponent(); BindingContext = vm; } } 
+  195   
+  196  Views/Organizations/OrganizationBrandsPage.xaml
+  197  xml
+  198: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Organizations.OrganizationBrandsPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shared="clr-namespace:SurveyHub.Views.Shared" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,*" Padding="24"> <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16"> <Border WidthRequest="56" HeightRequest="56" BackgroundColor="{StaticResource PrimaryBlue}" StrokeThickness="0" StrokeShape="RoundRe... <skipped 4777 characters> ...
+  199  Views/Organizations/OrganizationBrandsPage.xaml.cs
+  200  csharp
+  201: using SurveyHub.ViewModels; namespace SurveyHub.Views.Organizations; public partial class OrganizationBrandsPage : ContentPage { public OrganizationBrandsPage(OrganizationBrandsViewModel vm) { InitializeComponent(); BindingContext = vm; } } 
+  202   
+  203  Views/Organizations/OrganizationUsersPage.xaml
+  204  xml
+  205: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Organizations.OrganizationUsersPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shared="clr-namespace:SurveyHub.Views.Shared" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="24"> <VerticalStackLayout> <Label Text="Brugere" Style="{StaticResource PageTitleStyle}" /> <Label Text="Administrer brugere i organisationen." Style="{StaticResource PageSubtitleS... <skipped 2029 characters> ...
+  206  Views/Organizations/OrganizationUsersPage.xaml.cs
+  207  csharp
+  208: using SurveyHub.ViewModels; namespace SurveyHub.Views.Organizations; public partial class OrganizationUsersPage : ContentPage { public OrganizationUsersPage(OrganizationUsersViewModel vm) { InitializeComponent(); BindingContext = vm; } } 
+  209   
+  210  Views/Templates/TemplatesPage.xaml
+  211  xml
+  212: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Templates.TemplatesPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalStackLayout... <skipped 1665 characters> ...
+  213  Views/Templates/TemplatesPage.xaml.cs
+  214  csharp
+  215: using SurveyHub.ViewModels; namespace SurveyHub.Views.Templates; public partial class TemplatesPage : ContentPage { public TemplatesPage(TemplatesViewModel vm) { InitializeComponent(); BindingContext = vm; } } 
+  216   
+  217  Views/Variables/VariablesPage.xaml
+  218  xml
+  219: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Variables.VariablesPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,*" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalStackLayout> <La... <skipped 1614 characters> ...
+  220  Views/Variables/VariablesPage.xaml.cs
+  221  csharp
+  222: using SurveyHub.ViewModels; namespace SurveyHub.Views.Variables; public partial class VariablesPage : ContentPage { public VariablesPage(VariablesViewModel vm) { InitializeComponent(); BindingContext = vm; } } 
+  223   
+  224  Views/Media/MediaCardView.xaml
+  225  xml
+  226: <?xml version="1.0" encoding="utf-8" ?> <ContentView x:Class="SurveyHub.Views.Media.MediaCardView" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"> <Border Style="{StaticResource InnerCardStyle}" Padding="8" Margin="6"> <VerticalStackLayout Spacing="8"> <Border HeightRequest="110" BackgroundColor="#F3F6FB" St... <skipped 348 characters> ...
+  227  Views/Media/MediaCardView.xaml.cs
+  228  csharp
+  229: namespace SurveyHub.Views.Media; public partial class MediaCardView : ContentView { public MediaCardView() { InitializeComponent(); } } 
+  230  Views/Media/MediaLibraryPage.xaml
+  231  xml
+  232: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Media.MediaLibraryPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:media="clr-namespace:SurveyHub.Views.Media" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalStackLayout> <Label Text="Mediebibliotek" Style="{StaticResource PageTitleStyle}" /> <Label Text="Upload og administrer billeder og f... <skipped 1211 characters> ...
+  233  Views/Media/MediaLibraryPage.xaml.cs
+  234  csharp
+  235: using SurveyHub.ViewModels; namespace SurveyHub.Views.Media; public partial class MediaLibraryPage : ContentPage { public MediaLibraryPage(MediaLibraryViewModel vm) { InitializeComponent(); BindingContext = vm; } } 
+  236   
+  237  Views/Settings/SettingsGeneralPage.xaml
+  238  xml
+  239: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Settings.SettingsGeneralPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shared="clr-namespace:SurveyHub.Views.Shared" BackgroundColor="{StaticResource PageBackground}"> <Grid ColumnDefinitions="220,*" Padding="24" ColumnSpacing="16"> <shared:SettingsNavView Grid.Column="0" /> <Grid Grid.Column="1" RowDefinitions="Auto,*"> <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16"> <Label Text="Indstillinger"... <skipped 1496 characters> ...
+  240  Views/Settings/SettingsGeneralPage.xaml.cs
+  241  csharp
+  242: using SurveyHub.ViewModels; namespace SurveyHub.Views.Settings; public partial class SettingsGeneralPage : ContentPage { public SettingsGeneralPage(SettingsGeneralViewModel vm) { InitializeComponent(); BindingContext = vm; } } 
+  243   
+  244  Views/Settings/SettingsAppPage.xaml
+  245  xml
+  246: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Settings.SettingsAppPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:shared="clr-namespace:SurveyHub.Views.Shared" BackgroundColor="{StaticResource PageBackground}"> <Grid ColumnDefinitions="220,*" Padding="24" ColumnSpacing="16"> <shared:SettingsNavView Grid.Column="0" /> <Grid Grid.Column="1" RowDefinitions="Auto,*"> <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16"> <Label Text="App-indstillin... <skipped 2491 characters> ...
+  247  Views/Settings/SettingsAppPage.xaml.cs
+  248  csharp
+  249: using SurveyHub.ViewModels; namespace SurveyHub.Views.Settings; public partial class SettingsAppPage : ContentPage { public SettingsAppPage(SettingsAppViewModel vm) { InitializeComponent(); BindingContext = vm; } } 
+  250   
+  251  Views/Roles/RolesPermissionsPage.xaml
+  252  xml
+  253: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.Roles.RolesPermissionsPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,*" Padding="24"> <Grid ColumnDefinitions="*,Auto"> <VerticalStackLayout> ... <skipped 2324 characters> ...
+  254  Views/Roles/RolesPermissionsPage.xaml.cs
+  255  csharp
+  256: using SurveyHub.ViewModels; namespace SurveyHub.Views.Roles; public partial class RolesPermissionsPage : ContentPage { public RolesPermissionsPage(RolesPermissionsViewModel vm) { InitializeComponent(); BindingContext = vm; } } 
+  257   
+  258  Views/ActivityLog/ActivityLogPage.xaml
+  259  xml
+  260: <?xml version="1.0" encoding="utf-8" ?> <ContentPage x:Class="SurveyHub.Views.ActivityLog.ActivityLogPage" xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" BackgroundColor="{StaticResource PageBackground}"> <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="24"> <VerticalStackLayout> <Label Text="Aktivitetslog" ... <skipped 1689 characters> ...
+  261  Views/ActivityLog/ActivityLogPage.xaml.cs
+  262  csharp
+  263: using SurveyHub.ViewModels; namespace SurveyHub.Views.ActivityLog; public partial class ActivityLogPage : ContentPage { public ActivityLogPage(ActivityLogViewModel vm) { InitializeComponent(); BindingContext = vm; } } 
+  264   
+  265  11. Compile Notes
+
+~/Projects/feedback2business/feedback2business_app/Documentation/Concept/ConceptFiles.cs:
+    2  <?xml version="1.0" encoding="UTF-8" ?>
+    3  <Application
+    4:     x:Class="SurveyHub.App"
+    5      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    6      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    .
+   17  
+   18  // File: App.xaml.cs
+   19: namespace SurveyHub;
+   20  
+   21  public partial class App : Application
+   ..
+   32  <?xml version="1.0" encoding="utf-8" ?>
+   33  <Shell
+   34:     x:Class="SurveyHub.AppShell"
+   35      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+   36      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+   37:     xmlns:views="clr-namespace:SurveyHub.Views"
+   38      FlyoutBehavior="Disabled">
+   39  
+   40      <ShellContent
+   41:         Title="SurveyHub"
+   42          ContentTemplate="{DataTemplate views:DashboardShellPage}" />
+   43  </Shell>
+   ..
+   45  
+   46  // File: AppShell.xaml.cs
+   47: namespace SurveyHub;
+   48  
+   49  public partial class AppShell : Shell
+   ..
+   59  using Microsoft.Extensions.DependencyInjection;
+   60  using Microsoft.Extensions.Logging;
+   61: using SurveyHub.Services;
+   62: using SurveyHub.ViewModels;
+   63: using SurveyHub.Views;
+   64: using SurveyHub.Views.ActivityLog;
+   65: using SurveyHub.Views.Media;
+   66: using SurveyHub.Views.Organizations;
+   67: using SurveyHub.Views.Roles;
+   68: using SurveyHub.Views.Settings;
+   69: using SurveyHub.Views.Templates;
+   70: using SurveyHub.Views.Variables;
+   71  
+   72: namespace SurveyHub;
+   73  
+   74  public static class MauiProgram
+   ..
+  229  
+  230  // File: Models/NavigationItem.cs
+  231: namespace SurveyHub.Models;
+  232  
+  233  public class NavigationItem
+  ...
+  239  
+  240  // File: Models/UserModel.cs
+  241: namespace SurveyHub.Models;
+  242  
+  243  public class UserModel
+  ...
+  254  
+  255  // File: Models/OrganizationModel.cs
+  256: namespace SurveyHub.Models;
+  257  
+  258  public class OrganizationModel
+  ...
+  269  
+  270  // File: Models/BrandModel.cs
+  271: namespace SurveyHub.Models;
+  272  
+  273  public class BrandModel
+  ...
+  280  
+  281  // File: Models/SurveyModel.cs
+  282: namespace SurveyHub.Models;
+  283  
+  284  public class SurveyModel
+  ...
+  293  
+  294  // File: Models/SurveyQuestionModel.cs
+  295: namespace SurveyHub.Models;
+  296  
+  297  public class SurveyQuestionModel
+  ...
+  311  
+  312  // File: Models/TemplateModel.cs
+  313: namespace SurveyHub.Models;
+  314  
+  315  public class TemplateModel
+  ...
+  325  
+  326  // File: Models/VariableModel.cs
+  327: namespace SurveyHub.Models;
+  328  
+  329  public class VariableModel
+  ...
+  340  
+  341  // File: Models/MediaItemModel.cs
+  342: namespace SurveyHub.Models;
+  343  
+  344  public class MediaItemModel
+  ...
+  351  
+  352  // File: Models/PermissionModels.cs
+  353: namespace SurveyHub.Models;
+  354  
+  355  public class PermissionModel
+  ...
+  374  
+  375  // File: Models/ActivityEventModel.cs
+  376: namespace SurveyHub.Models;
+  377  
+  378  public class ActivityEventModel
+  ...
+  388  
+  389  // File: Models/MobilePreviewModel.cs
+  390: namespace SurveyHub.Models;
+  391  
+  392  public class MobilePreviewModel
+  ...
+  401  
+  402  // File: Services/IMockDataService.cs
+  403: using SurveyHub.Models;
+  404  
+  405: namespace SurveyHub.Services;
+  406  
+  407  public interface IMockDataService
+  ...
+  424  
+  425  // File: Services/MockDataService.cs
+  426: using SurveyHub.Models;
+  427  
+  428: namespace SurveyHub.Services;
+  429  
+  430  public class MockDataService : IMockDataService
+  ...
+  559  using System.Runtime.CompilerServices;
+  560  
+  561: namespace SurveyHub.ViewModels;
+  562  
+  563  public abstract class ObservableObject : INotifyPropertyChanged
+  ...
+  585  using System.Windows.Input;
+  586  
+  587: namespace SurveyHub.ViewModels;
+  588  
+  589  public class RelayCommand : ICommand
+  ...
+  606  // File: ViewModels/MainShellViewModel.cs
+  607  using System.Collections.ObjectModel;
+  608: using SurveyHub.Models;
+  609  
+  610: namespace SurveyHub.ViewModels;
+  611  
+  612  public class MainShellViewModel : ObservableObject
+  ...
+  648  // File: ViewModels/OrganizationsViewModel.cs
+  649  using System.Collections.ObjectModel;
+  650: using SurveyHub.Models;
+  651: using SurveyHub.Services;
+  652  
+  653: namespace SurveyHub.ViewModels;
+  654  
+  655  public class OrganizationsViewModel : ObservableObject
+  ...
+  675  // File: ViewModels/SurveyQuestionEditorViewModel.cs
+  676  using System.Collections.ObjectModel;
+  677: using SurveyHub.Models;
+  678  
+  679: namespace SurveyHub.ViewModels;
+  680  
+  681  public class SurveyQuestionEditorViewModel : ObservableObject
+  ...
+  758  // File: ViewModels/OrganizationBrandsViewModel.cs
+  759  using System.Collections.ObjectModel;
+  760: using SurveyHub.Models;
+  761: using SurveyHub.Services;
+  762  
+  763: namespace SurveyHub.ViewModels;
+  764  
+  765  public class OrganizationBrandsViewModel : ObservableObject
+  ...
+  792  // File: ViewModels/OrganizationUsersViewModel.cs
+  793  using System.Collections.ObjectModel;
+  794: using SurveyHub.Models;
+  795: using SurveyHub.Services;
+  796  
+  797: namespace SurveyHub.ViewModels;
+  798  
+  799  public class OrganizationUsersViewModel : ObservableObject
+  ...
+  821  // File: ViewModels/TemplatesViewModel.cs
+  822  using System.Collections.ObjectModel;
+  823: using SurveyHub.Models;
+  824: using SurveyHub.Services;
+  825  
+  826: namespace SurveyHub.ViewModels;
+  827  
+  828  public class TemplatesViewModel : ObservableObject
+  ...
+  848  // File: ViewModels/VariablesViewModel.cs
+  849  using System.Collections.ObjectModel;
+  850: using SurveyHub.Models;
+  851: using SurveyHub.Services;
+  852  
+  853: namespace SurveyHub.ViewModels;
+  854  
+  855  public class VariablesViewModel : ObservableObject
+  ...
+  867  // File: ViewModels/MediaLibraryViewModel.cs
+  868  using System.Collections.ObjectModel;
+  869: using SurveyHub.Models;
+  870: using SurveyHub.Services;
+  871  
+  872: namespace SurveyHub.ViewModels;
+  873  
+  874  public class MediaLibraryViewModel : ObservableObject
+  ...
+  896  using System.Collections.ObjectModel;
+  897  
+  898: namespace SurveyHub.ViewModels;
+  899  
+  900  public class SettingsGeneralViewModel : ObservableObject
+  ...
+  944  using System.Collections.ObjectModel;
+  945  
+  946: namespace SurveyHub.ViewModels;
+  947  
+  948  public class SettingsAppViewModel : ObservableObject
+  ...
+ 1011  // File: ViewModels/RolesPermissionsViewModel.cs
+ 1012  using System.Collections.ObjectModel;
+ 1013: using SurveyHub.Models;
+ 1014: using SurveyHub.Services;
+ 1015  
+ 1016: namespace SurveyHub.ViewModels;
+ 1017  
+ 1018  public class RolesPermissionsViewModel : ObservableObject
+ ....
+ 1046  // File: ViewModels/ActivityLogViewModel.cs
+ 1047  using System.Collections.ObjectModel;
+ 1048: using SurveyHub.Models;
+ 1049: using SurveyHub.Services;
+ 1050  
+ 1051: namespace SurveyHub.ViewModels;
+ 1052  
+ 1053  public class ActivityLogViewModel : ObservableObject
+ ....
+ 1078  <?xml version="1.0" encoding="utf-8" ?>
+ 1079  <ContentPage
+ 1080:     x:Class="SurveyHub.Views.DashboardShellPage"
+ 1081      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 1082      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ 1083:     xmlns:shell="clr-namespace:SurveyHub.Views.Shell"
+ 1084      BackgroundColor="{StaticResource PageBackground}">
+ 1085  
+ ....
+ 1096  // File: Views/DashboardShellPage.xaml.cs
+ 1097  using Microsoft.Extensions.DependencyInjection;
+ 1098: using SurveyHub.ViewModels;
+ 1099: using SurveyHub.Views.ActivityLog;
+ 1100: using SurveyHub.Views.Media;
+ 1101: using SurveyHub.Views.Organizations;
+ 1102: using SurveyHub.Views.Roles;
+ 1103: using SurveyHub.Views.Settings;
+ 1104: using SurveyHub.Views.Templates;
+ 1105: using SurveyHub.Views.Variables;
+ 1106  
+ 1107: namespace SurveyHub.Views;
+ 1108  
+ 1109  public partial class DashboardShellPage : ContentPage
+ ....
+ 1218  <?xml version="1.0" encoding="utf-8" ?>
+ 1219  <ContentView
+ 1220:     x:Class="SurveyHub.Views.Shell.SidebarView"
+ 1221      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 1222      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ ....
+ 1225      <Grid Padding="16" RowDefinitions="Auto,*,Auto">
+ 1226          <VerticalStackLayout Spacing="6">
+ 1227:             <Label Text="SurveyHub" TextColor="White" FontSize="20" FontAttributes="Bold" />
+ 1228              <Label Text="Konfiguration" TextColor="#B8C7E0" FontSize="12" />
+ 1229          </VerticalStackLayout>
+ ....
+ 1272  
+ 1273  // File: Views/Shell/SidebarView.xaml.cs
+ 1274: namespace SurveyHub.Views.Shell;
+ 1275  
+ 1276  public partial class SidebarView : ContentView
+ ....
+ 1301  <?xml version="1.0" encoding="utf-8" ?>
+ 1302  <ContentView
+ 1303:     x:Class="SurveyHub.Views.Shell.TopHeaderView"
+ 1304      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 1305      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+ ....
+ 1329  
+ 1330  // File: Views/Shell/TopHeaderView.xaml.cs
+ 1331: namespace SurveyHub.Views.Shell;
+ 1332  
+ 1333  public partial class TopHeaderView : ContentView
+ ....
+ 1343  <?xml version="1.0" encoding="utf-8" ?>
+ 1344  <ContentView
+ 1345:     x:Class="SurveyHub.Views.Shared.StatusBadgeView"
+ 1346      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 1347      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ ....
+ 1359  
+ 1360  // File: Views/Shared/StatusBadgeView.xaml.cs
+ 1361: namespace SurveyHub.Views.Shared;
+ 1362  
+ 1363  public partial class StatusBadgeView : ContentView
+ ....
+ 1400  <?xml version="1.0" encoding="utf-8" ?>
+ 1401  <ContentView
+ 1402:     x:Class="SurveyHub.Views.Shared.MobilePreviewView"
+ 1403      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 1404      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+ ....
+ 1434  
+ 1435  // File: Views/Shared/MobilePreviewView.xaml.cs
+ 1436: namespace SurveyHub.Views.Shared;
+ 1437  
+ 1438  public partial class MobilePreviewView : ContentView
+ ....
+ 1448  <?xml version="1.0" encoding="utf-8" ?>
+ 1449  <ContentView
+ 1450:     x:Class="SurveyHub.Views.Shared.SectionCardView"
+ 1451      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 1452      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ ....
+ 1483  using System.Collections;
+ 1484  
+ 1485: namespace SurveyHub.Views.Shared;
+ 1486  
+ 1487  public partial class SectionCardView : ContentView
+ ....
+ 1515  <?xml version="1.0" encoding="utf-8" ?>
+ 1516  <ContentView
+ 1517:     x:Class="SurveyHub.Views.Shared.QuestionPropertyPanel"
+ 1518      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 1519      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+ ....
+ 1558  
+ 1559  // File: Views/Shared/QuestionPropertyPanel.xaml.cs
+ 1560: namespace SurveyHub.Views.Shared;
+ 1561  
+ 1562  public partial class QuestionPropertyPanel : ContentView
+ ....
+ 1572  <?xml version="1.0" encoding="utf-8" ?>
+ 1573  <ContentView
+ 1574:     x:Class="SurveyHub.Views.Shared.SettingsNavView"
+ 1575      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 1576      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+ ....
+ 1590  
+ 1591  // File: Views/Shared/SettingsNavView.xaml.cs
+ 1592: namespace SurveyHub.Views.Shared;
+ 1593  
+ 1594  public partial class SettingsNavView : ContentView
+ ....
+ 1604  <?xml version="1.0" encoding="utf-8" ?>
+ 1605  <ContentPage
+ 1606:     x:Class="SurveyHub.Views.Organizations.OrganizationsPage"
+ 1607      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 1608      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ ....
+ 1661  
+ 1662  // File: Views/Organizations/OrganizationsPage.xaml.cs
+ 1663: using SurveyHub.ViewModels;
+ 1664  
+ 1665: namespace SurveyHub.Views.Organizations;
+ 1666  
+ 1667  public partial class OrganizationsPage : ContentPage
+ ....
+ 1678  <?xml version="1.0" encoding="utf-8" ?>
+ 1679  <ContentPage
+ 1680:     x:Class="SurveyHub.Views.Organizations.OrganizationBrandsPage"
+ 1681      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 1682      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ 1683:     xmlns:shared="clr-namespace:SurveyHub.Views.Shared"
+ 1684      BackgroundColor="{StaticResource PageBackground}">
+ 1685  
+ ....
+ 1834  
+ 1835  // File: Views/Organizations/OrganizationBrandsPage.xaml.cs
+ 1836: using SurveyHub.ViewModels;
+ 1837  
+ 1838: namespace SurveyHub.Views.Organizations;
+ 1839  
+ 1840  public partial class OrganizationBrandsPage : ContentPage
+ ....
+ 1851  <?xml version="1.0" encoding="utf-8" ?>
+ 1852  <ContentPage
+ 1853:     x:Class="SurveyHub.Views.Organizations.OrganizationUsersPage"
+ 1854      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 1855      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ 1856:     xmlns:shared="clr-namespace:SurveyHub.Views.Shared"
+ 1857      BackgroundColor="{StaticResource PageBackground}">
+ 1858  
+ ....
+ 1915  
+ 1916  // File: Views/Organizations/OrganizationUsersPage.xaml.cs
+ 1917: using SurveyHub.ViewModels;
+ 1918  
+ 1919: namespace SurveyHub.Views.Organizations;
+ 1920  
+ 1921  public partial class OrganizationUsersPage : ContentPage
+ ....
+ 1932  <?xml version="1.0" encoding="utf-8" ?>
+ 1933  <ContentPage
+ 1934:     x:Class="SurveyHub.Views.Templates.TemplatesPage"
+ 1935      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 1936      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ ....
+ 1984  
+ 1985  // File: Views/Templates/TemplatesPage.xaml.cs
+ 1986: using SurveyHub.ViewModels;
+ 1987  
+ 1988: namespace SurveyHub.Views.Templates;
+ 1989  
+ 1990  public partial class TemplatesPage : ContentPage
+ ....
+ 2001  <?xml version="1.0" encoding="utf-8" ?>
+ 2002  <ContentPage
+ 2003:     x:Class="SurveyHub.Views.Variables.VariablesPage"
+ 2004      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 2005      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ ....
+ 2051  
+ 2052  // File: Views/Variables/VariablesPage.xaml.cs
+ 2053: using SurveyHub.ViewModels;
+ 2054  
+ 2055: namespace SurveyHub.Views.Variables;
+ 2056  
+ 2057  public partial class VariablesPage : ContentPage
+ ....
+ 2068  <?xml version="1.0" encoding="utf-8" ?>
+ 2069  <ContentView
+ 2070:     x:Class="SurveyHub.Views.Media.MediaCardView"
+ 2071      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 2072      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+ ....
+ 2090  
+ 2091  // File: Views/Media/MediaCardView.xaml.cs
+ 2092: namespace SurveyHub.Views.Media;
+ 2093  
+ 2094  public partial class MediaCardView : ContentView
+ ....
+ 2104  <?xml version="1.0" encoding="utf-8" ?>
+ 2105  <ContentPage
+ 2106:     x:Class="SurveyHub.Views.Media.MediaLibraryPage"
+ 2107      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 2108      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ 2109:     xmlns:media="clr-namespace:SurveyHub.Views.Media"
+ 2110      BackgroundColor="{StaticResource PageBackground}">
+ 2111  
+ ....
+ 2153  
+ 2154  // File: Views/Media/MediaLibraryPage.xaml.cs
+ 2155: using SurveyHub.ViewModels;
+ 2156  
+ 2157: namespace SurveyHub.Views.Media;
+ 2158  
+ 2159  public partial class MediaLibraryPage : ContentPage
+ ....
+ 2170  <?xml version="1.0" encoding="utf-8" ?>
+ 2171  <ContentPage
+ 2172:     x:Class="SurveyHub.Views.Settings.SettingsGeneralPage"
+ 2173      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 2174      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ 2175:     xmlns:shared="clr-namespace:SurveyHub.Views.Shared"
+ 2176      BackgroundColor="{StaticResource PageBackground}">
+ 2177  
+ ....
+ 2227  
+ 2228  // File: Views/Settings/SettingsGeneralPage.xaml.cs
+ 2229: using SurveyHub.ViewModels;
+ 2230  
+ 2231: namespace SurveyHub.Views.Settings;
+ 2232  
+ 2233  public partial class SettingsGeneralPage : ContentPage
+ ....
+ 2244  <?xml version="1.0" encoding="utf-8" ?>
+ 2245  <ContentPage
+ 2246:     x:Class="SurveyHub.Views.Settings.SettingsAppPage"
+ 2247      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 2248      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ 2249:     xmlns:shared="clr-namespace:SurveyHub.Views.Shared"
+ 2250      BackgroundColor="{StaticResource PageBackground}">
+ 2251  
+ ....
+ 2325  
+ 2326  // File: Views/Settings/SettingsAppPage.xaml.cs
+ 2327: using SurveyHub.ViewModels;
+ 2328  
+ 2329: namespace SurveyHub.Views.Settings;
+ 2330  
+ 2331  public partial class SettingsAppPage : ContentPage
+ ....
+ 2342  <?xml version="1.0" encoding="utf-8" ?>
+ 2343  <ContentPage
+ 2344:     x:Class="SurveyHub.Views.Roles.RolesPermissionsPage"
+ 2345      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 2346      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ ....
+ 2421  
+ 2422  // File: Views/Roles/RolesPermissionsPage.xaml.cs
+ 2423: using SurveyHub.ViewModels;
+ 2424  
+ 2425: namespace SurveyHub.Views.Roles;
+ 2426  
+ 2427  public partial class RolesPermissionsPage : ContentPage
+ ....
+ 2438  <?xml version="1.0" encoding="utf-8" ?>
+ 2439  <ContentPage
+ 2440:     x:Class="SurveyHub.Views.ActivityLog.ActivityLogPage"
+ 2441      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+ 2442      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+ ....
+ 2491  
+ 2492  // File: Views/ActivityLog/ActivityLogPage.xaml.cs
+ 2493: using SurveyHub.ViewModels;
+ 2494  
+ 2495: namespace SurveyHub.Views.ActivityLog;
+ 2496  
+ 2497  public partial class ActivityLogPage : ContentPage
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/App.xaml:
+    1  <?xml version="1.0" encoding="UTF-8" ?>
+    2  <Application
+    3:     x:Class="SurveyHub.App"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/App.xaml.cs:
+    1: namespace SurveyHub;
+    2  
+    3  public partial class App : Application
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/AppShell.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <Shell
+    3:     x:Class="SurveyHub.AppShell"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    6:     xmlns:views="clr-namespace:SurveyHub.Views"
+    7      FlyoutBehavior="Disabled">
+    8  
+    9      <ShellContent
+   10:         Title="SurveyHub"
+   11          ContentTemplate="{DataTemplate views:DashboardShellPage}" />
+   12  </Shell>
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/AppShell.xaml.cs:
+    1: namespace SurveyHub;
+    2  
+    3  public partial class AppShell : Shell
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/MauiProgram.cs:
+    2  using Microsoft.Extensions.Logging;
+    3  using CommunityToolkit.Maui;
+    4: using SurveyHub.Services;
+    5: using SurveyHub.ViewModels;
+    6: using SurveyHub.Views;
+    7: using SurveyHub.Views.ActivityLog;
+    8: using SurveyHub.Views.Media;
+    9: using SurveyHub.Views.Organizations;
+   10: using SurveyHub.Views.Roles;
+   11: using SurveyHub.Views.Settings;
+   12: using SurveyHub.Views.Templates;
+   13: using SurveyHub.Views.Variables;
+   14  
+   15: namespace SurveyHub;
+   16  
+   17  public static class MauiProgram
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Models/ActivityEventModel.cs:
+    1: namespace SurveyHub.Models;
+    2  
+    3  public class ActivityEventModel
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Models/BrandModel.cs:
+    1: namespace SurveyHub.Models;
+    2  
+    3  public class BrandModel
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Models/MediaItemModel.cs:
+    1: namespace SurveyHub.Models;
+    2  
+    3  public class MediaItemModel
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Models/MobilePreviewModel.cs:
+    1: namespace SurveyHub.Models;
+    2  
+    3  public class MobilePreviewModel
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Models/NavigationItem.cs:
+    1: namespace SurveyHub.Models;
+    2  
+    3  public class NavigationItem
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Models/OrganizationModel.cs:
+    1: namespace SurveyHub.Models;
+    2  
+    3  public class OrganizationModel
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Models/PermissionModels.cs:
+    1: namespace SurveyHub.Models;
+    2  
+    3  public class PermissionModel
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Models/SurveyModel.cs:
+    1: namespace SurveyHub.Models;
+    2  
+    3  public class SurveyModel
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Models/SurveyQuestionModel.cs:
+    1: namespace SurveyHub.Models;
+    2  
+    3  public class SurveyQuestionModel
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Models/TemplateModel.cs:
+    1: namespace SurveyHub.Models;
+    2  
+    3  public class TemplateModel
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Models/UserModel.cs:
+    1: namespace SurveyHub.Models;
+    2  
+    3  public class UserModel
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Models/VariableModel.cs:
+    1: namespace SurveyHub.Models;
+    2  
+    3  public class VariableModel
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Platforms/Android/MainActivity.cs:
+    3  using Android.OS;
+    4  
+    5: namespace SurveyHub;
+    6  
+    7  [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true,
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Platforms/Android/MainApplication.cs:
+    2  using Android.Runtime;
+    3  
+    4: namespace SurveyHub;
+    5  
+    6  [Application]
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Platforms/iOS/AppDelegate.cs:
+    2  using UIKit;
+    3  
+    4: namespace SurveyHub;
+    5  
+    6  [Register("AppDelegate")]
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Platforms/iOS/Program.cs:
+    2  using UIKit;
+    3  
+    4: namespace SurveyHub;
+    5  
+    6  public class Program
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Platforms/MacCatalyst/AppDelegate.cs:
+    1  using Foundation;
+    2  
+    3: namespace SurveyHub;
+    4  
+    5  [Register("AppDelegate")]
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Platforms/MacCatalyst/Program.cs:
+    1  using UIKit;
+    2  
+    3: namespace SurveyHub;
+    4  
+    5  public class Program
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Platforms/Windows/App.xaml:
+    1  <maui:MauiWinUIApplication
+    2:     x:Class="SurveyHub.WinUI.App"
+    3      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    4      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    5      xmlns:maui="using:Microsoft.Maui"
+    6:     xmlns:local="using:SurveyHub.WinUI">
+    7  </maui:MauiWinUIApplication>
+    8  
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Platforms/Windows/App.xaml.cs:
+    1: namespace SurveyHub.WinUI;
+    2  
+    3  public partial class App : MauiWinUIApplication
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Services/IMockDataService.cs:
+    1: using SurveyHub.Models;
+    2  
+    3: namespace SurveyHub.Services;
+    4  
+    5  public interface IMockDataService
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Services/MockDataService.cs:
+    1: using SurveyHub.Models;
+    2  
+    3: namespace SurveyHub.Services;
+    4  
+    5  public class MockDataService : IMockDataService
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/SurveyHub.csproj:
+    5  
+    6          <OutputType>Exe</OutputType>
+    7:         <RootNamespace>SurveyHub</RootNamespace>
+    8          <UseMaui>true</UseMaui>
+    9          <SingleProject>true</SingleProject>
+   ..
+   12  
+   13          <!-- Display name -->
+   14:         <ApplicationTitle>SurveyHub</ApplicationTitle>
+   15  
+   16          <!-- App Identifier -->
+   17:         <ApplicationId>dk.appstogo.surveyhub</ApplicationId>
+   18  
+   19          <!-- Versions -->
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/ActivityLogViewModel.cs:
+    1  using System.Collections.ObjectModel;
+    2: using SurveyHub.Models;
+    3: using SurveyHub.Services;
+    4  
+    5: namespace SurveyHub.ViewModels;
+    6  
+    7  public class ActivityLogViewModel : ObservableObject
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/MainShellViewModel.cs:
+    1  using System.Collections.ObjectModel;
+    2: using SurveyHub.Models;
+    3  
+    4: namespace SurveyHub.ViewModels;
+    5  
+    6  public class MainShellViewModel : ObservableObject
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/MediaLibraryViewModel.cs:
+    1  using System.Collections.ObjectModel;
+    2: using SurveyHub.Models;
+    3: using SurveyHub.Services;
+    4  
+    5: namespace SurveyHub.ViewModels;
+    6  
+    7  public class MediaLibraryViewModel : ObservableObject
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/ObservableObject.cs:
+    2  using System.Runtime.CompilerServices;
+    3  
+    4: namespace SurveyHub.ViewModels;
+    5  
+    6  public abstract class ObservableObject : INotifyPropertyChanged
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/OrganizationBrandsViewModel.cs:
+    1  using System.Collections.ObjectModel;
+    2: using SurveyHub.Models;
+    3: using SurveyHub.Services;
+    4  
+    5: namespace SurveyHub.ViewModels;
+    6  
+    7  public class OrganizationBrandsViewModel : ObservableObject
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/OrganizationsViewModel.cs:
+    1  using System.Collections.ObjectModel;
+    2: using SurveyHub.Models;
+    3: using SurveyHub.Services;
+    4  
+    5: namespace SurveyHub.ViewModels;
+    6  
+    7  public class OrganizationsViewModel : ObservableObject
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/OrganizationUsersViewModel.cs:
+    1  using System.Collections.ObjectModel;
+    2: using SurveyHub.Models;
+    3: using SurveyHub.Services;
+    4  
+    5: namespace SurveyHub.ViewModels;
+    6  
+    7  public class OrganizationUsersViewModel : ObservableObject
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/RelayCommand.cs:
+    1  using System.Windows.Input;
+    2  
+    3: namespace SurveyHub.ViewModels;
+    4  
+    5  public class RelayCommand : ICommand
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/RolesPermissionsViewModel.cs:
+    1  using System.Collections.ObjectModel;
+    2: using SurveyHub.Models;
+    3: using SurveyHub.Services;
+    4  
+    5: namespace SurveyHub.ViewModels;
+    6  
+    7  public class RolesPermissionsViewModel : ObservableObject
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/SettingsAppViewModel.cs:
+    1  using System.Collections.ObjectModel;
+    2  
+    3: namespace SurveyHub.ViewModels;
+    4  
+    5  public class SettingsAppViewModel : ObservableObject
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/SettingsGeneralViewModel.cs:
+    1  using System.Collections.ObjectModel;
+    2  
+    3: namespace SurveyHub.ViewModels;
+    4  
+    5  public class SettingsGeneralViewModel : ObservableObject
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/SurveyQuestionEditorViewModel.cs:
+    1  using System.Collections.ObjectModel;
+    2: using SurveyHub.Models;
+    3  
+    4: namespace SurveyHub.ViewModels;
+    5  
+    6  public class SurveyQuestionEditorViewModel : ObservableObject
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/TemplatesViewModel.cs:
+    1  using System.Collections.ObjectModel;
+    2: using SurveyHub.Models;
+    3: using SurveyHub.Services;
+    4  
+    5: namespace SurveyHub.ViewModels;
+    6  
+    7  public class TemplatesViewModel : ObservableObject
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/ViewModels/VariablesViewModel.cs:
+    1  using System.Collections.ObjectModel;
+    2: using SurveyHub.Models;
+    3: using SurveyHub.Services;
+    4  
+    5: namespace SurveyHub.ViewModels;
+    6  
+    7  public class VariablesViewModel : ObservableObject
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/ActivityLog/ActivityLogPage.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentPage
+    3:     x:Class="SurveyHub.Views.ActivityLog.ActivityLogPage"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/ActivityLog/ActivityLogPage.xaml.cs:
+    1: using SurveyHub.ViewModels;
+    2  
+    3: namespace SurveyHub.Views.ActivityLog;
+    4  
+    5  public partial class ActivityLogPage : ContentPage
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/DashboardShellPage.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentPage
+    3:     x:Class="SurveyHub.Views.DashboardShellPage"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    6:     xmlns:shell="clr-namespace:SurveyHub.Views.Shell"
+    7      BackgroundColor="{StaticResource PageBackground}">
+    8  
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/DashboardShellPage.xaml.cs:
+    1  using Microsoft.Extensions.DependencyInjection;
+    2: using SurveyHub.ViewModels;
+    3: using SurveyHub.Views.ActivityLog;
+    4: using SurveyHub.Views.Media;
+    5: using SurveyHub.Views.Organizations;
+    6: using SurveyHub.Views.Roles;
+    7: using SurveyHub.Views.Settings;
+    8: using SurveyHub.Views.Templates;
+    9: using SurveyHub.Views.Variables;
+   10  
+   11: namespace SurveyHub.Views;
+   12  
+   13  public partial class DashboardShellPage : ContentPage
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Media/MediaCardView.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentView
+    3:     x:Class="SurveyHub.Views.Media.MediaCardView"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Media/MediaCardView.xaml.cs:
+    1: namespace SurveyHub.Views.Media;
+    2  
+    3  public partial class MediaCardView : ContentView
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Media/MediaLibraryPage.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentPage
+    3:     x:Class="SurveyHub.Views.Media.MediaLibraryPage"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    6:     xmlns:media="clr-namespace:SurveyHub.Views.Media"
+    7      BackgroundColor="{StaticResource PageBackground}">
+    8  
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Media/MediaLibraryPage.xaml.cs:
+    1: using SurveyHub.ViewModels;
+    2  
+    3: namespace SurveyHub.Views.Media;
+    4  
+    5  public partial class MediaLibraryPage : ContentPage
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Organizations/OrganizationBrandsPage.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentPage
+    3:     x:Class="SurveyHub.Views.Organizations.OrganizationBrandsPage"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    6:     xmlns:shared="clr-namespace:SurveyHub.Views.Shared"
+    7      BackgroundColor="{StaticResource PageBackground}">
+    8  
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Organizations/OrganizationBrandsPage.xaml.cs:
+    1: using SurveyHub.ViewModels;
+    2  
+    3: namespace SurveyHub.Views.Organizations;
+    4  
+    5  public partial class OrganizationBrandsPage : ContentPage
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Organizations/OrganizationsPage.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentPage
+    3:     x:Class="SurveyHub.Views.Organizations.OrganizationsPage"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Organizations/OrganizationsPage.xaml.cs:
+    1: using SurveyHub.ViewModels;
+    2  
+    3: namespace SurveyHub.Views.Organizations;
+    4  
+    5  public partial class OrganizationsPage : ContentPage
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Organizations/OrganizationUsersPage.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentPage
+    3:     x:Class="SurveyHub.Views.Organizations.OrganizationUsersPage"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    6:     xmlns:shared="clr-namespace:SurveyHub.Views.Shared"
+    7      BackgroundColor="{StaticResource PageBackground}">
+    8  
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Organizations/OrganizationUsersPage.xaml.cs:
+    1: using SurveyHub.ViewModels;
+    2  
+    3: namespace SurveyHub.Views.Organizations;
+    4  
+    5  public partial class OrganizationUsersPage : ContentPage
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Roles/RolesPermissionsPage.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentPage
+    3:     x:Class="SurveyHub.Views.Roles.RolesPermissionsPage"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Roles/RolesPermissionsPage.xaml.cs:
+    1: using SurveyHub.ViewModels;
+    2  
+    3: namespace SurveyHub.Views.Roles;
+    4  
+    5  public partial class RolesPermissionsPage : ContentPage
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Settings/SettingsAppPage.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentPage
+    3:     x:Class="SurveyHub.Views.Settings.SettingsAppPage"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    6:     xmlns:shared="clr-namespace:SurveyHub.Views.Shared"
+    7      BackgroundColor="{StaticResource PageBackground}">
+    8  
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Settings/SettingsAppPage.xaml.cs:
+    1: using SurveyHub.ViewModels;
+    2  
+    3: namespace SurveyHub.Views.Settings;
+    4  
+    5  public partial class SettingsAppPage : ContentPage
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Settings/SettingsGeneralPage.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentPage
+    3:     x:Class="SurveyHub.Views.Settings.SettingsGeneralPage"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    6:     xmlns:shared="clr-namespace:SurveyHub.Views.Shared"
+    7      BackgroundColor="{StaticResource PageBackground}">
+    8  
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Settings/SettingsGeneralPage.xaml.cs:
+    1: using SurveyHub.ViewModels;
+    2  
+    3: namespace SurveyHub.Views.Settings;
+    4  
+    5  public partial class SettingsGeneralPage : ContentPage
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shared/MobilePreviewView.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentView
+    3:     x:Class="SurveyHub.Views.Shared.MobilePreviewView"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shared/MobilePreviewView.xaml.cs:
+    1: namespace SurveyHub.Views.Shared;
+    2  
+    3  public partial class MobilePreviewView : ContentView
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shared/QuestionPropertyPanel.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentView
+    3:     x:Class="SurveyHub.Views.Shared.QuestionPropertyPanel"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shared/QuestionPropertyPanel.xaml.cs:
+    1: namespace SurveyHub.Views.Shared;
+    2  
+    3  public partial class QuestionPropertyPanel : ContentView
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shared/SectionCardView.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentView
+    3:     x:Class="SurveyHub.Views.Shared.SectionCardView"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shared/SectionCardView.xaml.cs:
+    1  using System.Collections;
+    2  
+    3: namespace SurveyHub.Views.Shared;
+    4  
+    5  public partial class SectionCardView : ContentView
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shared/SettingsNavView.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentView
+    3:     x:Class="SurveyHub.Views.Shared.SettingsNavView"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shared/SettingsNavView.xaml.cs:
+    1: namespace SurveyHub.Views.Shared;
+    2  
+    3  public partial class SettingsNavView : ContentView
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shared/StatusBadgeView.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentView
+    3:     x:Class="SurveyHub.Views.Shared.StatusBadgeView"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shared/StatusBadgeView.xaml.cs:
+    1: namespace SurveyHub.Views.Shared;
+    2  
+    3  public partial class StatusBadgeView : ContentView
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shell/SidebarView.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentView
+    3:     x:Class="SurveyHub.Views.Shell.SidebarView"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    .
+    8      <Grid Padding="16" RowDefinitions="Auto,*,Auto">
+    9          <VerticalStackLayout Spacing="6">
+   10:             <Label Text="SurveyHub" TextColor="White" FontSize="20" FontAttributes="Bold" />
+   11              <Label Text="Konfiguration" TextColor="#B8C7E0" FontSize="12" />
+   12          </VerticalStackLayout>
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shell/SidebarView.xaml.cs:
+    1: namespace SurveyHub.Views.Shell;
+    2  
+    3  public partial class SidebarView : ContentView
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shell/TopHeaderView.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentView
+    3:     x:Class="SurveyHub.Views.Shell.TopHeaderView"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Shell/TopHeaderView.xaml.cs:
+    1: namespace SurveyHub.Views.Shell;
+    2  
+    3  public partial class TopHeaderView : ContentView
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Templates/TemplatesPage.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentPage
+    3:     x:Class="SurveyHub.Views.Templates.TemplatesPage"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Templates/TemplatesPage.xaml.cs:
+    1: using SurveyHub.ViewModels;
+    2  
+    3: namespace SurveyHub.Views.Templates;
+    4  
+    5  public partial class TemplatesPage : ContentPage
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Variables/VariablesPage.xaml:
+    1  <?xml version="1.0" encoding="utf-8" ?>
+    2  <ContentPage
+    3:     x:Class="SurveyHub.Views.Variables.VariablesPage"
+    4      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    5      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+~/Projects/feedback2business/feedback2business_app/SurveyHub/Views/Variables/VariablesPage.xaml.cs:
+    1: using SurveyHub.ViewModels;
+    2  
+    3: namespace SurveyHub.Views.Variables;
+    4  
+    5  public partial class VariablesPage : ContentPage
+
+551 matches across 86 files

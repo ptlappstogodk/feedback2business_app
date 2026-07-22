@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Feedback2Business.Views.Variables.VariablesPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="{StaticResource PageBackground}">
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="24">
+        <Grid ColumnDefinitions="*,Auto">
+            <VerticalStackLayout>
+                <Label Text="Variabler" Style="{StaticResource PageTitleStyle}" />
+                <Label Text="Opret variabler som kan bruges dynamisk i spørgsmål."
+                       Style="{StaticResource PageSubtitleStyle}" />
+            </VerticalStackLayout>
+            <Button Grid.Column="1" Text="+ Ny variabel" Style="{StaticResource PrimaryButtonStyle}" />
+        </Grid>
+
+        <HorizontalStackLayout Grid.Row="1" Margin="0,16,0,16" Spacing="24">
+            <Label Text="Variabler" Style="{StaticResource ActiveTabTextStyle}" />
+            <Label Text="Variabelsæt" Style="{StaticResource TabTextStyle}" />
+        </HorizontalStackLayout>
+
+        <Border Grid.Row="2" Style="{StaticResource CardStyle}">
+            <Grid RowDefinitions="Auto,*">
+                <Grid Padding="16" ColumnDefinitions="2*,2*,*,*,*">
+                    <Label Text="Navn" Style="{StaticResource DataTableHeaderStyle}" />
+                    <Label Grid.Column="1" Text="Nøgle" Style="{StaticResource DataTableHeaderStyle}" />
+                    <Label Grid.Column="2" Text="Type" Style="{StaticResource DataTableHeaderStyle}" />
+                    <Label Grid.Column="3" Text="Standardværdi" Style="{StaticResource DataTableHeaderStyle}" />
+                    <Label Grid.Column="4" Text="Bruges i" Style="{StaticResource DataTableHeaderStyle}" />
+                </Grid>
+
+                <CollectionView Grid.Row="1" ItemsSource="{Binding Variables}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="16" ColumnDefinitions="2*,2*,*,*,*">
+                                <Label Text="{Binding Name}" />
+                                <Label Grid.Column="1" Text="{Binding Key}" />
+                                <Label Grid.Column="2" Text="{Binding Type}" />
+                                <Label Grid.Column="3" Text="{Binding DefaultValue}" />
+                                <Label Grid.Column="4" Text="{Binding UsageCountText}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>
+
+

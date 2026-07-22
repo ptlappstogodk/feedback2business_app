@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Feedback2Business.Views.Organizations.OrganizationBrandsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:shared="clr-namespace:Feedback2Business.Views.Shared"
+    BackgroundColor="{StaticResource PageBackground}">
+
+    <Grid RowDefinitions="Auto,*" Padding="24">
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+            <Border WidthRequest="56"
+                    HeightRequest="56"
+                    BackgroundColor="{StaticResource PrimaryBlue}"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 12" />
+
+            <VerticalStackLayout Grid.Column="1" Spacing="6">
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="Retail Group A" Style="{StaticResource PageTitleStyle}" />
+                    <shared:StatusBadgeView Text="Aktiv"
+                                            BadgeColor="{StaticResource SuccessGreenLight}"
+                                            BadgeTextColor="{StaticResource SuccessGreen}" />
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Spacing="24">
+                    <Label Text="Overblik" Style="{StaticResource TabTextStyle}" />
+                    <Label Text="Brands" Style="{StaticResource ActiveTabTextStyle}" />
+                    <Label Text="Brugere" Style="{StaticResource TabTextStyle}" />
+                    <Label Text="Indstillinger" Style="{StaticResource TabTextStyle}" />
+                    <Label Text="App-udgivelse" Style="{StaticResource TabTextStyle}" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <HorizontalStackLayout Grid.Column="2" Spacing="12">
+                <Button Text="Gem ændringer" Style="{StaticResource PrimaryButtonStyle}" />
+                <Button Text="Flere handlinger" Style="{StaticResource SecondaryButtonStyle}" />
+            </HorizontalStackLayout>
+        </Grid>
+
+        <Grid Grid.Row="1"
+              Margin="0,20,0,0"
+              ColumnDefinitions="260,320,*"
+              ColumnSpacing="16">
+
+            <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                <Grid RowDefinitions="Auto,*">
+                    <Grid Padding="16" ColumnDefinitions="*,Auto">
+                        <Label Text="Brands" Style="{StaticResource SectionHeaderStyle}" />
+                        <Button Grid.Column="1" Text="+" WidthRequest="32" HeightRequest="32" />
+                    </Grid>
+
+                    <CollectionView Grid.Row="1" ItemsSource="{Binding Brands}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="12,6" Padding="12" Style="{StaticResource InnerCardStyle}">
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                        <Label Text="{Binding SurveyCountText}"
+                                               FontSize="12"
+                                               TextColor="{StaticResource TextSecondary}" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                <Grid RowDefinitions="Auto,*,Auto">
+                    <Grid Padding="16" ColumnDefinitions="*,Auto">
+                        <Label Text="Surveys for Coffee House" Style="{StaticResource SectionHeaderStyle}" />
+                        <Button Grid.Column="1" Text="+ Opret survey" />
+                    </Grid>
+
+                    <CollectionView Grid.Row="1" ItemsSource="{Binding Surveys}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="12,6" Padding="12" Style="{StaticResource InnerCardStyle}">
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                        <Label Text="{Binding VersionText}"
+                                               FontSize="12"
+                                               TextColor="{StaticResource TextSecondary}" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <shared:MobilePreviewView Grid.Row="2"
+                                              Margin="16"
+                                              BindingContext="{Binding Preview}" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Style="{StaticResource CardStyle}">
+                <Grid RowDefinitions="Auto,Auto,Auto,*">
+                    <Grid Padding="16" ColumnDefinitions="Auto,*">
+                        <Border WidthRequest="40"
+                                HeightRequest="40"
+                                BackgroundColor="{StaticResource PrimaryBlueLight}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10" />
+                        <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0" Spacing="4">
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="Butiksinspektion"
+                                       FontSize="20"
+                                       FontAttributes="Bold" />
+                                <shared:StatusBadgeView Text="Version 3 (Aktiv)"
+                                                        BadgeColor="{StaticResource SuccessGreenLight}"
+                                                        BadgeTextColor="{StaticResource SuccessGreen}" />
+                            </HorizontalStackLayout>
+                            <Label Text="Standard inspection of store operations and presentation."
+                                   TextColor="{StaticResource TextSecondary}"
+                                   FontSize="12" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <HorizontalStackLayout Grid.Row="1" Spacing="24" Padding="16,0">
+                        <Label Text="Byg" Style="{StaticResource ActiveTabTextStyle}" />
+                        <Label Text="Logik" Style="{StaticResource TabTextStyle}" />
+                        <Label Text="Indstillinger" Style="{StaticResource TabTextStyle}" />
+                        <Label Text="Oversættelser" Style="{StaticResource TabTextStyle}" />
+                        <Label Text="Versioner" Style="{StaticResource TabTextStyle}" />
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout Grid.Row="2" Spacing="8" Padding="16,12">
+                        <Button Text="Section" />
+                        <Button Text="Spørgsmål" />
+                        <Button Text="Indhold" />
+                        <Button Text="Side" />
+                    </HorizontalStackLayout>
+
+                    <Grid Grid.Row="3" ColumnDefinitions="*,300" ColumnSpacing="16" Padding="16">
+                        <ScrollView Grid.Column="0">
+                            <VerticalStackLayout Spacing="12">
+                                <shared:SectionCardView Title="1. Butiksinformation"
+                                                        ItemsSource="{Binding Section1Questions}" />
+                                <shared:SectionCardView Title="2. Eksteriør"
+                                                        ItemsSource="{Binding Section2Questions}" />
+                                <shared:SectionCardView Title="3. Indretning &amp; præsentation"
+                                                        ItemsSource="{Binding Section3Questions}" />
+                                <Button Text="+ Tilføj sektion her" />
+                            </VerticalStackLayout>
+                        </ScrollView>
+
+                        <shared:QuestionPropertyPanel Grid.Column="1"
+                                                      BindingContext="{Binding SelectedQuestion}" />
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>
+
+

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Feedback2Business.Views.Settings.SettingsAppPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:shared="clr-namespace:Feedback2Business.Views.Shared"
+    BackgroundColor="{StaticResource PageBackground}">
+
+    <Grid ColumnDefinitions="220,*" Padding="24" ColumnSpacing="16">
+        <shared:SettingsNavView Grid.Column="0" />
+
+        <Grid Grid.Column="1" RowDefinitions="Auto,*">
+            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+                <Label Text="App-indstillinger" Style="{StaticResource PageTitleStyle}" />
+                <Button Grid.Column="1" Text="Gem ændringer" Style="{StaticResource PrimaryButtonStyle}" />
+            </Grid>
+
+            <Border Grid.Row="1" Style="{StaticResource CardStyle}">
+                <ScrollView>
+                    <VerticalStackLayout Padding="24" Spacing="18">
+                        <Border Style="{StaticResource InnerCardStyle}" Padding="16">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="Offline" FontAttributes="Bold" />
+                                <HorizontalStackLayout>
+                                    <CheckBox IsChecked="{Binding OfflineEnabled}" />
+                                    <Label Text="Tillad offline udfyldelse" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout>
+                                    <CheckBox IsChecked="{Binding AutoSyncEnabled}" />
+                                    <Label Text="Synkroniser automatisk når forbindelse er tilgængelig" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource InnerCardStyle}" Padding="16">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="Placering" FontAttributes="Bold" />
+                                <HorizontalStackLayout>
+                                    <CheckBox IsChecked="{Binding RequireLocationAtStart}" />
+                                    <Label Text="Kræv lokationsdata ved start af survey" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout>
+                                    <CheckBox IsChecked="{Binding UseLocationOnObservations}" />
+                                    <Label Text="Brug lokation til geotagging af besvarelser" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource InnerCardStyle}" Padding="16">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="Medier" FontAttributes="Bold" />
+                                <HorizontalStackLayout>
+                                    <CheckBox IsChecked="{Binding CompressImages}" />
+                                    <Label Text="Komprimer billeder før upload" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <Label Text="Maks. billedstørrelse" Style="{StaticResource FormLabelStyle}" />
+                                <Picker ItemsSource="{Binding MaxFileSizeOptions}"
+                                        SelectedItem="{Binding SelectedMaxFileSize}" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource InnerCardStyle}" Padding="16">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="Navigation" FontAttributes="Bold" />
+                                <HorizontalStackLayout>
+                                    <CheckBox IsChecked="{Binding ShowSurveyProgress}" />
+                                    <Label Text="Vis survey fremdrift" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout>
+                                    <CheckBox IsChecked="{Binding AllowSkipForward}" />
+                                    <Label Text="Tillad spring fremad i survey" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>
+
+
