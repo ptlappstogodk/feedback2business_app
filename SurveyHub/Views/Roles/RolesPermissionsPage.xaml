@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SurveyHub.Views.Roles.RolesPermissionsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="{StaticResource PageBackground}">
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="24">
+        <Grid ColumnDefinitions="*,Auto">
+            <VerticalStackLayout>
+                <Label Text="Roller &amp; rettigheder" Style="{StaticResource PageTitleStyle}" />
+                <Label Text="Definér roller og hvad brugere har adgang til."
+                       Style="{StaticResource PageSubtitleStyle}" />
+            </VerticalStackLayout>
+            <Button Grid.Column="1" Text="+ Ny rolle" Style="{StaticResource PrimaryButtonStyle}" />
+        </Grid>
+
+        <HorizontalStackLayout Grid.Row="1" Margin="0,16,0,16" Spacing="24">
+            <Label Text="Roller" Style="{StaticResource ActiveTabTextStyle}" />
+            <Label Text="Rettigheder" Style="{StaticResource TabTextStyle}" />
+        </HorizontalStackLayout>
+
+        <Grid Grid.Row="2" ColumnDefinitions="320,*" ColumnSpacing="16">
+            <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                <Grid RowDefinitions="Auto,*">
+                    <Grid Padding="16" ColumnDefinitions="*,*">
+                        <Label Text="Rollenavn" Style="{StaticResource DataTableHeaderStyle}" />
+                        <Label Grid.Column="1" Text="Beskrivelse" Style="{StaticResource DataTableHeaderStyle}" />
+                    </Grid>
+
+                    <CollectionView Grid.Row="1"
+                                    ItemsSource="{Binding Roles}"
+                                    SelectionMode="Single"
+                                    SelectedItem="{Binding SelectedRole}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="16" ColumnDefinitions="*,*">
+                                    <Label Text="{Binding Name}" />
+                                    <Label Grid.Column="1" Text="{Binding Description}" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                <ScrollView>
+                    <VerticalStackLayout Padding="24" Spacing="16">
+                        <Label Text="{Binding SelectedRole.Name}" FontAttributes="Bold" FontSize="18" />
+
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding PermissionGroups}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource InnerCardStyle}" Padding="16" Margin="0,0,0,8">
+                                        <VerticalStackLayout Spacing="10">
+                                            <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Permissions}">
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <HorizontalStackLayout Spacing="8">
+                                                            <CheckBox IsChecked="{Binding IsEnabled}" />
+                                                            <Label Text="{Binding Label}" VerticalOptions="Center" />
+                                                        </HorizontalStackLayout>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </VerticalStackLayout>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>
+
+

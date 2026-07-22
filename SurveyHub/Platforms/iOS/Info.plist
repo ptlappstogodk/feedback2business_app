@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UIDeviceFamily</key>
+	<array>
+		<integer>1</integer>
+		<integer>2</integer>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>MinimumOSVersion</key>
+	<string>15.0</string>
+	<key>CFBundleDisplayName</key>
+	<string>Salgsklar</string>
+	<key>CFBundleIdentifier</key>
+	<string>dk.appstogo.pisiffik</string>
+	<key>XSAppIconAssets</key>
+	<string>Assets.xcassets/appicon.appiconset</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Appen skal bruge adgang til kameraet så du kan tilføje billeder fra dit besøg.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Appen skal bruge adgang til Fotos så du kan tilføje billeder fra dit besøg.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Appen skal bruge adgang til din mikrofon.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Appen skal bruge adgang til Fotos så du kan tilføje billeder fra dit besøg.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Appen skal bruge adgang til din kalender.</string>
+	<key>CFBundleName</key>
+	<string>Salgsklar</string>
+	<key>CFBundleShortVersionString</key>
+	<string>9.0</string>
+    <key>CFBundleVersion</key>
+    <string>0</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Appen benytter din lokation til at finde nærmeste butik.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Appen benytter din lokation til at finde nærmeste butik.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Appen benytter din lokation til at finde nærmeste butik.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Appen skal bruge din bluetooth.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Appen vil gerne bruge dine kontakter.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Appen vil gerne bruge Apple Music.</string>
+	<key>NSSiriUsageDescription</key>
+	<string>Appen vil gerne bruge Siri.</string>
+	<!-- Workaround for iOS 26 liquid glass tab bar styling issues (dotnet/maui#32125, #34605). Remove when MAUI ships a fix. -->
+	<key>UIDesignRequiresCompatibility</key>
+	<true/>
+</dict>
+</plist>

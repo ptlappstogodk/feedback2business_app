@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Style x:Key="PageTitleStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+    </Style>
+
+    <Style x:Key="PageSubtitleStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+    </Style>
+
+    <Style x:Key="SectionHeaderStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+    </Style>
+
+    <Style x:Key="DataTableHeaderStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+    </Style>
+
+    <Style x:Key="FormLabelStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+    </Style>
+
+    <Style x:Key="TabTextStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+    </Style>
+
+    <Style x:Key="ActiveTabTextStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryBlue}" />
+        <Setter Property="FontAttributes" Value="Bold" />
+    </Style>
+
+    <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBlue}" />
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16,10" />
+    </Style>
+
+    <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="BorderColor" Value="{StaticResource BorderColor}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16,10" />
+    </Style>
+
+    <Style x:Key="LinkButtonStyle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryBlue}" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <Style x:Key="CardStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource CardBackground}" />
+        <Setter Property="Stroke" Value="{StaticResource BorderColor}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+    </Style>
+
+    <Style x:Key="InnerCardStyle" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="Stroke" Value="{StaticResource BorderColor}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 10" />
+    </Style>
+</ResourceDictionary>
+
+
