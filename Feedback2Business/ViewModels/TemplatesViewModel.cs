@@ -32,10 +32,10 @@ public class TemplatesViewModel : ObservableObject
 
     private async Task OpretTemplateAsync()
     {
-        var name = await Shell.Current.DisplayPromptAsync("Opret skabelon", "Indtast skabelonnavn:", "Næste", "Annuller", "Navn");
+        var name = await Application.Current!.MainPage!.DisplayPromptAsync("Opret skabelon", "Indtast skabelonnavn:", "Næste", "Annuller", "Navn");
         if (string.IsNullOrWhiteSpace(name)) return;
 
-        var description = await Shell.Current.DisplayPromptAsync("Opret skabelon", "Indtast beskrivelse:", "Gem", "Annuller", "Beskrivelse");
+        var description = await Application.Current!.MainPage!.DisplayPromptAsync("Opret skabelon", "Indtast beskrivelse:", "Gem", "Annuller", "Beskrivelse");
         if (description == null) return;
 
         var template = new TemplateModel

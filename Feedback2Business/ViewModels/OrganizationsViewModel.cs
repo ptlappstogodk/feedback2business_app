@@ -32,7 +32,7 @@ public class OrganizationsViewModel : ObservableObject
 
     private async Task OpretOrganizationAsync()
     {
-        var name = await Shell.Current.DisplayPromptAsync("Opret organisation", "Indtast organisationsnavn:", "Gem", "Annuller", "Navn");
+        var name = await Application.Current!.MainPage!.DisplayPromptAsync("Opret organisation", "Indtast organisationsnavn:", "Gem", "Annuller", "Navn");
         if (!string.IsNullOrWhiteSpace(name))
         {
             var org = new OrganizationModel

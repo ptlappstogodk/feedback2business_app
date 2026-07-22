@@ -42,7 +42,7 @@ public class OrganizationBrandsViewModel : ObservableObject
 
     private async Task OpretBrandAsync()
     {
-        var name = await Shell.Current.DisplayPromptAsync("Opret brand", "Indtast brandnavn:", "Gem", "Annuller", "Navn");
+        var name = await Application.Current!.MainPage!.DisplayPromptAsync("Opret brand", "Indtast brandnavn:", "Gem", "Annuller", "Navn");
         if (!string.IsNullOrWhiteSpace(name))
         {
             var brand = new BrandModel
@@ -58,7 +58,7 @@ public class OrganizationBrandsViewModel : ObservableObject
 
     private async Task OpretSurveyAsync()
     {
-        var name = await Shell.Current.DisplayPromptAsync("Opret survey", "Indtast surveynavn:", "Gem", "Annuller", "Navn");
+        var name = await Application.Current!.MainPage!.DisplayPromptAsync("Opret survey", "Indtast surveynavn:", "Gem", "Annuller", "Navn");
         if (!string.IsNullOrWhiteSpace(name))
         {
             var survey = new SurveyModel

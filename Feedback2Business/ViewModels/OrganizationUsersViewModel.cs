@@ -34,10 +34,10 @@ public class OrganizationUsersViewModel : ObservableObject
 
     private async Task InviterUserAsync()
     {
-        var name = await Shell.Current.DisplayPromptAsync("Inviter bruger", "Indtast navn:", "Næste", "Annuller", "Navn");
+        var name = await Application.Current!.MainPage!.DisplayPromptAsync("Inviter bruger", "Indtast navn:", "Næste", "Annuller", "Navn");
         if (string.IsNullOrWhiteSpace(name)) return;
 
-        var email = await Shell.Current.DisplayPromptAsync("Inviter bruger", "Indtast email:", "Inviter", "Annuller", "Email");
+        var email = await Application.Current!.MainPage!.DisplayPromptAsync("Inviter bruger", "Indtast email:", "Inviter", "Annuller", "Email");
         if (string.IsNullOrWhiteSpace(email)) return;
 
         var user = new UserModel

@@ -24,13 +24,13 @@ public class VariablesViewModel : ObservableObject
 
     private async Task OpretVariableAsync()
     {
-        var name = await Shell.Current.DisplayPromptAsync("Opret variabel", "Indtast variabelnavn:", "Næste", "Annuller", "Navn");
+        var name = await Application.Current!.MainPage!.DisplayPromptAsync("Opret variabel", "Indtast variabelnavn:", "Næste", "Annuller", "Navn");
         if (string.IsNullOrWhiteSpace(name)) return;
 
-        var key = await Shell.Current.DisplayPromptAsync("Opret variabel", "Indtast variabel nøgle (Key):", "Næste", "Annuller", "Key");
+        var key = await Application.Current!.MainPage!.DisplayPromptAsync("Opret variabel", "Indtast variabel nøgle (Key):", "Næste", "Annuller", "Key");
         if (string.IsNullOrWhiteSpace(key)) return;
 
-        var defaultValue = await Shell.Current.DisplayPromptAsync("Opret variabel", "Indtast standardværdi:", "Gem", "Annuller", "Standardværdi");
+        var defaultValue = await Application.Current!.MainPage!.DisplayPromptAsync("Opret variabel", "Indtast standardværdi:", "Gem", "Annuller", "Standardværdi");
         if (defaultValue == null) return;
 
         var variable = new VariableModel

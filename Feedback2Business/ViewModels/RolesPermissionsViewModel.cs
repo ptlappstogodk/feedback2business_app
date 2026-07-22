@@ -40,10 +40,10 @@ public class RolesPermissionsViewModel : ObservableObject
 
     private async Task OpretRoleAsync()
     {
-        var name = await Shell.Current.DisplayPromptAsync("Opret rolle", "Indtast rollenavn:", "Næste", "Annuller", "Navn");
+        var name = await Application.Current!.MainPage!.DisplayPromptAsync("Opret rolle", "Indtast rollenavn:", "Næste", "Annuller", "Navn");
         if (string.IsNullOrWhiteSpace(name)) return;
 
-        var description = await Shell.Current.DisplayPromptAsync("Opret rolle", "Indtast beskrivelse:", "Gem", "Annuller", "Beskrivelse");
+        var description = await Application.Current!.MainPage!.DisplayPromptAsync("Opret rolle", "Indtast beskrivelse:", "Gem", "Annuller", "Beskrivelse");
         if (description == null) return;
 
         var role = new RoleModel
