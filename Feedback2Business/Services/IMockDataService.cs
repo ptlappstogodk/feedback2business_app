@@ -17,6 +17,14 @@ public interface IMockDataService
     List<RoleModel> GetRoles();
     List<ActivityEventModel> GetActivityEvents();
     MobilePreviewModel GetPreview();
+
+    void CreateOrganization(OrganizationModel org);
+    void CreateBrand(BrandModel brand);
+    void CreateSurvey(SurveyModel survey);
+    void CreateUser(UserModel user);
+    void CreateTemplate(TemplateModel template);
+    void CreateVariable(VariableModel variable);
+    void CreateRole(RoleModel role);
 }
 
 

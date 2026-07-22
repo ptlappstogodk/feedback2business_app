@@ -41,4 +41,24 @@ public class ApiDataService : IMockDataService
     public List<RoleModel> GetRoles() => Get<List<RoleModel>>("roles");
     public List<ActivityEventModel> GetActivityEvents() => Get<List<ActivityEventModel>>("activitylog");
     public MobilePreviewModel GetPreview() => Get<MobilePreviewModel>("preview");
+
+    private void Post<T>(string endpoint, T data)
+    {
+        try
+        {
+            _httpClient.PostAsJsonAsync(endpoint, data).GetAwaiter().GetResult();
+        }
+        catch
+        {
+            // Fail silently on design or network faults
+        }
+    }
+
+    public void CreateOrganization(OrganizationModel org) => Post("organizations", org);
+    public void CreateBrand(BrandModel brand) => Post("brands", brand);
+    public void CreateSurvey(SurveyModel survey) => Post("surveys", survey);
+    public void CreateUser(UserModel user) => Post("users", user);
+    public void CreateTemplate(TemplateModel template) => Post("templates", template);
+    public void CreateVariable(VariableModel variable) => Post("variables", variable);
+    public void CreateRole(RoleModel role) => Post("roles", role);
 }

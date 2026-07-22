@@ -22,7 +22,7 @@
             <Entry Placeholder="Søg brugere..." Text="{Binding SearchText}" />
             <Picker Grid.Column="1" Title="Rolle" ItemsSource="{Binding Roles}" />
             <Picker Grid.Column="2" Title="Status" ItemsSource="{Binding Statuses}" />
-            <Button Grid.Column="3" Text="+ Inviter bruger" Style="{StaticResource PrimaryButtonStyle}" />
+            <Button Grid.Column="3" Text="+ Inviter bruger" Command="{Binding InviterUserCommand}" Style="{StaticResource PrimaryButtonStyle}" />
         </Grid>
 
         <Border Grid.Row="3" Style="{StaticResource CardStyle}">

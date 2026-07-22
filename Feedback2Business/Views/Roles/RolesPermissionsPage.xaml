@@ -12,7 +12,7 @@
                 <Label Text="Definér roller og hvad brugere har adgang til."
                        Style="{StaticResource PageSubtitleStyle}" />
             </VerticalStackLayout>
-            <Button Grid.Column="1" Text="+ Ny rolle" Style="{StaticResource PrimaryButtonStyle}" />
+            <Button Grid.Column="1" Text="+ Ny rolle" Command="{Binding OpretRoleCommand}" Style="{StaticResource PrimaryButtonStyle}" />
         </Grid>
 
         <HorizontalStackLayout Grid.Row="1" Margin="0,16,0,16" Spacing="24">

@@ -46,7 +46,7 @@
                 <Grid RowDefinitions="Auto,*">
                     <Grid Padding="16" ColumnDefinitions="*,Auto">
                         <Label Text="Brands" Style="{StaticResource SectionHeaderStyle}" />
-                        <Button Grid.Column="1" Text="+" WidthRequest="32" HeightRequest="32" />
+                        <Button Grid.Column="1" Text="+" Command="{Binding OpretBrandCommand}" WidthRequest="32" HeightRequest="32" />
                     </Grid>
 
                     <CollectionView Grid.Row="1" ItemsSource="{Binding Brands}">
@@ -70,7 +70,7 @@
                 <Grid RowDefinitions="Auto,*,Auto">
                     <Grid Padding="16" ColumnDefinitions="*,Auto">
                         <Label Text="Surveys for Coffee House" Style="{StaticResource SectionHeaderStyle}" />
-                        <Button Grid.Column="1" Text="+ Opret survey" />
+                        <Button Grid.Column="1" Text="+ Opret survey" Command="{Binding OpretSurveyCommand}" />
                     </Grid>
 
                     <CollectionView Grid.Row="1" ItemsSource="{Binding Surveys}">

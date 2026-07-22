@@ -126,6 +126,14 @@ public class MockDataService : IMockDataService
         QuestionNumberTitle = "2.1 Facade ren og vedligeholdt?",
         Description = "Angiv om facaden fremstår ren og uden skader."
     };
+
+    public void CreateOrganization(OrganizationModel org) { }
+    public void CreateBrand(BrandModel brand) { }
+    public void CreateSurvey(SurveyModel survey) { }
+    public void CreateUser(UserModel user) { }
+    public void CreateTemplate(TemplateModel template) { }
+    public void CreateVariable(VariableModel variable) { }
+    public void CreateRole(RoleModel role) { }
 }
 
 

@@ -12,7 +12,7 @@
                 <Label Text="Opret variabler som kan bruges dynamisk i spørgsmål."
                        Style="{StaticResource PageSubtitleStyle}" />
             </VerticalStackLayout>
-            <Button Grid.Column="1" Text="+ Ny variabel" Style="{StaticResource PrimaryButtonStyle}" />
+            <Button Grid.Column="1" Text="+ Ny variabel" Command="{Binding OpretVariableCommand}" Style="{StaticResource PrimaryButtonStyle}" />
         </Grid>
 
         <HorizontalStackLayout Grid.Row="1" Margin="0,16,0,16" Spacing="24">
