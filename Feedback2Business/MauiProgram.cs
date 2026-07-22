@@ -33,7 +33,7 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        builder.Services.AddSingleton<IMockDataService, MockDataService>();
+        builder.Services.AddSingleton<IMockDataService, ApiDataService>();
 
         builder.Services.AddSingleton<MainShellViewModel>();
 
