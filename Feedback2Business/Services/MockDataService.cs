@@ -6,24 +6,40 @@ public class MockDataService : IMockDataService
 {
     public List<OrganizationModel> GetOrganizations() =>
     [
-        new() { Name = "Retail Group A", BrandCount = 3, SurveyCount = 20, UserCount = 5, UpdatedAt = DateTime.Today.AddDays(-2) },
-        new() { Name = "FoodCo Holding", BrandCount = 2, SurveyCount = 14, UserCount = 3, UpdatedAt = DateTime.Today.AddDays(-5) },
-        new() { Name = "Service Partners", BrandCount = 4, SurveyCount = 34, UserCount = 8, UpdatedAt = DateTime.Today.AddDays(-10) }
+        new() { Id = 1, Name = "Retail Group A", BrandCount = 3, SurveyCount = 20, UserCount = 5, UpdatedAt = DateTime.Today.AddDays(-2) },
+        new() { Id = 2, Name = "FoodCo Holding", BrandCount = 2, SurveyCount = 14, UserCount = 3, UpdatedAt = DateTime.Today.AddDays(-5) },
+        new() { Id = 3, Name = "Service Partners", BrandCount = 4, SurveyCount = 34, UserCount = 8, UpdatedAt = DateTime.Today.AddDays(-10) }
     ];
 
-    public List<BrandModel> GetBrands() =>
-    [
-        new() { Name = "Coffee House", SurveyCount = 3 },
-        new() { Name = "GreenFuel", SurveyCount = 2 },
-        new() { Name = "Urban Eats", SurveyCount = 4 }
-    ];
+    public List<BrandModel> GetBrands(int? organizationId = null)
+    {
+        var list = new List<BrandModel>
+        {
+            new() { Id = 1, Name = "Coffee House", SurveyCount = 3, OrganizationId = 1 },
+            new() { Id = 2, Name = "GreenFuel", SurveyCount = 2, OrganizationId = 1 },
+            new() { Id = 3, Name = "Urban Eats", SurveyCount = 4, OrganizationId = 2 }
+        };
+        if (organizationId.HasValue)
+        {
+            return list.Where(b => b.OrganizationId == organizationId.Value).ToList();
+        }
+        return list;
+    }
 
-    public List<SurveyModel> GetSurveys() =>
-    [
-        new() { Name = "Butiksinspektion", Version = 3, QuestionCount = 24 },
-        new() { Name = "HACCP Tjekliste", Version = 2, QuestionCount = 18 },
-        new() { Name = "Kampagneevaluering", Version = 1, QuestionCount = 12 }
-    ];
+    public List<SurveyModel> GetSurveys(int? brandId = null)
+    {
+        var list = new List<SurveyModel>
+        {
+            new() { Id = 1, Name = "Butiksinspektion", Version = 3, QuestionCount = 24, BrandId = 1 },
+            new() { Id = 2, Name = "HACCP Tjekliste", Version = 2, QuestionCount = 18, BrandId = 2 },
+            new() { Id = 3, Name = "Kampagneevaluering", Version = 1, QuestionCount = 12, BrandId = 3 }
+        };
+        if (brandId.HasValue)
+        {
+            return list.Where(s => s.BrandId == brandId.Value).ToList();
+        }
+        return list;
+    }
 
     public List<SurveyQuestionModel> GetSection1Questions() =>
     [

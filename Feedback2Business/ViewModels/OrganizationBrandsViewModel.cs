@@ -97,7 +97,7 @@ public class OrganizationBrandsViewModel : ObservableObject
 
         Preview = data.GetPreview();
 
-        var allBrands = _data.GetBrands();
+        var allBrands = _data.GetBrands(ShellVm.ActiveOrganization?.Id);
         foreach (var b in allBrands) Brands.Add(b);
 
         SelectedBrand = Brands.FirstOrDefault();
@@ -127,27 +127,8 @@ public class OrganizationBrandsViewModel : ObservableObject
             return;
         }
 
-        var allSurveys = _data.GetSurveys();
-        List<SurveyModel> filtered;
-
-        if (brand.Name == "Coffee House")
-        {
-            filtered = allSurveys.Where(s => s.Name == "Butiksinspektion").ToList();
-        }
-        else if (brand.Name == "GreenFuel")
-        {
-            filtered = allSurveys.Where(s => s.Name == "HACCP Tjekliste").ToList();
-        }
-        else if (brand.Name == "Urban Eats")
-        {
-            filtered = allSurveys.Where(s => s.Name == "Kampagneevaluering").ToList();
-        }
-        else
-        {
-            filtered = new List<SurveyModel>();
-        }
-
-        foreach (var s in filtered) Surveys.Add(s);
+        var filteredSurveys = _data.GetSurveys(brand.Id);
+        foreach (var s in filteredSurveys) Surveys.Add(s);
         SelectedSurvey = Surveys.FirstOrDefault();
     }
 
@@ -358,7 +339,8 @@ public class OrganizationBrandsViewModel : ObservableObject
             var brand = new BrandModel
             {
                 Name = name.Trim(),
-                SurveyCount = 0
+                SurveyCount = 0,
+                OrganizationId = ShellVm.ActiveOrganization?.Id ?? 1
             };
 
             _data.CreateBrand(brand);
@@ -382,7 +364,8 @@ public class OrganizationBrandsViewModel : ObservableObject
             {
                 Name = name.Trim(),
                 Version = 1,
-                QuestionCount = 0
+                QuestionCount = 0,
+                BrandId = SelectedBrand.Id
             };
 
             _data.CreateSurvey(survey);
