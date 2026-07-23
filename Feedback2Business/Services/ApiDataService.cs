@@ -9,7 +9,7 @@ namespace Feedback2Business.Services;
 public class ApiDataService : IMockDataService
 {
     private readonly HttpClient _httpClient;
-    private const string BaseUrl = "http://localhost:5059/api/";
+    private const string BaseUrl = "https://feedback2business-g9bafwfuetdxdcds.denmarkeast-01.azurewebsites.net/api/";
 
     public ApiDataService()
     {
