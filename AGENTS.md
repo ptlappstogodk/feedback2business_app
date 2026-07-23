@@ -5,8 +5,9 @@ This file defines the coding standards, repository layout, build workflows, and 
 ## Codebase Architecture
 * **MVVM Setup**: Built on a clean, custom MVVM scaffolding using `ObservableObject` and `RelayCommand` under the `Feedback2Business` namespace.
 * **Desktop-First Administrative Shell**: The user interface is driven by `DashboardShellPage.xaml` which implements a persistent left-hand sidebar navigation layout (`SidebarView.xaml`) and a dynamic page host.
-* **Explicit Content Swapping**: Navigation switches pages dynamically inside the shell by setting `PageHost.Content = page.Content;`. All target views must subclass `ContentPage` so that their internal contents are accessible.
-* **Danish Mock Data**: Use `IMockDataService` and `MockDataService` under the `Feedback2Business.Services` namespace to populate standard widgets and list controls. Keep text labels and badges translated to Danish (e.g. `"Aktiv"`, `"Inviteret"`, `"Skabeloner"`, `"Butiksinspektion"`).
+* **Explicit Content Swapping & Context Binding**: Navigation switches pages dynamically inside the shell by setting `PageHost.Content = page.Content;`. All target views must subclass `ContentPage` so that their internal contents are accessible. **Crucially, ensure you re-assign the BindingContext when swapping pages (`PageHost.Content.BindingContext = page.BindingContext;`)**, otherwise the view model commands will fail to execute because MAUI propagates the parent shell's context downwards.
+* **Data Integration**: The UI is decoupled from the data layer via the `IMockDataService` interface. The implementation `ApiDataService` executes live HTTP GET and POST calls via `HttpClient` to the backend ASP.NET Core API. The default data language and UI text must remain in Danish.
+* **Interactive UI Prompts**: When implementing interactive UI dialogs from ViewModels, use `Application.Current!.MainPage!.DisplayPromptAsync`. Do *not* use `Shell.Current.DisplayPromptAsync` because the custom dynamic shell swapping detaches the active view from the standard `.NET MAUI Shell` visual tree, causing the prompts to silently fail.
 
 ## Project Directory Map
 * `Feedback2Business/`: Direct source root containing app startup and configuration.
