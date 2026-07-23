@@ -18,14 +18,14 @@ public class ApiDataService : IMockDataService
 
     private T Get<T>(string endpoint)
     {
-        try
+        var response = _httpClient.GetAsync(endpoint).GetAwaiter().GetResult();
+        if (!response.IsSuccessStatusCode)
         {
-            return _httpClient.GetFromJsonAsync<T>(endpoint).GetAwaiter().GetResult() ?? Activator.CreateInstance<T>();
+            var errorBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            System.Diagnostics.Debug.WriteLine($"API Get failed with status {response.StatusCode}. Details: {errorBody}");
+            throw new Exception($"API Get failed with status {response.StatusCode}. Details: {errorBody}");
         }
-        catch
-        {
-            return Activator.CreateInstance<T>();
-        }
+        return response.Content.ReadFromJsonAsync<T>().GetAwaiter().GetResult() ?? Activator.CreateInstance<T>();
     }
 
     public List<OrganizationModel> GetOrganizations() => Get<List<OrganizationModel>>("organizations");
@@ -44,13 +44,12 @@ public class ApiDataService : IMockDataService
 
     private void Post<T>(string endpoint, T data)
     {
-        try
+        var response = _httpClient.PostAsJsonAsync(endpoint, data).GetAwaiter().GetResult();
+        if (!response.IsSuccessStatusCode)
         {
-            _httpClient.PostAsJsonAsync(endpoint, data).GetAwaiter().GetResult();
-        }
-        catch
-        {
-            // Fail silently on design or network faults
+            var errorBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            System.Diagnostics.Debug.WriteLine($"API Post failed with status {response.StatusCode}. Details: {errorBody}");
+            throw new Exception($"API Post failed with status {response.StatusCode}. Details: {errorBody}");
         }
     }
 
