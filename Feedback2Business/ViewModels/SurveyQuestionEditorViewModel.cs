@@ -5,6 +5,7 @@ namespace Feedback2Business.ViewModels;
 
 public class SurveyQuestionEditorViewModel : ObservableObject
 {
+    private readonly SurveyQuestionModel _source;
     private string _selectedQuestionType = "Ja / Nej";
     private string _title = string.Empty;
     private string _description = string.Empty;
@@ -12,6 +13,8 @@ public class SurveyQuestionEditorViewModel : ObservableObject
     private string _variableName = string.Empty;
     private bool _isStandardDisplay = true;
     private bool _isCompactDisplay;
+
+    public SurveyQuestionModel SourceQuestion => _source;
 
     public ObservableCollection<string> QuestionTypes { get; } = new()
     {
@@ -24,58 +27,110 @@ public class SurveyQuestionEditorViewModel : ObservableObject
     public string SelectedQuestionType
     {
         get => _selectedQuestionType;
-        set => SetProperty(ref _selectedQuestionType, value);
+        set
+        {
+            if (SetProperty(ref _selectedQuestionType, value))
+            {
+                _source.Type = value;
+            }
+        }
     }
 
     public string Title
     {
         get => _title;
-        set => SetProperty(ref _title, value);
+        set
+        {
+            if (SetProperty(ref _title, value))
+            {
+                _source.Title = value;
+            }
+        }
     }
 
     public string Description
     {
         get => _description;
-        set => SetProperty(ref _description, value);
+        set
+        {
+            if (SetProperty(ref _description, value))
+            {
+                _source.Description = value;
+            }
+        }
     }
 
     public bool IsRequired
     {
         get => _isRequired;
-        set => SetProperty(ref _isRequired, value);
+        set
+        {
+            if (SetProperty(ref _isRequired, value))
+            {
+                _source.IsRequired = value;
+            }
+        }
     }
 
     public string VariableName
     {
         get => _variableName;
-        set => SetProperty(ref _variableName, value);
+        set
+        {
+            if (SetProperty(ref _variableName, value))
+            {
+                _source.VariableName = value;
+            }
+        }
     }
 
     public bool IsStandardDisplay
     {
         get => _isStandardDisplay;
-        set => SetProperty(ref _isStandardDisplay, value);
+        set
+        {
+            if (SetProperty(ref _isStandardDisplay, value))
+            {
+                if (value)
+                {
+                    IsCompactDisplay = false;
+                    _source.DisplayMode = "Standard";
+                }
+            }
+        }
     }
 
     public bool IsCompactDisplay
     {
         get => _isCompactDisplay;
-        set => SetProperty(ref _isCompactDisplay, value);
+        set
+        {
+            if (SetProperty(ref _isCompactDisplay, value))
+            {
+                if (value)
+                {
+                    IsStandardDisplay = false;
+                    _source.DisplayMode = "Kompakt";
+                }
+            }
+        }
     }
 
     public SurveyQuestionEditorViewModel()
     {
+        _source = new SurveyQuestionModel();
     }
 
     public SurveyQuestionEditorViewModel(SurveyQuestionModel source)
     {
-        SelectedQuestionType = source.Type;
-        Title = source.Title;
-        Description = source.Description;
-        IsRequired = source.IsRequired;
-        VariableName = source.VariableName;
-        IsStandardDisplay = source.DisplayMode == "Standard";
-        IsCompactDisplay = source.DisplayMode == "Kompakt";
+        _source = source;
+        _selectedQuestionType = source.Type;
+        _title = source.Title;
+        _description = source.Description;
+        _isRequired = source.IsRequired;
+        _variableName = source.VariableName;
+        _isStandardDisplay = source.DisplayMode == "Standard";
+        _isCompactDisplay = source.DisplayMode == "Kompakt";
     }
 }
 

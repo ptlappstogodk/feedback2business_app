@@ -32,7 +32,10 @@
                     <Label Grid.Column="4" Text="Sidst opdateret" Style="{StaticResource DataTableHeaderStyle}" />
                 </Grid>
 
-                <CollectionView Grid.Row="1" ItemsSource="{Binding Organizations}">
+                <CollectionView Grid.Row="1"
+                                ItemsSource="{Binding Organizations}"
+                                SelectionMode="Single"
+                                SelectedItem="{Binding SelectedOrganization}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid Padding="16" ColumnDefinitions="3*,*,*,*,*">

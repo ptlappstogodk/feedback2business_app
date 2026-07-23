@@ -18,6 +18,10 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="10,8" ColumnDefinitions="*,Auto">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.SelectQuestionCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                                      CommandParameter="{Binding}" />
+                            </Grid.GestureRecognizers>
                             <Label Text="{Binding DisplayTitle}" />
                             <Label Grid.Column="1"
                                    Text="{Binding TypeLabel}"

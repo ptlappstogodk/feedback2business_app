@@ -4,6 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:shared="clr-namespace:Feedback2Business.Views.Shared"
+    xmlns:viewmodels="clr-namespace:Feedback2Business.ViewModels"
+    xmlns:models="clr-namespace:Feedback2Business.Models"
     BackgroundColor="{StaticResource PageBackground}">
 
     <Grid RowDefinitions="Auto,*" Padding="24">
@@ -16,7 +18,7 @@
 
             <VerticalStackLayout Grid.Column="1" Spacing="6">
                 <HorizontalStackLayout Spacing="10">
-                    <Label Text="Retail Group A" Style="{StaticResource PageTitleStyle}" />
+                    <Label Text="{Binding ShellVm.ActiveOrganization.Name}" Style="{StaticResource PageTitleStyle}" />
                     <shared:StatusBadgeView Text="Aktiv"
                                             BadgeColor="{StaticResource SuccessGreenLight}"
                                             BadgeTextColor="{StaticResource SuccessGreen}" />
@@ -33,7 +35,7 @@
 
             <HorizontalStackLayout Grid.Column="2" Spacing="12">
                 <Button Text="Gem ændringer" Style="{StaticResource PrimaryButtonStyle}" />
-                <Button Text="Flere handlinger" Style="{StaticResource SecondaryButtonStyle}" />
+                <Button Text="Flere handlinger" Command="{Binding FlereHandlingerCommand}" Style="{StaticResource SecondaryButtonStyle}" />
             </HorizontalStackLayout>
         </Grid>
 
@@ -49,7 +51,10 @@
                         <Button Grid.Column="1" Text="+" Command="{Binding OpretBrandCommand}" WidthRequest="32" HeightRequest="32" />
                     </Grid>
 
-                    <CollectionView Grid.Row="1" ItemsSource="{Binding Brands}">
+                    <CollectionView Grid.Row="1"
+                                    ItemsSource="{Binding Brands}"
+                                    SelectionMode="Single"
+                                    SelectedItem="{Binding SelectedBrand}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Border Margin="12,6" Padding="12" Style="{StaticResource InnerCardStyle}">
@@ -69,11 +74,14 @@
             <Border Grid.Column="1" Style="{StaticResource CardStyle}">
                 <Grid RowDefinitions="Auto,*,Auto">
                     <Grid Padding="16" ColumnDefinitions="*,Auto">
-                        <Label Text="Surveys for Coffee House" Style="{StaticResource SectionHeaderStyle}" />
+                        <Label Text="{Binding SelectedBrandTitle}" Style="{StaticResource SectionHeaderStyle}" />
                         <Button Grid.Column="1" Text="+ Opret survey" Command="{Binding OpretSurveyCommand}" />
                     </Grid>
 
-                    <CollectionView Grid.Row="1" ItemsSource="{Binding Surveys}">
+                    <CollectionView Grid.Row="1"
+                                    ItemsSource="{Binding Surveys}"
+                                    SelectionMode="Single"
+                                    SelectedItem="{Binding SelectedSurvey}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Border Margin="12,6" Padding="12" Style="{StaticResource InnerCardStyle}">
@@ -95,7 +103,7 @@
             </Border>
 
             <Border Grid.Column="2" Style="{StaticResource CardStyle}">
-                <Grid RowDefinitions="Auto,Auto,Auto,*">
+                <Grid RowDefinitions="Auto,Auto,Auto,*" x:DataType="viewmodels:OrganizationBrandsViewModel">
                     <Grid Padding="16" ColumnDefinitions="Auto,*">
                         <Border WidthRequest="40"
                                 HeightRequest="40"
@@ -104,49 +112,176 @@
                                 StrokeShape="RoundRectangle 10" />
                         <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0" Spacing="4">
                             <HorizontalStackLayout Spacing="10">
-                                <Label Text="Butiksinspektion"
+                                <Label Text="{Binding SelectedSurvey.Name}"
                                        FontSize="20"
                                        FontAttributes="Bold" />
-                                <shared:StatusBadgeView Text="Version 3 (Aktiv)"
+                                <shared:StatusBadgeView Text="{Binding SelectedSurvey.VersionText}"
                                                         BadgeColor="{StaticResource SuccessGreenLight}"
                                                         BadgeTextColor="{StaticResource SuccessGreen}" />
                             </HorizontalStackLayout>
-                            <Label Text="Standard inspection of store operations and presentation."
+                            <Label Text="Standard configuration &amp; administration of survey questions."
                                    TextColor="{StaticResource TextSecondary}"
                                    FontSize="12" />
                         </VerticalStackLayout>
                     </Grid>
 
                     <HorizontalStackLayout Grid.Row="1" Spacing="24" Padding="16,0">
-                        <Label Text="Byg" Style="{StaticResource ActiveTabTextStyle}" />
-                        <Label Text="Logik" Style="{StaticResource TabTextStyle}" />
-                        <Label Text="Indstillinger" Style="{StaticResource TabTextStyle}" />
-                        <Label Text="Oversættelser" Style="{StaticResource TabTextStyle}" />
-                        <Label Text="Versioner" Style="{StaticResource TabTextStyle}" />
+                        <Label Text="Byg" Style="{StaticResource TabTextStyle}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Byg" />
+                            </Label.GestureRecognizers>
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsBygTabActive}" Value="True">
+                                    <Setter Property="Style" Value="{StaticResource ActiveTabTextStyle}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Label Text="Logik" Style="{StaticResource TabTextStyle}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Logik" />
+                            </Label.GestureRecognizers>
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsLogikTabActive}" Value="True">
+                                    <Setter Property="Style" Value="{StaticResource ActiveTabTextStyle}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Label Text="Indstillinger" Style="{StaticResource TabTextStyle}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Indstillinger" />
+                            </Label.GestureRecognizers>
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsIndstillingerTabActive}" Value="True">
+                                    <Setter Property="Style" Value="{StaticResource ActiveTabTextStyle}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Label Text="Oversættelser" Style="{StaticResource TabTextStyle}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Oversættelser" />
+                            </Label.GestureRecognizers>
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsOversaettelserTabActive}" Value="True">
+                                    <Setter Property="Style" Value="{StaticResource ActiveTabTextStyle}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Label Text="Versioner" Style="{StaticResource TabTextStyle}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Versioner" />
+                            </Label.GestureRecognizers>
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsVersionerTabActive}" Value="True">
+                                    <Setter Property="Style" Value="{StaticResource ActiveTabTextStyle}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                     </HorizontalStackLayout>
 
-                    <HorizontalStackLayout Grid.Row="2" Spacing="8" Padding="16,12">
-                        <Button Text="Section" />
-                        <Button Text="Spørgsmål" />
+                    <HorizontalStackLayout Grid.Row="2" Spacing="8" Padding="16,12" IsVisible="{Binding IsBygTabActive}">
+                        <Button Text="Sektion" Command="{Binding AdministrerSektionerCommand}" />
+                        <Button Text="Spørgsmål" Command="{Binding TilfoejSpoergsmaalCommand}" />
                         <Button Text="Indhold" />
                         <Button Text="Side" />
                     </HorizontalStackLayout>
 
                     <Grid Grid.Row="3" ColumnDefinitions="*,300" ColumnSpacing="16" Padding="16">
-                        <ScrollView Grid.Column="0">
+                        <!-- Byg Tab Panel -->
+                        <ScrollView Grid.Column="0" IsVisible="{Binding IsBygTabActive}">
                             <VerticalStackLayout Spacing="12">
-                                <shared:SectionCardView Title="1. Butiksinformation"
-                                                        ItemsSource="{Binding Section1Questions}" />
-                                <shared:SectionCardView Title="2. Eksteriør"
-                                                        ItemsSource="{Binding Section2Questions}" />
-                                <shared:SectionCardView Title="3. Indretning &amp; præsentation"
-                                                        ItemsSource="{Binding Section3Questions}" />
-                                <Button Text="+ Tilføj sektion her" />
+                                <CollectionView ItemsSource="{Binding Sections}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:SectionModel">
+                                            <shared:SectionCardView Title="{Binding Title}"
+                                                                    ItemsSource="{Binding Questions}"
+                                                                    Margin="0,0,0,12" />
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Button Text="+ Tilføj sektion her" Command="{Binding TilfoejSektionCommand}" />
                             </VerticalStackLayout>
                         </ScrollView>
 
+                        <!-- Logik Tab Panel -->
+                        <ScrollView Grid.Column="0" IsVisible="{Binding IsLogikTabActive}">
+                            <VerticalStackLayout Spacing="16" Padding="12">
+                                <Label Text="Logiske regler for survey" FontAttributes="Bold" FontSize="16" />
+                                <Border Style="{StaticResource InnerCardStyle}" Padding="16">
+                                    <VerticalStackLayout Spacing="10">
+                                        <Label Text="Betinget visning" FontAttributes="Bold" />
+                                        <Label Text="Hvis facade_ren == Nej, vis spørgsmål 2.4 'Billede af facade'" TextColor="{StaticResource TextSecondary}" />
+                                        <BoxView HeightRequest="1" Color="{StaticResource BorderColor}" Margin="0,5" />
+                                        <Label Text="Hvis reng_plan == Nej, tilføj handling 'Gør rent'" TextColor="{StaticResource TextSecondary}" />
+                                    </VerticalStackLayout>
+                                </Border>
+                                <Button Text="+ Tilføj ny logikregel" HorizontalOptions="Start" />
+                            </VerticalStackLayout>
+                        </ScrollView>
+
+                        <!-- Indstillinger Tab Panel -->
+                        <ScrollView Grid.Column="0" IsVisible="{Binding IsIndstillingerTabActive}">
+                            <VerticalStackLayout Spacing="16" Padding="12">
+                                <Label Text="Indstillinger" FontAttributes="Bold" FontSize="16" />
+                                <Label Text="Survey Navn" Style="{StaticResource FormLabelStyle}" />
+                                <Entry Text="{Binding SelectedSurvey.Name}" />
+                                <HorizontalStackLayout Spacing="12" Margin="0,10">
+                                    <CheckBox IsChecked="True" />
+                                    <Label Text="Survey er aktiv" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <Label Text="Målgruppe" Style="{StaticResource FormLabelStyle}" />
+                                <Entry Placeholder="Alle butikker" />
+                            </VerticalStackLayout>
+                        </ScrollView>
+
+                        <!-- Oversættelser Tab Panel -->
+                        <ScrollView Grid.Column="0" IsVisible="{Binding IsOversaettelserTabActive}">
+                            <VerticalStackLayout Spacing="16" Padding="12">
+                                <Label Text="Oversættelser" FontAttributes="Bold" FontSize="16" />
+                                <HorizontalStackLayout Spacing="10">
+                                    <Label Text="Sprog:" VerticalOptions="Center" />
+                                    <shared:StatusBadgeView Text="Dansk (Primær)" BadgeColor="{StaticResource SuccessGreenLight}" BadgeTextColor="{StaticResource SuccessGreen}" />
+                                    <shared:StatusBadgeView Text="Engelsk" BadgeColor="{StaticResource PrimaryBlueLight}" BadgeTextColor="{StaticResource PrimaryBlue}" />
+                                </HorizontalStackLayout>
+                                <Border Style="{StaticResource InnerCardStyle}" Padding="16" Margin="0,10,0,0">
+                                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*" ColumnSpacing="16" RowSpacing="10">
+                                        <Label Text="Dansk" FontAttributes="Bold" />
+                                        <Label Grid.Column="1" Text="Engelsk" FontAttributes="Bold" />
+                                        <Label Grid.Row="1" Text="Facade ren og vedligeholdt?" />
+                                        <Entry Grid.Row="1" Grid.Column="1" Text="Is facade clean and maintained?" />
+                                    </Grid>
+                                </Border>
+                            </VerticalStackLayout>
+                        </ScrollView>
+
+                        <!-- Versioner Tab Panel -->
+                        <ScrollView Grid.Column="0" IsVisible="{Binding IsVersionerTabActive}">
+                            <VerticalStackLayout Spacing="16" Padding="12">
+                                <Label Text="Historik og Versioner" FontAttributes="Bold" FontSize="16" />
+                                <Border Style="{StaticResource InnerCardStyle}" Padding="16" Margin="0,0,0,10">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <VerticalStackLayout>
+                                            <Label Text="Version 3 (Aktiv)" FontAttributes="Bold" />
+                                            <Label Text="Udgivet af Anders Kirk · I dag, 08:30" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                        </VerticalStackLayout>
+                                        <Button Grid.Column="1" Text="Genskab" Style="{StaticResource SecondaryButtonStyle}" IsEnabled="False" />
+                                    </Grid>
+                                </Border>
+                                <Border Style="{StaticResource InnerCardStyle}" Padding="16" Margin="0,0,0,10">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <VerticalStackLayout>
+                                            <Label Text="Version 2" FontAttributes="Bold" />
+                                            <Label Text="Udgivet af Maria Jensen · Gårsdagen, 14:15" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                        </VerticalStackLayout>
+                                        <Button Grid.Column="1" Text="Genskab" Style="{StaticResource SecondaryButtonStyle}" />
+                                    </Grid>
+                                </Border>
+                            </VerticalStackLayout>
+                        </ScrollView>
+
+                        <!-- Property Editor Column -->
                         <shared:QuestionPropertyPanel Grid.Column="1"
-                                                      BindingContext="{Binding SelectedQuestion}" />
+                                                      BindingContext="{Binding SelectedQuestion}"
+                                                      IsVisible="{Binding IsBygTabActive}" />
                     </Grid>
                 </Grid>
             </Border>

@@ -26,6 +26,7 @@ public partial class DashboardShellPage : ContentPage
         Header.BindingContext = _vm;
 
         Sidebar.NavigationRequested += Sidebar_NavigationRequested;
+        _vm.NavigationRequested += (s, key) => NavigateTo(key);
 
         Loaded += DashboardShellPage_Loaded;
     }
@@ -54,7 +55,7 @@ public partial class DashboardShellPage : ContentPage
 
             case "Brands":
                 _vm.BreadcrumbPrimary = "Organisationer";
-                _vm.BreadcrumbSecondary = "Retail Group A";
+                _vm.BreadcrumbSecondary = _vm.ActiveOrganization?.Name ?? "Retail Group A";
                 page = _services.GetRequiredService<OrganizationBrandsPage>();
                 break;
 

@@ -36,6 +36,13 @@
 
                 <Label Text="Variabelnavn (valgfri)" Style="{StaticResource FormLabelStyle}" />
                 <Entry Text="{Binding VariableName}" />
+
+                <Button Text="Slet spørgsmål"
+                        Command="{Binding BindingContext.SletSpoergsmaalCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                        CommandParameter="{Binding}"
+                        BackgroundColor="Red"
+                        TextColor="White"
+                        Margin="0,10,0,0" />
             </VerticalStackLayout>
         </ScrollView>
     </Border>

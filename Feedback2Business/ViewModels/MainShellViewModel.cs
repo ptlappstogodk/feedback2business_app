@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using Feedback2Business.Models;
 
@@ -7,6 +8,9 @@ public class MainShellViewModel : ObservableObject
 {
     private string _breadcrumbPrimary = "Organisationer";
     private string _breadcrumbSecondary = "Retail Group A";
+    private OrganizationModel? _activeOrganization;
+
+    public event EventHandler<string>? NavigationRequested;
 
     public ObservableCollection<NavigationItem> NavigationItems { get; } = new();
     public UserModel CurrentUser { get; } = new() { Name = "Anders Kirk", Role = "Admin" };
@@ -21,6 +25,23 @@ public class MainShellViewModel : ObservableObject
     {
         get => _breadcrumbSecondary;
         set => SetProperty(ref _breadcrumbSecondary, value);
+    }
+
+    public OrganizationModel? ActiveOrganization
+    {
+        get => _activeOrganization;
+        set
+        {
+            if (SetProperty(ref _activeOrganization, value))
+            {
+                BreadcrumbSecondary = value?.Name ?? "";
+            }
+        }
+    }
+
+    public void RequestNavigation(string key)
+    {
+        NavigationRequested?.Invoke(this, key);
     }
 
     public MainShellViewModel()
