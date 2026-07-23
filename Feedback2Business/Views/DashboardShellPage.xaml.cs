@@ -114,6 +114,10 @@ public partial class DashboardShellPage : ContentPage
         }
 
         PageHost.Content = page.Content;
+        if (PageHost.Content != null)
+        {
+            PageHost.Content.BindingContext = page.BindingContext;
+        }
     }
 }
 
