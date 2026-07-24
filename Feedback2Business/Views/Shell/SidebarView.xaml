@@ -34,7 +34,7 @@
                         StrokeThickness="0"
                         BackgroundColor="#2F4B73"
                         StrokeShape="RoundRectangle 16">
-                    <Label Text="AK"
+                    <Label Text="{Binding CurrentUser.Initials}"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
                            TextColor="White"
@@ -42,8 +42,8 @@
                 </Border>
 
                 <VerticalStackLayout Grid.Column="1" Margin="10,0,0,0" Spacing="0">
-                    <Label Text="Anders Kirk" TextColor="White" FontSize="13" />
-                    <Label Text="Admin" TextColor="#B8C7E0" FontSize="11" />
+                    <Label Text="{Binding CurrentUser.Name}" TextColor="White" FontSize="13" />
+                    <Label Text="{Binding CurrentUser.Role}" TextColor="#B8C7E0" FontSize="11" />
                 </VerticalStackLayout>
 
                 <Label Grid.Column="2" Text="›" TextColor="White" VerticalOptions="Center" />

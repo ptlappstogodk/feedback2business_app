@@ -11,6 +11,17 @@ public class UserModel
     public int OrganizationId { get; set; }
 
     public string LastActiveText => LastActiveAt?.ToString("dd. MM yy") ?? "-";
+
+    public string Initials
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Name)) return "?";
+            var parts = Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 1) return parts[0][0].ToString().ToUpper();
+            return (parts[0][0].ToString() + parts[^1][0].ToString()).ToUpper();
+        }
+    }
 }
 
 

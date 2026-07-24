@@ -1,19 +1,28 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Feedback2Business.Models;
+using Feedback2Business.Services;
 
 namespace Feedback2Business.ViewModels;
 
 public class MainShellViewModel : ObservableObject
 {
+    private readonly IMockDataService _data;
     private string _breadcrumbPrimary = "Organisationer";
-    private string _breadcrumbSecondary = "Retail Group A";
+    private string _breadcrumbSecondary = string.Empty;
     private OrganizationModel? _activeOrganization;
+    private UserModel? _currentUser;
 
     public event EventHandler<string>? NavigationRequested;
 
     public ObservableCollection<NavigationItem> NavigationItems { get; } = new();
-    public UserModel CurrentUser { get; } = new() { Name = "Anders Kirk", Role = "Admin" };
+
+    public UserModel? CurrentUser
+    {
+        get => _currentUser;
+        set => SetProperty(ref _currentUser, value);
+    }
 
     public string BreadcrumbPrimary
     {
@@ -35,14 +44,30 @@ public class MainShellViewModel : ObservableObject
             if (SetProperty(ref _activeOrganization, value))
             {
                 BreadcrumbSecondary = value?.Name ?? "";
+                LoadCurrentUser();
             }
         }
+    }
+
+    private void LoadCurrentUser()
+    {
+        if (ActiveOrganization != null)
+        {
+            var users = _data.GetUsers(ActiveOrganization.Id);
+            if (users.Count > 0)
+            {
+                CurrentUser = users.First();
+                return;
+            }
+        }
+        CurrentUser = new UserModel { Name = "Intet Navn", Role = "Ingen" };
     }
 
     public void NotifyActiveOrganizationChanged()
     {
         Raise(nameof(ActiveOrganization));
         BreadcrumbSecondary = ActiveOrganization?.Name ?? "";
+        LoadCurrentUser();
     }
 
     public void RequestNavigation(string key)
@@ -50,8 +75,10 @@ public class MainShellViewModel : ObservableObject
         NavigationRequested?.Invoke(this, key);
     }
 
-    public MainShellViewModel()
+    public MainShellViewModel(IMockDataService data)
     {
+        _data = data;
+
         NavigationItems.Add(new NavigationItem { Key = "Organizations", Title = "Organisationer" });
         NavigationItems.Add(new NavigationItem { Key = "Brands", Title = "Brands" });
         NavigationItems.Add(new NavigationItem { Key = "Users", Title = "Brugere" });

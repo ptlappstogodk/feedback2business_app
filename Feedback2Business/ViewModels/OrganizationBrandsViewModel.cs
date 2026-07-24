@@ -24,6 +24,24 @@ public class OrganizationBrandsViewModel : ObservableObject
 
     public MobilePreviewModel Preview { get; }
 
+    private bool _isSurveyActive = true;
+    public bool IsSurveyActive
+    {
+        get => _isSurveyActive;
+        set => SetProperty(ref _isSurveyActive, value);
+    }
+
+    private string _surveyTargetAudience = "Alle butikker";
+    public string SurveyTargetAudience
+    {
+        get => _surveyTargetAudience;
+        set => SetProperty(ref _surveyTargetAudience, value);
+    }
+
+    public ObservableCollection<string> LogicRules { get; } = new();
+    public ObservableCollection<TranslationItemModel> Translations { get; } = new();
+    public ObservableCollection<VersionItemModel> Versions { get; } = new();
+
     public BrandModel? SelectedBrand
     {
         get => _selectedBrand;
@@ -135,54 +153,123 @@ public class OrganizationBrandsViewModel : ObservableObject
     private void OnSurveySelected(SurveyModel? survey)
     {
         Sections.Clear();
+        LogicRules.Clear();
+        Translations.Clear();
+        Versions.Clear();
+
         if (survey == null)
         {
             SelectedQuestion = new SurveyQuestionEditorViewModel(new SurveyQuestionModel());
             return;
         }
 
+        // 1. Fetch questions for the selected survey from the database!
+        var dbQuestions = _data.GetQuestionsForSurvey(survey.Id);
+        
+        // Group questions by SectionIndex and build SectionModel dynamically!
+        var grouped = dbQuestions.GroupBy(q => q.SectionIndex).OrderBy(g => g.Key);
+        foreach (var group in grouped)
+        {
+            var firstQ = group.First();
+            string sectionTitle = !string.IsNullOrWhiteSpace(firstQ.SectionTitle)
+                ? $"{group.Key}. {firstQ.SectionTitle}"
+                : $"{group.Key}. Sektion";
+
+            var section = new SectionModel { Title = sectionTitle };
+            foreach (var q in group)
+            {
+                section.Questions.Add(q);
+            }
+            Sections.Add(section);
+        }
+
+        // Fallback if no questions are found in the database
+        if (Sections.Count == 0)
+        {
+            var sec1 = new SectionModel { Title = "1. Ny Sektion" };
+            sec1.Questions.Add(new SurveyQuestionModel { NumberLabel = "1.1", Title = "Nyt Spørgsmål", Type = "Ja / Nej", SectionIndex = 1, SectionTitle = "Ny Sektion", SurveyId = survey.Id });
+            Sections.Add(sec1);
+        }
+
+        // 2. Populate dynamic settings fields
+        IsSurveyActive = true;
+        SurveyTargetAudience = survey.Name == "Butiksinspektion" ? "Udvalgte testbutikker" : "Alle butikker";
+
+        // 3. Populate dynamic logic rules
         if (survey.Name == "Butiksinspektion")
         {
-            var sec1 = new SectionModel { Title = "1. Butiksinformation" };
-            foreach (var q in _data.GetSection1Questions()) sec1.Questions.Add(q);
-
-            var sec2 = new SectionModel { Title = "2. Eksteriør" };
-            foreach (var q in _data.GetSection2Questions()) sec2.Questions.Add(q);
-
-            var sec3 = new SectionModel { Title = "3. Indretning & præsentation" };
-            foreach (var q in _data.GetSection3Questions()) sec3.Questions.Add(q);
-
-            Sections.Add(sec1);
-            Sections.Add(sec2);
-            Sections.Add(sec3);
+            LogicRules.Add("Hvis facade_ren == Nej, vis spørgsmål 2.4 'Billede af facade'");
+            LogicRules.Add("Hvis vinduer_rene == Nej, tilføj handling 'Rengør vinduer'");
         }
         else if (survey.Name == "HACCP Tjekliste")
         {
-            var sec1 = new SectionModel { Title = "1. Temperaturmåling" };
-            sec1.Questions.Add(new SurveyQuestionModel { NumberLabel = "1.1", Title = "Køleskab temperatur (C)", Type = "Tekst", Description = "Indtast temperaturen i køleskabet i Celsius.", IsRequired = true, VariableName = "temp_kole", DisplayMode = "Standard" });
-            sec1.Questions.Add(new SurveyQuestionModel { NumberLabel = "1.2", Title = "Fryser temperatur (C)", Type = "Tekst", Description = "Indtast temperaturen i fryseren i Celsius.", IsRequired = true, VariableName = "temp_frys", DisplayMode = "Standard" });
-
-            var sec2 = new SectionModel { Title = "2. Rengøring & hygiejne" };
-            sec2.Questions.Add(new SurveyQuestionModel { NumberLabel = "2.1", Title = "Personlig hygiejne OK?", Type = "Ja / Nej", Description = "Tjek om alt personale har rent arbejdstøj og korrekt håndhygiejne.", IsRequired = true, VariableName = "pers_hyg", DisplayMode = "Standard" });
-            sec2.Questions.Add(new SurveyQuestionModel { NumberLabel = "2.2", Title = "Rengøringsplan udfyldt?", Type = "Ja / Nej", VariableName = "reng_plan" });
-
-            Sections.Add(sec1);
-            Sections.Add(sec2);
+            LogicRules.Add("Hvis temp_kole > 5, vis advarsel 'Køleskab for varmt!'");
+            LogicRules.Add("Hvis reng_plan == Nej, tilføj handling 'Gør rent'");
         }
         else if (survey.Name == "Kampagneevaluering")
         {
-            var sec1 = new SectionModel { Title = "1. Kampagnemateriale" };
-            sec1.Questions.Add(new SurveyQuestionModel { NumberLabel = "1.1", Title = "Hovedskilt på plads ved indgang?", Type = "Ja / Nej", VariableName = "hovedskilt" });
-            sec1.Questions.Add(new SurveyQuestionModel { NumberLabel = "1.2", Title = "Brochurer tilgængelige?", Type = "Ja / Nej", VariableName = "brochurer" });
-            sec1.Questions.Add(new SurveyQuestionModel { NumberLabel = "1.3", Title = "Billede af udstilling", Type = "Billede", VariableName = "img_udstil" });
-
-            Sections.Add(sec1);
+            LogicRules.Add("Hvis hovedskilt == Nej, vis advarsel 'Kampagne ikke synlig!'");
         }
         else
         {
-            var sec1 = new SectionModel { Title = "1. Ny Sektion" };
-            sec1.Questions.Add(new SurveyQuestionModel { NumberLabel = "1.1", Title = "Nyt Spørgsmål", Type = "Ja / Nej" });
-            Sections.Add(sec1);
+            LogicRules.Add("Ingen logikregler defineret for denne survey.");
+        }
+
+        // 4. Populate dynamic translations
+        var questions = Sections.SelectMany(s => s.Questions).ToList();
+        foreach (var q in questions)
+        {
+            string eng = q.Title;
+            if (q.Title == "Facade ren og vedligeholdt?") eng = "Is facade clean and maintained?";
+            else if (q.Title == "Dato og tidspunkt") eng = "Date and time";
+            else if (q.Title == "Butik") eng = "Store";
+            else if (q.Title == "Inspektør") eng = "Inspector";
+            else if (q.Title == "Skiltning intakt og synlig?") eng = "Is signage intact and visible?";
+            else if (q.Title == "Vinduer rene") eng = "Are windows clean?";
+            else if (q.Title == "Billede of facade") eng = "Image of facade";
+            else if (q.Title == "Butikken fremstår ryddelig") eng = "Store appears tidy";
+            else if (q.Title == "Produkter korrekt prissat") eng = "Products priced correctly";
+            else if (q.Title == "Kampagnemateriale på plads") eng = "Campaign material in place";
+            else if (q.Title == "Billede af kampagne") eng = "Image of campaign";
+            else if (q.Title == "Køleskab temperatur (C)") eng = "Refrigerator temperature (C)";
+            else if (q.Title == "Fryser temperatur (C)") eng = "Freezer temperature (C)";
+            else if (q.Title == "Personlig hygiejne OK?") eng = "Personal hygiene OK?";
+            else if (q.Title == "Rengøringsplan udfyldt?") eng = "Cleaning plan completed?";
+            else if (q.Title == "Hovedskilt på plads ved indgang?") eng = "Main sign in place at entrance?";
+            else if (q.Title == "Brochurer tilgængelige?") eng = "Brochures available?";
+            else if (q.Title == "Billede af udstilling") eng = "Image of display";
+
+            Translations.Add(new TranslationItemModel { Danish = q.Title, English = eng });
+        }
+
+        // 5. Populate dynamic versions
+        Versions.Add(new VersionItemModel
+        {
+            Version = survey.Version,
+            Author = "Anders Kirk",
+            DateText = "I dag, 08:30",
+            IsActive = true
+        });
+
+        if (survey.Version > 1)
+        {
+            Versions.Add(new VersionItemModel
+            {
+                Version = survey.Version - 1,
+                Author = "Maria Jensen",
+                DateText = "Gårsdagen, 14:15",
+                IsActive = false
+            });
+        }
+        if (survey.Version > 2)
+        {
+            Versions.Add(new VersionItemModel
+            {
+                Version = survey.Version - 2,
+                Author = "Lars Petersen",
+                DateText = "Sidste uge, 10:00",
+                IsActive = false
+            });
         }
 
         var firstQuestion = Sections.SelectMany(s => s.Questions).FirstOrDefault();
@@ -405,6 +492,21 @@ public class OrganizationBrandsViewModel : ObservableObject
             }
         }
     }
+}
+
+public class TranslationItemModel
+{
+    public string Danish { get; set; } = string.Empty;
+    public string English { get; set; } = string.Empty;
+}
+
+public class VersionItemModel
+{
+    public int Version { get; set; }
+    public string Author { get; set; } = string.Empty;
+    public string DateText { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
+    public bool CanRestore => !IsActive;
 }
 
 

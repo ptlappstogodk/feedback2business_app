@@ -15,7 +15,7 @@ public class ActivityLogViewModel : ObservableObject
     }
 
     public ObservableCollection<string> Actions { get; } = new() { "Alle", "Opdateret", "Oprettet", "Uploadet", "Eksporteret" };
-    public ObservableCollection<string> Users { get; } = new() { "Alle", "Anders Kirk", "Maria Jensen", "Lars Petersen" };
+    public ObservableCollection<string> Users { get; } = new();
     public ObservableCollection<string> Periods { get; } = new() { "7 dage", "30 dage", "90 dage" };
 
     public ObservableCollection<ActivityEventModel> ActivityEvents { get; } = new();
@@ -25,6 +25,14 @@ public class ActivityLogViewModel : ObservableObject
         int? orgId = shellVm.ActiveOrganization?.Id;
         foreach (var item in data.GetActivityEvents(orgId))
             ActivityEvents.Add(item);
+
+        Users.Clear();
+        Users.Add("Alle");
+        foreach (var u in data.GetUsers(orgId))
+        {
+            if (!string.IsNullOrEmpty(u.Name))
+                Users.Add(u.Name);
+        }
     }
 }
 

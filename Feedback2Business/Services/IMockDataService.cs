@@ -7,6 +7,7 @@ public interface IMockDataService
     List<OrganizationModel> GetOrganizations();
     List<BrandModel> GetBrands(int? organizationId = null);
     List<SurveyModel> GetSurveys(int? brandId = null);
+    List<SurveyQuestionModel> GetQuestionsForSurvey(int surveyId);
     List<SurveyQuestionModel> GetSection1Questions();
     List<SurveyQuestionModel> GetSection2Questions();
     List<SurveyQuestionModel> GetSection3Questions();

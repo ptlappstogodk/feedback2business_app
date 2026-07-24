@@ -18,7 +18,7 @@ public class OrganizationUsersViewModel : ObservableObject
         set => SetProperty(ref _searchText, value);
     }
 
-    public ObservableCollection<string> Roles { get; } = new() { "Alle", "Admin", "Manager", "Editor", "Viewer" };
+    public ObservableCollection<string> Roles { get; } = new();
     public ObservableCollection<string> Statuses { get; } = new() { "Alle", "Aktiv", "Inviteret", "Deaktiveret" };
     public ObservableCollection<UserModel> Users { get; } = new();
 
@@ -31,6 +31,14 @@ public class OrganizationUsersViewModel : ObservableObject
         int? orgId = _shellVm.ActiveOrganization?.Id;
         foreach (var item in data.GetUsers(orgId))
             Users.Add(item);
+
+        Roles.Clear();
+        Roles.Add("Alle");
+        foreach (var role in data.GetRoles(orgId))
+        {
+            if (!string.IsNullOrEmpty(role.Name))
+                Roles.Add(role.Name);
+        }
 
         InviterUserCommand = new RelayCommand(async () => await InviterUserAsync());
     }

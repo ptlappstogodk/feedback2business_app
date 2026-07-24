@@ -4,6 +4,7 @@ namespace Feedback2Business.Models;
 
 public class SurveyQuestionModel : ObservableObject
 {
+    private int _id;
     private string _numberLabel = string.Empty;
     private string _title = string.Empty;
     private string _description = string.Empty;
@@ -11,6 +12,33 @@ public class SurveyQuestionModel : ObservableObject
     private bool _isRequired;
     private string _variableName = string.Empty;
     private string _displayMode = "Standard";
+    private int _sectionIndex;
+    private string _sectionTitle = string.Empty;
+    private int _surveyId;
+
+    public int Id
+    {
+        get => _id;
+        set => SetProperty(ref _id, value);
+    }
+
+    public int SectionIndex
+    {
+        get => _sectionIndex;
+        set => SetProperty(ref _sectionIndex, value);
+    }
+
+    public int SurveyId
+    {
+        get => _surveyId;
+        set => SetProperty(ref _surveyId, value);
+    }
+
+    public string SectionTitle
+    {
+        get => _sectionTitle;
+        set => SetProperty(ref _sectionTitle, value);
+    }
 
     public string NumberLabel
     {

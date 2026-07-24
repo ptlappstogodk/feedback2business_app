@@ -12,7 +12,7 @@ public class SettingsGeneralViewModel : ObservableObject
 
     public string OrganizationName
     {
-        get => _shellVm.ActiveOrganization?.Name ?? "Retail Group A";
+        get => _shellVm.ActiveOrganization?.Name ?? string.Empty;
         set
         {
             if (_shellVm.ActiveOrganization != null && _shellVm.ActiveOrganization.Name != value)
@@ -80,6 +80,16 @@ public class SettingsGeneralViewModel : ObservableObject
     {
         _data = data;
         _shellVm = shellVm;
+
+        if (_shellVm.ActiveOrganization == null)
+        {
+            var orgs = _data.GetOrganizations();
+            if (orgs.Count > 0)
+            {
+                _shellVm.ActiveOrganization = orgs.First();
+            }
+        }
+
         int orgId = _shellVm.ActiveOrganization?.Id ?? 1;
         _settings = data.GetAppSettings(orgId);
     }
