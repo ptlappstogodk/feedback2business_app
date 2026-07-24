@@ -40,7 +40,8 @@ public class OrganizationsViewModel : ObservableObject
     {
         _data = data;
         _shellVm = shellVm;
-        foreach (var item in data.GetOrganizations())
+        int? userId = _shellVm.LoggedInUser?.Id;
+        foreach (var item in data.GetOrganizations(userId))
             Organizations.Add(item);
 
         if (_shellVm.ActiveOrganization == null && Organizations.Count > 0)

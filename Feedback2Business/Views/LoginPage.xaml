@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Feedback2Business.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="{StaticResource PageBackground}">
+
+    <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" WidthRequest="420" Padding="16">
+        <Border Style="{StaticResource CardStyle}" Padding="24">
+            <VerticalStackLayout Spacing="16">
+                <!-- Header -->
+                <Label Text="Feedback2Business" 
+                       FontSize="28" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Center" 
+                       TextColor="{StaticResource PrimaryBlue}" />
+                
+                <Label Text="{Binding TitleText}" 
+                       Style="{StaticResource PageSubtitleStyle}" 
+                       HorizontalOptions="Center" 
+                       Margin="0,0,0,12" />
+
+                <!-- Name field (Register only) -->
+                <VerticalStackLayout Spacing="4" IsVisible="{Binding IsRegisterMode}">
+                    <Label Text="Navn" Style="{StaticResource FormLabelStyle}" />
+                    <Entry Placeholder="Indtast dit fulde navn" Text="{Binding Name}" />
+                </VerticalStackLayout>
+
+                <!-- Email field -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Email" Style="{StaticResource FormLabelStyle}" />
+                    <Entry Placeholder="Indtast din email" Text="{Binding Email}" Keyboard="Email" />
+                </VerticalStackLayout>
+
+                <!-- Password field -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Adgangskode" Style="{StaticResource FormLabelStyle}" />
+                    <Entry Placeholder="Indtast din adgangskode" Text="{Binding Password}" IsPassword="True" />
+                </VerticalStackLayout>
+
+                <!-- Organization Name field (Register only) -->
+                <VerticalStackLayout Spacing="4" IsVisible="{Binding IsRegisterMode}">
+                    <Label Text="Organisationsnavn" Style="{StaticResource FormLabelStyle}" />
+                    <Entry Placeholder="Indtast navnet på din organisation" Text="{Binding OrganizationName}" />
+                </VerticalStackLayout>
+
+                <!-- Error/Status Message -->
+                <Label Text="{Binding ErrorMessage}" 
+                       TextColor="Red" 
+                       FontSize="12" 
+                       HorizontalOptions="Center" 
+                       IsVisible="{Binding HasError}" />
+
+                <!-- Primary Action Button -->
+                <Button Text="{Binding PrimaryActionButtonText}" 
+                        Command="{Binding PrimaryActionCommand}" 
+                        Style="{StaticResource PrimaryButtonStyle}" 
+                        HeightRequest="44" 
+                        Margin="0,12,0,0" />
+
+                <!-- Extra links -->
+                <Grid ColumnDefinitions="*,*" Margin="0,8,0,0">
+                    <Button Grid.Column="0" 
+                            Text="{Binding SecondaryActionLinkText}" 
+                            Command="{Binding ToggleModeCommand}" 
+                            Style="{StaticResource LinkButtonStyle}" 
+                            HorizontalOptions="Start" />
+                    
+                    <Button Grid.Column="1" 
+                            Text="Glemt adgangskode?" 
+                            Command="{Binding ForgotPasswordCommand}" 
+                            Style="{StaticResource LinkButtonStyle}" 
+                            HorizontalOptions="End" 
+                            IsVisible="{Binding IsLoginMode}" />
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

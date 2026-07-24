@@ -28,7 +28,40 @@ public class ApiDataService : IMockDataService
         return response.Content.ReadFromJsonAsync<T>().GetAwaiter().GetResult() ?? Activator.CreateInstance<T>();
     }
 
-    public List<OrganizationModel> GetOrganizations() => Get<List<OrganizationModel>>("organizations");
+    public List<OrganizationModel> GetOrganizations(int? userId = null) => Get<List<OrganizationModel>>(userId.HasValue ? $"organizations?userId={userId.Value}" : "organizations");
+
+    public UserModel? Login(string email, string password)
+    {
+        try
+        {
+            var response = _httpClient.PostAsJsonAsync("users/login", new { Email = email, Password = password }).GetAwaiter().GetResult();
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                return null;
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Login failed with status {response.StatusCode}");
+            }
+            return response.Content.ReadFromJsonAsync<UserModel>().GetAwaiter().GetResult();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Login call failed: {ex.Message}");
+            return null;
+        }
+    }
+
+    public UserModel? Register(string name, string email, string password, string organizationName)
+    {
+        var response = _httpClient.PostAsJsonAsync("users/register", new { Name = name, Email = email, Password = password, OrganizationName = organizationName }).GetAwaiter().GetResult();
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            throw new Exception($"Registration failed: {errorBody}");
+        }
+        return response.Content.ReadFromJsonAsync<UserModel>().GetAwaiter().GetResult();
+    }
     public List<BrandModel> GetBrands(int? organizationId = null) => Get<List<BrandModel>>(organizationId.HasValue ? $"brands?organizationId={organizationId.Value}" : "brands");
     public List<SurveyModel> GetSurveys(int? brandId = null) => Get<List<SurveyModel>>(brandId.HasValue ? $"surveys?brandId={brandId.Value}" : "surveys");
     public List<SurveyQuestionModel> GetQuestionsForSurvey(int surveyId) => Get<List<SurveyQuestionModel>>($"surveys/questions?surveyId={surveyId}");

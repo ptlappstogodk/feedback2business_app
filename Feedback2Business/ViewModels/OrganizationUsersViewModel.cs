@@ -18,6 +18,8 @@ public class OrganizationUsersViewModel : ObservableObject
         set => SetProperty(ref _searchText, value);
     }
 
+    public bool IsAdmin => _shellVm.CurrentUser?.Role == "Admin";
+
     public ObservableCollection<string> Roles { get; } = new();
     public ObservableCollection<string> Statuses { get; } = new() { "Alle", "Aktiv", "Inviteret", "Deaktiveret" };
     public ObservableCollection<UserModel> Users { get; } = new();

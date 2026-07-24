@@ -21,6 +21,14 @@ public partial class SidebarView : ContentView
     private void SettingsApp_Clicked(object sender, EventArgs e) => Raise("SettingsApp");
     private void Roles_Clicked(object sender, EventArgs e) => Raise("Roles");
     private void ActivityLog_Clicked(object sender, EventArgs e) => Raise("ActivityLog");
+
+    private void Logout_Clicked(object sender, EventArgs e)
+    {
+        if (BindingContext is ViewModels.MainShellViewModel vm)
+        {
+            vm.Logout();
+        }
+    }
 }
 
 

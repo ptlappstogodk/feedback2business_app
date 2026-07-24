@@ -13,10 +13,23 @@ public class MainShellViewModel : ObservableObject
     private string _breadcrumbSecondary = string.Empty;
     private OrganizationModel? _activeOrganization;
     private UserModel? _currentUser;
+    private UserModel? _loggedInUser;
 
     public event EventHandler<string>? NavigationRequested;
 
     public ObservableCollection<NavigationItem> NavigationItems { get; } = new();
+
+    public UserModel? LoggedInUser
+    {
+        get => _loggedInUser;
+        set
+        {
+            if (SetProperty(ref _loggedInUser, value))
+            {
+                LoadCurrentUser();
+            }
+        }
+    }
 
     public UserModel? CurrentUser
     {
@@ -51,16 +64,36 @@ public class MainShellViewModel : ObservableObject
 
     private void LoadCurrentUser()
     {
-        if (ActiveOrganization != null)
+        if (ActiveOrganization != null && LoggedInUser != null)
         {
             var users = _data.GetUsers(ActiveOrganization.Id);
-            if (users.Count > 0)
+            var me = users.FirstOrDefault(u => u.Email.ToLower() == LoggedInUser.Email.ToLower());
+            if (me != null)
             {
-                CurrentUser = users.First();
+                CurrentUser = me;
                 return;
             }
         }
-        CurrentUser = new UserModel { Name = "Intet Navn", Role = "Ingen" };
+        CurrentUser = LoggedInUser ?? new UserModel { Name = "Intet Navn", Role = "Ingen" };
+    }
+
+    public void Logout()
+    {
+        Microsoft.Maui.Storage.Preferences.Default.Remove("SavedEmail");
+        Microsoft.Maui.Storage.Preferences.Default.Remove("SavedPassword");
+
+        LoggedInUser = null;
+        CurrentUser = null;
+        ActiveOrganization = null;
+
+        Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() =>
+        {
+            if (Application.Current != null)
+            {
+                var loginPage = (Views.LoginPage)Application.Current.Handler.MauiContext!.Services.GetRequiredService<Views.LoginPage>();
+                Application.Current.MainPage = loginPage;
+            }
+        });
     }
 
     public void NotifyActiveOrganizationChanged()

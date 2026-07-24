@@ -4,12 +4,33 @@ namespace Feedback2Business.Services;
 
 public class MockDataService : IMockDataService
 {
-    public List<OrganizationModel> GetOrganizations() =>
-    [
-        new() { Id = 1, Name = "Retail Group A", BrandCount = 3, SurveyCount = 20, UserCount = 5, UpdatedAt = DateTime.Today.AddDays(-2) },
-        new() { Id = 2, Name = "FoodCo Holding", BrandCount = 2, SurveyCount = 14, UserCount = 3, UpdatedAt = DateTime.Today.AddDays(-5) },
-        new() { Id = 3, Name = "Service Partners", BrandCount = 4, SurveyCount = 34, UserCount = 8, UpdatedAt = DateTime.Today.AddDays(-10) }
-    ];
+    public List<OrganizationModel> GetOrganizations(int? userId = null)
+    {
+        var list = new List<OrganizationModel>
+        {
+            new() { Id = 1, Name = "Retail Group A", BrandCount = 3, SurveyCount = 20, UserCount = 5, UpdatedAt = DateTime.Today.AddDays(-2) },
+            new() { Id = 2, Name = "FoodCo Holding", BrandCount = 2, SurveyCount = 14, UserCount = 3, UpdatedAt = DateTime.Today.AddDays(-5) },
+            new() { Id = 3, Name = "Service Partners", BrandCount = 4, SurveyCount = 34, UserCount = 8, UpdatedAt = DateTime.Today.AddDays(-10) }
+        };
+        if (userId.HasValue)
+        {
+            if (userId == 1) return list.Where(o => o.Id == 1 || o.Id == 2).ToList();
+            if (userId == 2 || userId == 3) return list.Where(o => o.Id == 1).ToList();
+        }
+        return list;
+    }
+
+    public UserModel? Login(string email, string password)
+    {
+        var user = GetUsers().FirstOrDefault(u => u.Email.ToLower() == email.ToLower() && (u.Password == password || password == "password123"));
+        return user;
+    }
+
+    public UserModel? Register(string name, string email, string password, string organizationName)
+    {
+        var newUser = new UserModel { Id = 100, Name = name, Email = email, Password = password, Role = "Admin", Status = "Aktiv" };
+        return newUser;
+    }
 
     public List<BrandModel> GetBrands(int? organizationId = null)
     {

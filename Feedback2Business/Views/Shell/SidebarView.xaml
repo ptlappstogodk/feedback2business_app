@@ -22,6 +22,7 @@
             <Button Text="App-indstillinger" Clicked="SettingsApp_Clicked" />
             <Button Text="Roller &amp; rettigheder" Clicked="Roles_Clicked" />
             <Button Text="Aktivitetslog" Clicked="ActivityLog_Clicked" />
+            <Button Text="Log ud" Clicked="Logout_Clicked" Style="{StaticResource SecondaryButtonStyle}" Margin="0,16,0,0" />
         </VerticalStackLayout>
 
         <Border Grid.Row="2"

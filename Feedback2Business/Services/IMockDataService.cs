@@ -4,7 +4,9 @@ namespace Feedback2Business.Services;
 
 public interface IMockDataService
 {
-    List<OrganizationModel> GetOrganizations();
+    List<OrganizationModel> GetOrganizations(int? userId = null);
+    UserModel? Login(string email, string password);
+    UserModel? Register(string name, string email, string password, string organizationName);
     List<BrandModel> GetBrands(int? organizationId = null);
     List<SurveyModel> GetSurveys(int? brandId = null);
     List<SurveyQuestionModel> GetQuestionsForSurvey(int surveyId);

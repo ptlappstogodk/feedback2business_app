@@ -9,6 +9,7 @@ public class UserModel
     public string Status { get; set; } = string.Empty;
     public DateTime? LastActiveAt { get; set; }
     public int OrganizationId { get; set; }
+    public string Password { get; set; } = string.Empty;
 
     public string LastActiveText => LastActiveAt?.ToString("dd. MM yy") ?? "-";
 
