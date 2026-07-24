@@ -34,7 +34,7 @@ public partial class DashboardShellPage : ContentPage
 
     private void DashboardShellPage_Loaded(object? sender, EventArgs e)
     {
-        NavigateTo("Brands");
+        NavigateTo("Organizations");
     }
 
     private void Sidebar_NavigationRequested(object? sender, string key)
