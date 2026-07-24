@@ -38,7 +38,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<MainShellViewModel>();
 
         builder.Services.AddSingleton<AppShell>();
-        builder.Services.AddSingleton<LoginPage>();
+        builder.Services.AddTransient<LoginPage>();
         builder.Services.AddSingleton<DashboardShellPage>();
 
         builder.Services.AddTransient<OrganizationsViewModel>();
