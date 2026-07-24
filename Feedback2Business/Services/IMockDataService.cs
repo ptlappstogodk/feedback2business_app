@@ -24,7 +24,7 @@ public interface IMockDataService
     void SaveRole(RoleModel role);
     MobilePreviewModel GetPreview();
 
-    void CreateOrganization(OrganizationModel org);
+    void CreateOrganization(OrganizationModel org, int? creatorUserId = null);
     void CreateBrand(BrandModel brand);
     void CreateSurvey(SurveyModel survey);
     void CreateUser(UserModel user);

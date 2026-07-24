@@ -245,7 +245,7 @@ public class MockDataService : IMockDataService
         Description = "Angiv om facaden fremstår ren og uden skader."
     };
 
-    public void CreateOrganization(OrganizationModel org) { }
+    public void CreateOrganization(OrganizationModel org, int? creatorUserId = null) { }
     public void CreateBrand(BrandModel brand) { }
     public void CreateSurvey(SurveyModel survey) { }
     public void CreateUser(UserModel user) { }

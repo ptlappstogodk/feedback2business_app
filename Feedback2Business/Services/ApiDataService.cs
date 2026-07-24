@@ -101,7 +101,7 @@ public class ApiDataService : IMockDataService
         }
     }
 
-    public void CreateOrganization(OrganizationModel org) => Post("organizations", org);
+    public void CreateOrganization(OrganizationModel org, int? creatorUserId = null) => Post(creatorUserId.HasValue ? $"organizations?creatorUserId={creatorUserId.Value}" : "organizations", org);
     public void CreateBrand(BrandModel brand) => Post("brands", brand);
     public void CreateSurvey(SurveyModel survey) => Post("surveys", survey);
     public void CreateUser(UserModel user) => Post("users", user);

@@ -62,11 +62,11 @@ public class OrganizationsViewModel : ObservableObject
                 Name = name.Trim(),
                 BrandCount = 0,
                 SurveyCount = 0,
-                UserCount = 0,
+                UserCount = 1,
                 UpdatedAt = DateTime.Now
             };
 
-            _data.CreateOrganization(org);
+            _data.CreateOrganization(org, _shellVm.LoggedInUser?.Id);
             Organizations.Add(org);
         }
     }
