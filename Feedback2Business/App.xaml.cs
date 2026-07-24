@@ -2,25 +2,20 @@ using Feedback2Business.Views;
 using Feedback2Business.Services;
 using Feedback2Business.ViewModels;
 using Microsoft.Maui.ApplicationModel;
+using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 
 namespace Feedback2Business;
 
 public partial class App : Application
 {
-    private readonly AppShell _shell;
-    private readonly LoginPage _loginPage;
-    private readonly IMockDataService _dataService;
-    private readonly MainShellViewModel _shellVm;
+    private readonly IServiceProvider _services;
 
-    public App(AppShell shell, LoginPage loginPage, IMockDataService dataService, MainShellViewModel shellVm)
+    public App(IServiceProvider services)
     {
         InitializeComponent();
 
-        _shell = shell;
-        _loginPage = loginPage;
-        _dataService = dataService;
-        _shellVm = shellVm;
+        _services = services;
 
         CheckSavedLoginAndSetMainPage();
     }
@@ -30,22 +25,25 @@ public partial class App : Application
         var email = Preferences.Default.Get("SavedEmail", string.Empty);
         var password = Preferences.Default.Get("SavedPassword", string.Empty);
 
+        var shellVm = _services.GetRequiredService<MainShellViewModel>();
+        var dataService = _services.GetRequiredService<IMockDataService>();
+
         if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password))
         {
             try
             {
-                var user = _dataService.Login(email, password);
+                var user = dataService.Login(email, password);
                 if (user != null)
                 {
-                    _shellVm.LoggedInUser = user;
+                    shellVm.LoggedInUser = user;
 
-                    var orgs = _dataService.GetOrganizations(user.Id);
+                    var orgs = dataService.GetOrganizations(user.Id);
                     if (orgs.Count > 0)
                     {
-                        _shellVm.ActiveOrganization = orgs.First();
+                        shellVm.ActiveOrganization = orgs.First();
                     }
 
-                    MainPage = _shell;
+                    MainPage = _services.GetRequiredService<AppShell>();
                     return;
                 }
             }
@@ -55,7 +53,7 @@ public partial class App : Application
             }
         }
 
-        MainPage = _loginPage;
+        MainPage = _services.GetRequiredService<LoginPage>();
     }
 }
 
