@@ -64,12 +64,20 @@ public class MockDataService : IMockDataService
         new() { NumberLabel = "3.4", Title = "Billede af kampagne", Type = "Billede" }
     ];
 
-    public List<UserModel> GetUsers() =>
-    [
-        new() { Name = "Anders Kirk", Email = "anders.kirk@email.com", Role = "Admin", Status = "Aktiv", LastActiveAt = DateTime.Now.AddDays(-1) },
-        new() { Name = "Maria Jensen", Email = "maria.jensen@email.com", Role = "Manager", Status = "Aktiv", LastActiveAt = DateTime.Now.AddDays(-2) },
-        new() { Name = "Lars Petersen", Email = "lars.petersen@email.com", Role = "Editor", Status = "Aktiv", LastActiveAt = DateTime.Now.AddDays(-5) }
-    ];
+    public List<UserModel> GetUsers(int? organizationId = null)
+    {
+        var list = new List<UserModel>
+        {
+            new() { Id = 1, Name = "Anders Kirk", Email = "anders.kirk@email.com", Role = "Admin", Status = "Aktiv", LastActiveAt = DateTime.Now.AddDays(-1), OrganizationId = 1 },
+            new() { Id = 2, Name = "Maria Jensen", Email = "maria.jensen@email.com", Role = "Manager", Status = "Aktiv", LastActiveAt = DateTime.Now.AddDays(-2), OrganizationId = 1 },
+            new() { Id = 3, Name = "Lars Petersen", Email = "lars.petersen@email.com", Role = "Editor", Status = "Aktiv", LastActiveAt = DateTime.Now.AddDays(-5), OrganizationId = 1 }
+        };
+        if (organizationId.HasValue)
+        {
+            return list.Where(u => u.OrganizationId == organizationId.Value).ToList();
+        }
+        return list;
+    }
 
     public List<TemplateModel> GetTemplates() =>
     [
@@ -78,12 +86,20 @@ public class MockDataService : IMockDataService
         new() { Name = "Kampagneevaluering", Type = "Survey", Description = "Evaluering af kampagner i butik", UpdatedAt = DateTime.Today.AddDays(-14) }
     ];
 
-    public List<VariableModel> GetVariables() =>
-    [
-        new() { Name = "Organisationsnavn", Key = "org_name", Type = "Tekst", DefaultValue = "Retail Group A", UsageCount = 5 },
-        new() { Name = "Inspektørens navn", Key = "inspector_name", Type = "Tekst", DefaultValue = "", UsageCount = 9 },
-        new() { Name = "Dato", Key = "today", Type = "Dato", DefaultValue = "I dag", UsageCount = 9 }
-    ];
+    public List<VariableModel> GetVariables(int? organizationId = null)
+    {
+        var list = new List<VariableModel>
+        {
+            new() { Id = 1, Name = "Organisationsnavn", Key = "org_name", Type = "Tekst", DefaultValue = "Retail Group A", UsageCount = 5, OrganizationId = 1 },
+            new() { Id = 2, Name = "Inspektørens navn", Key = "inspector_name", Type = "Tekst", DefaultValue = "", UsageCount = 9, OrganizationId = 1 },
+            new() { Id = 3, Name = "Dato", Key = "today", Type = "Dato", DefaultValue = "I dag", UsageCount = 9, OrganizationId = 1 }
+        };
+        if (organizationId.HasValue)
+        {
+            return list.Where(v => v.OrganizationId == organizationId.Value).ToList();
+        }
+        return list;
+    }
 
     public List<MediaItemModel> GetMediaItems() =>
     [
@@ -92,47 +108,71 @@ public class MockDataService : IMockDataService
         new() { Name = "brand_logo.png", ThumbnailUrl = "dotnet_bot.png", MetaText = "Billede · 250 KB" }
     ];
 
-    public List<RoleModel> GetRoles() =>
-    [
-        new()
+    public List<RoleModel> GetRoles(int? organizationId = null)
+    {
+        var list = new List<RoleModel>
         {
-            Name = "Admin",
-            Description = "Fuldt overblik og adgang til alle funktioner",
-            PermissionGroups = new List<PermissionGroupModel>
+            new()
             {
-                new()
+                Id = 1,
+                Name = "Admin",
+                Description = "Fuldt overblik og adgang til alle funktioner",
+                OrganizationId = 1,
+                PermissionGroups = new List<PermissionGroupModel>
                 {
-                    Name = "Organisation",
-                    Permissions = new List<PermissionModel>
+                    new()
                     {
-                        new() { Label = "Administrer organisation", IsEnabled = true },
-                        new() { Label = "Inviter brugere", IsEnabled = true },
-                        new() { Label = "Administrer brugere", IsEnabled = true }
-                    }
-                },
-                new()
-                {
-                    Name = "Surveys",
-                    Permissions = new List<PermissionModel>
+                        Id = 1,
+                        Name = "Organisation",
+                        Permissions = new List<PermissionModel>
+                        {
+                            new() { Id = 1, Label = "Administrer organisation", IsEnabled = true },
+                            new() { Id = 2, Label = "Inviter brugere", IsEnabled = true },
+                            new() { Id = 3, Label = "Administrer brugere", IsEnabled = true }
+                        }
+                    },
+                    new()
                     {
-                        new() { Label = "Opret surveys", IsEnabled = true },
-                        new() { Label = "Rediger surveys", IsEnabled = true },
-                        new() { Label = "Se besvarelser", IsEnabled = true }
+                        Id = 2,
+                        Name = "Surveys",
+                        Permissions = new List<PermissionModel>
+                        {
+                            new() { Id = 4, Label = "Opret surveys", IsEnabled = true },
+                            new() { Id = 5, Label = "Rediger surveys", IsEnabled = true },
+                            new() { Id = 6, Label = "Se besvarelser", IsEnabled = true }
+                        }
                     }
                 }
-            }
-        },
-        new() { Name = "Manager", Description = "Kan administrere surveys og se rapporter" },
-        new() { Name = "Editor", Description = "Kan oprette og redigere surveys" },
-        new() { Name = "Viewer", Description = "Kan udfylde surveys og se egne data" }
-    ];
+            },
+            new() { Id = 2, Name = "Manager", Description = "Kan administrere surveys og se rapporter", OrganizationId = 1 },
+            new() { Id = 3, Name = "Editor", Description = "Kan oprette og redigere surveys", OrganizationId = 1 },
+            new() { Id = 4, Name = "Viewer", Description = "Kan udfylde surveys og se egne data", OrganizationId = 1 }
+        };
+        if (organizationId.HasValue)
+        {
+            return list.Where(r => r.OrganizationId == organizationId.Value).ToList();
+        }
+        return list;
+    }
 
-    public List<ActivityEventModel> GetActivityEvents() =>
-    [
-        new() { Timestamp = DateTime.Now.AddHours(-2), Action = "Opdaterede survey", UserName = "Anders Kirk", Details = "Butiksinspektion v3" },
-        new() { Timestamp = DateTime.Now.AddHours(-5), Action = "Inviterede bruger", UserName = "Maria Jensen", Details = "maria.jensen@email.com" },
-        new() { Timestamp = DateTime.Now.AddDays(-1), Action = "Uploadede fil", UserName = "Anders Kirk", Details = "brand_logo.png" }
-    ];
+    public List<ActivityEventModel> GetActivityEvents(int? organizationId = null)
+    {
+        var list = new List<ActivityEventModel>
+        {
+            new() { Id = 1, Timestamp = DateTime.Now.AddHours(-2), Action = "Opdaterede survey", UserName = "Anders Kirk", Details = "Butiksinspektion v3", OrganizationId = 1 },
+            new() { Id = 2, Timestamp = DateTime.Now.AddHours(-5), Action = "Inviterede bruger", UserName = "Maria Jensen", Details = "maria.jensen@email.com", OrganizationId = 1 },
+            new() { Id = 3, Timestamp = DateTime.Now.AddDays(-1), Action = "Uploadede fil", UserName = "Anders Kirk", Details = "brand_logo.png", OrganizationId = 1 }
+        };
+        if (organizationId.HasValue)
+        {
+            return list.Where(ae => ae.OrganizationId == organizationId.Value).ToList();
+        }
+        return list;
+    }
+
+    public AppSettingModel GetAppSettings(int organizationId) => new() { OrganizationId = organizationId };
+    public void SaveAppSettings(AppSettingModel settings) { }
+    public void SaveRole(RoleModel role) { }
 
     public MobilePreviewModel GetPreview() => new()
     {

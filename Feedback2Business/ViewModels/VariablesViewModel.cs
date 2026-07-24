@@ -9,14 +9,17 @@ namespace Feedback2Business.ViewModels;
 public class VariablesViewModel : ObservableObject
 {
     private readonly IMockDataService _data;
+    private readonly MainShellViewModel _shellVm;
     public ObservableCollection<VariableModel> Variables { get; } = new();
 
     public ICommand OpretVariableCommand { get; }
 
-    public VariablesViewModel(IMockDataService data)
+    public VariablesViewModel(IMockDataService data, MainShellViewModel shellVm)
     {
         _data = data;
-        foreach (var item in data.GetVariables())
+        _shellVm = shellVm;
+        int? orgId = _shellVm.ActiveOrganization?.Id;
+        foreach (var item in data.GetVariables(orgId))
             Variables.Add(item);
 
         OpretVariableCommand = new RelayCommand(async () => await OpretVariableAsync());
@@ -33,13 +36,15 @@ public class VariablesViewModel : ObservableObject
         var defaultValue = await Application.Current!.MainPage!.DisplayPromptAsync("Opret variabel", "Indtast standardværdi:", "Gem", "Annuller", "Standardværdi");
         if (defaultValue == null) return;
 
+        int? orgId = _shellVm.ActiveOrganization?.Id;
         var variable = new VariableModel
         {
             Name = name.Trim(),
             Key = key.Trim(),
             Type = "Tekst",
             DefaultValue = defaultValue.Trim(),
-            UsageCount = 0
+            UsageCount = 0,
+            OrganizationId = orgId ?? 1
         };
 
         _data.CreateVariable(variable);

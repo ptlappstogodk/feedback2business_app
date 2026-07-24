@@ -39,6 +39,12 @@ public class MainShellViewModel : ObservableObject
         }
     }
 
+    public void NotifyActiveOrganizationChanged()
+    {
+        Raise(nameof(ActiveOrganization));
+        BreadcrumbSecondary = ActiveOrganization?.Name ?? "";
+    }
+
     public void RequestNavigation(string key)
     {
         NavigationRequested?.Invoke(this, key);

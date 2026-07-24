@@ -1,19 +1,27 @@
 using System.Collections.ObjectModel;
+using Feedback2Business.Models;
+using Feedback2Business.Services;
 
 namespace Feedback2Business.ViewModels;
 
 public class SettingsGeneralViewModel : ObservableObject
 {
-    private string _organizationName = "Retail Group A";
-    private string _selectedLanguage = "Dansk";
-    private string _selectedTimezone = "UTC+01:00 København";
-    private string _dashboardName = "Dashboard";
-    private string _dateFormat = "DD-MM-YYYY";
+    private readonly IMockDataService _data;
+    private readonly MainShellViewModel _shellVm;
+    private AppSettingModel _settings = new();
 
     public string OrganizationName
     {
-        get => _organizationName;
-        set => SetProperty(ref _organizationName, value);
+        get => _shellVm.ActiveOrganization?.Name ?? "Retail Group A";
+        set
+        {
+            if (_shellVm.ActiveOrganization != null && _shellVm.ActiveOrganization.Name != value)
+            {
+                _shellVm.ActiveOrganization.Name = value;
+                _shellVm.NotifyActiveOrganizationChanged();
+                Raise();
+            }
+        }
     }
 
     public ObservableCollection<string> Languages { get; } = new() { "Dansk", "English", "German" };
@@ -21,16 +29,33 @@ public class SettingsGeneralViewModel : ObservableObject
 
     public string SelectedLanguage
     {
-        get => _selectedLanguage;
-        set => SetProperty(ref _selectedLanguage, value);
+        get => _settings.Language;
+        set
+        {
+            if (_settings.Language != value)
+            {
+                _settings.Language = value;
+                Raise();
+                Save();
+            }
+        }
     }
 
     public string SelectedTimezone
     {
-        get => _selectedTimezone;
-        set => SetProperty(ref _selectedTimezone, value);
+        get => _settings.Timezone;
+        set
+        {
+            if (_settings.Timezone != value)
+            {
+                _settings.Timezone = value;
+                Raise();
+                Save();
+            }
+        }
     }
 
+    private string _dashboardName = "Dashboard";
     public string DashboardName
     {
         get => _dashboardName;
@@ -39,8 +64,29 @@ public class SettingsGeneralViewModel : ObservableObject
 
     public string DateFormat
     {
-        get => _dateFormat;
-        set => SetProperty(ref _dateFormat, value);
+        get => _settings.DateFormat;
+        set
+        {
+            if (_settings.DateFormat != value)
+            {
+                _settings.DateFormat = value;
+                Raise();
+                Save();
+            }
+        }
+    }
+
+    public SettingsGeneralViewModel(IMockDataService data, MainShellViewModel shellVm)
+    {
+        _data = data;
+        _shellVm = shellVm;
+        int orgId = _shellVm.ActiveOrganization?.Id ?? 1;
+        _settings = data.GetAppSettings(orgId);
+    }
+
+    private void Save()
+    {
+        _data.SaveAppSettings(_settings);
     }
 }
 

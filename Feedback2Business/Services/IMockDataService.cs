@@ -10,12 +10,15 @@ public interface IMockDataService
     List<SurveyQuestionModel> GetSection1Questions();
     List<SurveyQuestionModel> GetSection2Questions();
     List<SurveyQuestionModel> GetSection3Questions();
-    List<UserModel> GetUsers();
+    List<UserModel> GetUsers(int? organizationId = null);
     List<TemplateModel> GetTemplates();
-    List<VariableModel> GetVariables();
+    List<VariableModel> GetVariables(int? organizationId = null);
     List<MediaItemModel> GetMediaItems();
-    List<RoleModel> GetRoles();
-    List<ActivityEventModel> GetActivityEvents();
+    List<RoleModel> GetRoles(int? organizationId = null);
+    List<ActivityEventModel> GetActivityEvents(int? organizationId = null);
+    AppSettingModel GetAppSettings(int organizationId);
+    void SaveAppSettings(AppSettingModel settings);
+    void SaveRole(RoleModel role);
     MobilePreviewModel GetPreview();
 
     void CreateOrganization(OrganizationModel org);

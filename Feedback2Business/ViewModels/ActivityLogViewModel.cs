@@ -20,9 +20,10 @@ public class ActivityLogViewModel : ObservableObject
 
     public ObservableCollection<ActivityEventModel> ActivityEvents { get; } = new();
 
-    public ActivityLogViewModel(IMockDataService data)
+    public ActivityLogViewModel(IMockDataService data, MainShellViewModel shellVm)
     {
-        foreach (var item in data.GetActivityEvents())
+        int? orgId = shellVm.ActiveOrganization?.Id;
+        foreach (var item in data.GetActivityEvents(orgId))
             ActivityEvents.Add(item);
     }
 }

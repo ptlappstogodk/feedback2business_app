@@ -9,6 +9,7 @@ namespace Feedback2Business.ViewModels;
 public class RolesPermissionsViewModel : ObservableObject
 {
     private readonly IMockDataService _data;
+    private readonly MainShellViewModel _shellVm;
     private RoleModel _selectedRole = new();
 
     public ObservableCollection<RoleModel> Roles { get; } = new();
@@ -26,16 +27,29 @@ public class RolesPermissionsViewModel : ObservableObject
     public List<PermissionGroupModel> PermissionGroups => SelectedRole.PermissionGroups;
 
     public ICommand OpretRoleCommand { get; }
+    public ICommand SaveRoleCommand { get; }
 
-    public RolesPermissionsViewModel(IMockDataService data)
+    public RolesPermissionsViewModel(IMockDataService data, MainShellViewModel shellVm)
     {
         _data = data;
-        foreach (var role in data.GetRoles())
+        _shellVm = shellVm;
+        int? orgId = _shellVm.ActiveOrganization?.Id;
+        foreach (var role in data.GetRoles(orgId))
             Roles.Add(role);
 
         SelectedRole = Roles.FirstOrDefault() ?? new RoleModel();
 
         OpretRoleCommand = new RelayCommand(async () => await OpretRoleAsync());
+        SaveRoleCommand = new RelayCommand(async () => await SaveRoleAsync());
+    }
+
+    private async Task SaveRoleAsync()
+    {
+        if (SelectedRole != null && SelectedRole.Id > 0)
+        {
+            _data.SaveRole(SelectedRole);
+            await Application.Current!.MainPage!.DisplayAlert("Rolle gemt", $"Rettighederne for '{SelectedRole.Name}' er blevet gemt succesfuldt.", "OK");
+        }
     }
 
     private async Task OpretRoleAsync()
@@ -46,11 +60,13 @@ public class RolesPermissionsViewModel : ObservableObject
         var description = await Application.Current!.MainPage!.DisplayPromptAsync("Opret rolle", "Indtast beskrivelse:", "Gem", "Annuller", "Beskrivelse");
         if (description == null) return;
 
+        int? orgId = _shellVm.ActiveOrganization?.Id;
         var role = new RoleModel
         {
             Name = name.Trim(),
             Description = description.Trim(),
-            PermissionGroups = new List<PermissionGroupModel>()
+            PermissionGroups = new List<PermissionGroupModel>(),
+            OrganizationId = orgId ?? 1
         };
 
         _data.CreateRole(role);

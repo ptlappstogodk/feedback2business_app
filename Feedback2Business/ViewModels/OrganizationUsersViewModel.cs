@@ -9,6 +9,7 @@ namespace Feedback2Business.ViewModels;
 public class OrganizationUsersViewModel : ObservableObject
 {
     private readonly IMockDataService _data;
+    private readonly MainShellViewModel _shellVm;
     private string _searchText = string.Empty;
 
     public string SearchText
@@ -23,10 +24,12 @@ public class OrganizationUsersViewModel : ObservableObject
 
     public ICommand InviterUserCommand { get; }
 
-    public OrganizationUsersViewModel(IMockDataService data)
+    public OrganizationUsersViewModel(IMockDataService data, MainShellViewModel shellVm)
     {
         _data = data;
-        foreach (var item in data.GetUsers())
+        _shellVm = shellVm;
+        int? orgId = _shellVm.ActiveOrganization?.Id;
+        foreach (var item in data.GetUsers(orgId))
             Users.Add(item);
 
         InviterUserCommand = new RelayCommand(async () => await InviterUserAsync());
@@ -40,13 +43,15 @@ public class OrganizationUsersViewModel : ObservableObject
         var email = await Application.Current!.MainPage!.DisplayPromptAsync("Inviter bruger", "Indtast email:", "Inviter", "Annuller", "Email");
         if (string.IsNullOrWhiteSpace(email)) return;
 
+        int? orgId = _shellVm.ActiveOrganization?.Id;
         var user = new UserModel
         {
             Name = name.Trim(),
             Email = email.Trim(),
             Role = "Viewer",
             Status = "Inviteret",
-            LastActiveAt = null
+            LastActiveAt = null,
+            OrganizationId = orgId ?? 1
         };
 
         _data.CreateUser(user);

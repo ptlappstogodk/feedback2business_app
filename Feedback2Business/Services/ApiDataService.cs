@@ -34,12 +34,15 @@ public class ApiDataService : IMockDataService
     public List<SurveyQuestionModel> GetSection1Questions() => Get<List<SurveyQuestionModel>>("surveys/questions?section=1");
     public List<SurveyQuestionModel> GetSection2Questions() => Get<List<SurveyQuestionModel>>("surveys/questions?section=2");
     public List<SurveyQuestionModel> GetSection3Questions() => Get<List<SurveyQuestionModel>>("surveys/questions?section=3");
-    public List<UserModel> GetUsers() => Get<List<UserModel>>("users");
+    public List<UserModel> GetUsers(int? organizationId = null) => Get<List<UserModel>>(organizationId.HasValue ? $"users?organizationId={organizationId.Value}" : "users");
     public List<TemplateModel> GetTemplates() => Get<List<TemplateModel>>("templates");
-    public List<VariableModel> GetVariables() => Get<List<VariableModel>>("variables");
+    public List<VariableModel> GetVariables(int? organizationId = null) => Get<List<VariableModel>>(organizationId.HasValue ? $"variables?organizationId={organizationId.Value}" : "variables");
     public List<MediaItemModel> GetMediaItems() => Get<List<MediaItemModel>>("media");
-    public List<RoleModel> GetRoles() => Get<List<RoleModel>>("roles");
-    public List<ActivityEventModel> GetActivityEvents() => Get<List<ActivityEventModel>>("activitylog");
+    public List<RoleModel> GetRoles(int? organizationId = null) => Get<List<RoleModel>>(organizationId.HasValue ? $"roles?organizationId={organizationId.Value}" : "roles");
+    public List<ActivityEventModel> GetActivityEvents(int? organizationId = null) => Get<List<ActivityEventModel>>(organizationId.HasValue ? $"activitylog?organizationId={organizationId.Value}" : "activitylog");
+    public AppSettingModel GetAppSettings(int organizationId) => Get<AppSettingModel>($"appsettings?organizationId={organizationId}");
+    public void SaveAppSettings(AppSettingModel settings) => Put("appsettings", settings);
+    public void SaveRole(RoleModel role) => Put($"roles/{role.Id}", role);
     public MobilePreviewModel GetPreview() => Get<MobilePreviewModel>("preview");
 
     private void Post<T>(string endpoint, T data)
@@ -50,6 +53,17 @@ public class ApiDataService : IMockDataService
             var errorBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             System.Diagnostics.Debug.WriteLine($"API Post failed with status {response.StatusCode}. Details: {errorBody}");
             throw new Exception($"API Post failed with status {response.StatusCode}. Details: {errorBody}");
+        }
+    }
+
+    private void Put<T>(string endpoint, T data)
+    {
+        var response = _httpClient.PutAsJsonAsync(endpoint, data).GetAwaiter().GetResult();
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            System.Diagnostics.Debug.WriteLine($"API Put failed with status {response.StatusCode}. Details: {errorBody}");
+            throw new Exception($"API Put failed with status {response.StatusCode}. Details: {errorBody}");
         }
     }
 
