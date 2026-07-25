@@ -6,47 +6,12 @@
 
     <Border Style="{StaticResource CardStyle}">
         <VerticalStackLayout Padding="8" Spacing="4">
-            <Border x:Name="NavGenerelt" Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 6">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnGenereltTapped" />
-                </Border.GestureRecognizers>
-                <Label Text="Generelt" FontAttributes="Bold" />
-            </Border>
-
-            <Border x:Name="NavApp" Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 6">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnAppTapped" />
-                </Border.GestureRecognizers>
-                <Label Text="App-indstillinger" FontAttributes="Bold" />
-            </Border>
-
-            <Border x:Name="NavSecurity" Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 6">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnSecurityTapped" />
-                </Border.GestureRecognizers>
-                <Label Text="Sikkerhed" FontAttributes="Bold" />
-            </Border>
-
-            <Border x:Name="NavNotifications" Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 6">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnNotificationsTapped" />
-                </Border.GestureRecognizers>
-                <Label Text="Notifikationer" FontAttributes="Bold" />
-            </Border>
-
-            <Border x:Name="NavIntegrations" Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 6">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnIntegrationsTapped" />
-                </Border.GestureRecognizers>
-                <Label Text="API &amp; integrationer" FontAttributes="Bold" />
-            </Border>
-
-            <Border x:Name="NavAppearance" Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 6">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnAppearanceTapped" />
-                </Border.GestureRecognizers>
-                <Label Text="Udseende" FontAttributes="Bold" />
-            </Border>
+            <Button Text="Generelt" Clicked="OnGenereltClicked" Style="{StaticResource SecondaryButtonStyle}" HorizontalOptions="Fill" />
+            <Button Text="App-indstillinger" Clicked="OnAppClicked" Style="{StaticResource SecondaryButtonStyle}" HorizontalOptions="Fill" />
+            <Button Text="Sikkerhed" Clicked="OnSecurityClicked" Style="{StaticResource SecondaryButtonStyle}" HorizontalOptions="Fill" />
+            <Button Text="Notifikationer" Clicked="OnNotificationsClicked" Style="{StaticResource SecondaryButtonStyle}" HorizontalOptions="Fill" />
+            <Button Text="API &amp; integrationer" Clicked="OnIntegrationsClicked" Style="{StaticResource SecondaryButtonStyle}" HorizontalOptions="Fill" />
+            <Button Text="Udseende" Clicked="OnAppearanceClicked" Style="{StaticResource SecondaryButtonStyle}" HorizontalOptions="Fill" />
         </VerticalStackLayout>
     </Border>
 </ContentView>
