@@ -12,6 +12,7 @@ public class MainShellViewModel : ObservableObject
     private string _breadcrumbPrimary = "Organisationer";
     private string _breadcrumbSecondary = string.Empty;
     private OrganizationModel? _activeOrganization;
+    private BrandModel? _activeBrand;
     private UserModel? _currentUser;
     private UserModel? _loggedInUser;
 
@@ -60,6 +61,12 @@ public class MainShellViewModel : ObservableObject
                 LoadCurrentUser();
             }
         }
+    }
+
+    public BrandModel? ActiveBrand
+    {
+        get => _activeBrand;
+        set => SetProperty(ref _activeBrand, value);
     }
 
     private void LoadCurrentUser()
@@ -113,8 +120,8 @@ public class MainShellViewModel : ObservableObject
         _data = data;
 
         NavigationItems.Add(new NavigationItem { Key = "Overview", Title = "Overblik" });
-        NavigationItems.Add(new NavigationItem { Key = "Organizations", Title = "Organisationer" });
-        NavigationItems.Add(new NavigationItem { Key = "Brands", Title = "Brands" });
+        NavigationItems.Add(new NavigationItem { Key = "Organizations", Title = "Organisationer & brands" });
+        NavigationItems.Add(new NavigationItem { Key = "Surveys", Title = "Surveys" });
         NavigationItems.Add(new NavigationItem { Key = "AppPublishing", Title = "App-udgivelse" });
         NavigationItems.Add(new NavigationItem { Key = "Users", Title = "Brugere" });
         NavigationItems.Add(new NavigationItem { Key = "Templates", Title = "Skabeloner" });

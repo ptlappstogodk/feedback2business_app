@@ -61,10 +61,10 @@ public partial class DashboardShellPage : ContentPage
                 page = _services.GetRequiredService<OrganizationsPage>();
                 break;
 
-            case "Brands":
-                _vm.BreadcrumbPrimary = "Organisationer";
+            case "Surveys":
+                _vm.BreadcrumbPrimary = "Surveys";
                 _vm.BreadcrumbSecondary = _vm.ActiveOrganization?.Name ?? string.Empty;
-                page = _services.GetRequiredService<OrganizationBrandsPage>();
+                page = _services.GetRequiredService<SurveysPage>();
                 break;
 
             case "AppPublishing":

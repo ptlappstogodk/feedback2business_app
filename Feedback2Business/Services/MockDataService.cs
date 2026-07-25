@@ -45,20 +45,21 @@ public class MockDataService : IMockDataService
         };
     }
 
+    private static readonly List<OrganizationModel> _mockOrganizations = new()
+    {
+        new() { Id = 1, Name = "Retail Group A", BrandCount = 3, SurveyCount = 20, UserCount = 5, UpdatedAt = DateTime.Today.AddDays(-2) },
+        new() { Id = 2, Name = "FoodCo Holding", BrandCount = 2, SurveyCount = 14, UserCount = 3, UpdatedAt = DateTime.Today.AddDays(-5) },
+        new() { Id = 3, Name = "Service Partners", BrandCount = 4, SurveyCount = 34, UserCount = 8, UpdatedAt = DateTime.Today.AddDays(-10) }
+    };
+
     public List<OrganizationModel> GetOrganizations(int? userId = null)
     {
-        var list = new List<OrganizationModel>
-        {
-            new() { Id = 1, Name = "Retail Group A", BrandCount = 3, SurveyCount = 20, UserCount = 5, UpdatedAt = DateTime.Today.AddDays(-2) },
-            new() { Id = 2, Name = "FoodCo Holding", BrandCount = 2, SurveyCount = 14, UserCount = 3, UpdatedAt = DateTime.Today.AddDays(-5) },
-            new() { Id = 3, Name = "Service Partners", BrandCount = 4, SurveyCount = 34, UserCount = 8, UpdatedAt = DateTime.Today.AddDays(-10) }
-        };
         if (userId.HasValue)
         {
-            if (userId == 1) return list.Where(o => o.Id == 1 || o.Id == 2).ToList();
-            if (userId == 2 || userId == 3) return list.Where(o => o.Id == 1).ToList();
+            if (userId == 1) return _mockOrganizations.Where(o => o.Id == 1 || o.Id == 2).ToList();
+            if (userId == 2 || userId == 3) return _mockOrganizations.Where(o => o.Id == 1).ToList();
         }
-        return list;
+        return _mockOrganizations.ToList();
     }
 
     public UserModel? Login(string email, string password)
@@ -261,6 +262,15 @@ public class MockDataService : IMockDataService
     public AppSettingModel GetAppSettings(int organizationId) => new() { OrganizationId = organizationId };
     public void SaveAppSettings(AppSettingModel settings) { }
     public void SaveRole(RoleModel role) { }
+    public void SaveOrganization(OrganizationModel org)
+    {
+        var existing = _mockOrganizations.FirstOrDefault(o => o.Id == org.Id);
+        if (existing != null)
+        {
+            existing.Name = org.Name;
+            existing.UpdatedAt = DateTime.Now;
+        }
+    }
     public void SaveBrand(BrandModel brand)
     {
         var existing = _mockBrands.FirstOrDefault(b => b.Id == brand.Id);
@@ -272,6 +282,22 @@ public class MockDataService : IMockDataService
         }
     }
     public void SaveSurvey(SurveyModel survey) { }
+    public void DeleteOrganization(int organizationId)
+    {
+        var existing = _mockOrganizations.FirstOrDefault(o => o.Id == organizationId);
+        if (existing != null)
+        {
+            _mockOrganizations.Remove(existing);
+        }
+    }
+    public void DeleteBrand(int brandId)
+    {
+        var existing = _mockBrands.FirstOrDefault(b => b.Id == brandId);
+        if (existing != null)
+        {
+            _mockBrands.Remove(existing);
+        }
+    }
 
     public MobilePreviewModel GetPreview() => new()
     {

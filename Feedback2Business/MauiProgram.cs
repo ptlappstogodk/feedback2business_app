@@ -44,7 +44,7 @@ public static class MauiProgram
 
         builder.Services.AddTransient<OverviewViewModel>();
         builder.Services.AddTransient<OrganizationsViewModel>();
-        builder.Services.AddTransient<OrganizationBrandsViewModel>();
+        builder.Services.AddTransient<SurveysViewModel>();
         builder.Services.AddTransient<OrganizationAppPublishingViewModel>();
         builder.Services.AddTransient<OrganizationUsersViewModel>();
         builder.Services.AddTransient<TemplatesViewModel>();
@@ -61,7 +61,7 @@ public static class MauiProgram
 
         builder.Services.AddTransient<OverviewPage>();
         builder.Services.AddTransient<OrganizationsPage>();
-        builder.Services.AddTransient<OrganizationBrandsPage>();
+        builder.Services.AddTransient<SurveysPage>();
         builder.Services.AddTransient<OrganizationAppPublishingPage>();
         builder.Services.AddTransient<OrganizationUsersPage>();
         builder.Services.AddTransient<TemplatesPage>();

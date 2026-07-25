@@ -79,6 +79,23 @@ public class ApiDataService : IMockDataService
     public AppSettingModel GetAppSettings(int organizationId) => Get<AppSettingModel>($"appsettings?organizationId={organizationId}");
     public void SaveAppSettings(AppSettingModel settings) => Put("appsettings", settings);
     public void SaveRole(RoleModel role) => Put($"roles/{role.Id}", role);
+    public void SaveOrganization(OrganizationModel org)
+    {
+        if (org.Id <= 0)
+        {
+            CreateOrganization(org);
+            return;
+        }
+
+        try
+        {
+            Put($"organizations/{org.Id}", org);
+        }
+        catch (Exception ex) when (ex.Message.Contains("NotFound") || ex.Message.Contains("404"))
+        {
+            CreateOrganization(org);
+        }
+    }
     public void SaveBrand(BrandModel brand)
     {
         if (brand.Id <= 0)
@@ -113,6 +130,8 @@ public class ApiDataService : IMockDataService
             CreateSurvey(survey);
         }
     }
+    public void DeleteOrganization(int organizationId) => Delete($"organizations/{organizationId}");
+    public void DeleteBrand(int brandId) => Delete($"brands/{brandId}");
     public MobilePreviewModel GetPreview() => Get<MobilePreviewModel>("preview");
 
     private void Post<T>(string endpoint, T data)

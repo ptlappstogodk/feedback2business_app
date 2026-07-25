@@ -29,7 +29,7 @@ public partial class SidebarView : ContentView
 
     private void Overview_Clicked(object sender, EventArgs e) => Raise("Overview");
     private void Organizations_Clicked(object sender, EventArgs e) => Raise("Organizations");
-    private void Brands_Clicked(object sender, EventArgs e) => Raise("Brands");
+    private void Surveys_Clicked(object sender, EventArgs e) => Raise("Surveys");
     private void Users_Clicked(object sender, EventArgs e) => Raise("Users");
     private void Templates_Clicked(object sender, EventArgs e) => Raise("Templates");
     private void Variables_Clicked(object sender, EventArgs e) => Raise("Variables");

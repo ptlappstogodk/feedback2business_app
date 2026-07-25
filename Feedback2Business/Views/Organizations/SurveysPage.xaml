@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="Feedback2Business.Views.Organizations.OrganizationBrandsPage"
+    x:Class="Feedback2Business.Views.Organizations.SurveysPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:shared="clr-namespace:Feedback2Business.Views.Shared"
@@ -30,9 +30,9 @@
                             <TapGestureRecognizer Command="{Binding NavigateOrgTabCommand}" CommandParameter="Overview" />
                         </Label.GestureRecognizers>
                     </Label>
-                    <Label Text="Brands" Style="{StaticResource ActiveTabTextStyle}">
+                    <Label Text="Surveys" Style="{StaticResource ActiveTabTextStyle}">
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding NavigateOrgTabCommand}" CommandParameter="Brands" />
+                            <TapGestureRecognizer Command="{Binding NavigateOrgTabCommand}" CommandParameter="Surveys" />
                         </Label.GestureRecognizers>
                     </Label>
                     <Label Text="Brugere" Style="{StaticResource TabTextStyle}">
@@ -117,51 +117,13 @@
 
             <!-- Surveys Column -->
             <Border Grid.Column="1" Style="{StaticResource CardStyle}">
-                <Grid RowDefinitions="Auto,Auto,*,Auto">
-                    <Grid Padding="16" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                <Grid RowDefinitions="Auto,*,Auto">
+                    <Grid Padding="16" ColumnDefinitions="*,Auto" ColumnSpacing="8">
                         <Label Text="{Binding SelectedBrandTitle}" Style="{StaticResource SectionHeaderStyle}" VerticalOptions="Center" />
-                        <Button Grid.Column="1" Text="Rediger brand" Command="{Binding RedigerBrandCommand}" Style="{StaticResource SecondaryButtonStyle}" HeightRequest="32" FontSize="12" />
-                        <Button Grid.Column="2" Text="+ Opret survey" Command="{Binding OpretSurveyCommand}" Style="{StaticResource PrimaryButtonStyle}" HeightRequest="32" FontSize="12" />
+                        <Button Grid.Column="1" Text="+ Opret survey" Command="{Binding OpretSurveyCommand}" Style="{StaticResource PrimaryButtonStyle}" HeightRequest="32" FontSize="12" />
                     </Grid>
 
-                    <!-- Brand Details Header / Edit Form -->
-                    <Border Grid.Row="1" Margin="16,0,16,12" Padding="12" BackgroundColor="{StaticResource PageBackground}" Stroke="{StaticResource BorderColor}" StrokeShape="RoundRectangle 8">
-                        <VerticalStackLayout Spacing="8">
-                            <!-- View Mode -->
-                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" IsVisible="{Binding IsNotEditingBrand}">
-                                <Border WidthRequest="44" HeightRequest="44" BackgroundColor="{StaticResource PrimaryBlueLight}" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Start">
-                                    <Label Text="{Binding SelectedBrand.LogoUrl}" FontSize="22" HorizontalOptions="Center" VerticalOptions="Center" />
-                                </Border>
-                                <VerticalStackLayout Grid.Column="1" Spacing="2">
-                                    <Label Text="{Binding SelectedBrand.Name}" FontAttributes="Bold" FontSize="15" />
-                                    <Label Text="{Binding SelectedBrand.Description}" TextColor="{StaticResource TextSecondary}" FontSize="12" />
-                                </VerticalStackLayout>
-                            </Grid>
-
-                            <!-- Edit Mode Form -->
-                            <VerticalStackLayout Spacing="8" IsVisible="{Binding IsEditingBrand}">
-                                <Label Text="Rediger Brand Oplysninger" FontAttributes="Bold" FontSize="13" />
-                                <Grid ColumnDefinitions="80,*" ColumnSpacing="8">
-                                    <Label Text="Logo / Ikon:" FontSize="12" VerticalOptions="Center" />
-                                    <Picker Grid.Column="1" ItemsSource="{Binding BrandLogoOptions}" SelectedItem="{Binding BrandLogoBuffer}" HeightRequest="36" />
-                                </Grid>
-                                <Grid ColumnDefinitions="80,*" ColumnSpacing="8">
-                                    <Label Text="Navn:" FontSize="12" VerticalOptions="Center" />
-                                    <Entry Grid.Column="1" Text="{Binding BrandNameBuffer}" Placeholder="Brand navn" HeightRequest="36" />
-                                </Grid>
-                                <Grid ColumnDefinitions="80,*" ColumnSpacing="8">
-                                    <Label Text="Beskrivelse:" FontSize="12" VerticalOptions="Start" Margin="0,8,0,0" />
-                                    <Editor Grid.Column="1" Text="{Binding BrandDescriptionBuffer}" Placeholder="Kort beskrivelse..." HeightRequest="60" />
-                                </Grid>
-                                <HorizontalStackLayout Spacing="8" HorizontalOptions="End" Margin="0,4,0,0">
-                                    <Button Text="Annuller" Command="{Binding AnnullerBrandEditCommand}" Style="{StaticResource SecondaryButtonStyle}" HeightRequest="30" FontSize="11" />
-                                    <Button Text="Gem brand" Command="{Binding GemBrandCommand}" Style="{StaticResource PrimaryButtonStyle}" HeightRequest="30" FontSize="11" />
-                                </HorizontalStackLayout>
-                            </VerticalStackLayout>
-                        </VerticalStackLayout>
-                    </Border>
-
-                    <CollectionView Grid.Row="2"
+                    <CollectionView Grid.Row="1"
                                     ItemsSource="{Binding Surveys}"
                                     SelectionMode="Single"
                                     SelectedItem="{Binding SelectedSurvey}">
@@ -199,7 +161,7 @@
                         </CollectionView.ItemTemplate>
                     </CollectionView>
 
-                    <shared:MobilePreviewView Grid.Row="3"
+                    <shared:MobilePreviewView Grid.Row="2"
                                               Margin="16"
                                               BindingContext="{Binding Preview}" />
                 </Grid>
@@ -207,7 +169,7 @@
 
             <!-- Survey Editor Column -->
             <Border Grid.Column="2" Style="{StaticResource CardStyle}">
-                <Grid x:DataType="viewmodels:OrganizationBrandsViewModel">
+                <Grid x:DataType="viewmodels:SurveysViewModel">
                     <!-- Empty State Placeholder when no survey is selected -->
                     <VerticalStackLayout IsVisible="{Binding HasNoSurveySelected}"
                                          VerticalOptions="Center"

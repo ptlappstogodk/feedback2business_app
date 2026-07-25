@@ -24,8 +24,11 @@ public interface IMockDataService
     AppSettingModel GetAppSettings(int organizationId);
     void SaveAppSettings(AppSettingModel settings);
     void SaveRole(RoleModel role);
+    void SaveOrganization(OrganizationModel org);
     void SaveBrand(BrandModel brand);
     void SaveSurvey(SurveyModel survey);
+    void DeleteOrganization(int organizationId);
+    void DeleteBrand(int brandId);
     MobilePreviewModel GetPreview();
 
     void CreateOrganization(OrganizationModel org, int? creatorUserId = null);

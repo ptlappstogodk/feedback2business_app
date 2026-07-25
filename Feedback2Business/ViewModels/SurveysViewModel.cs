@@ -7,7 +7,7 @@ using Feedback2Business.Services;
 
 namespace Feedback2Business.ViewModels;
 
-public class OrganizationBrandsViewModel : ObservableObject
+public class SurveysViewModel : ObservableObject
 {
     private readonly IMockDataService _data;
     
@@ -15,56 +15,6 @@ public class OrganizationBrandsViewModel : ObservableObject
     private SurveyModel? _selectedSurvey;
     private SurveyQuestionEditorViewModel _selectedQuestion;
     private string _activeSurveyTab = "Byg";
-
-    // Brand Editing Buffers
-    private string _brandNameBuffer = string.Empty;
-    private string _brandDescriptionBuffer = string.Empty;
-    private string _brandLogoBuffer = "🏬";
-    private bool _isEditingBrand;
-
-    public string BrandNameBuffer
-    {
-        get => _brandNameBuffer;
-        set => SetProperty(ref _brandNameBuffer, value);
-    }
-
-    public string BrandDescriptionBuffer
-    {
-        get => _brandDescriptionBuffer;
-        set => SetProperty(ref _brandDescriptionBuffer, value);
-    }
-
-    public string BrandLogoBuffer
-    {
-        get => _brandLogoBuffer;
-        set => SetProperty(ref _brandLogoBuffer, value);
-    }
-
-    public bool IsEditingBrand
-    {
-        get => _isEditingBrand;
-        set
-        {
-            if (SetProperty(ref _isEditingBrand, value))
-            {
-                Raise(nameof(IsNotEditingBrand));
-            }
-        }
-    }
-
-    public bool IsNotEditingBrand => !_isEditingBrand;
-
-    public ObservableCollection<string> BrandLogoOptions { get; } = new()
-    {
-        "🏬",
-        "☕",
-        "⚡",
-        "🍔",
-        "⭐",
-        "🛒",
-        "🏷️",
-        "🏢"
-    };
 
     // Survey Generelt Buffers
     private string _surveyNameBuffer = string.Empty;
@@ -223,14 +173,10 @@ public class OrganizationBrandsViewModel : ObservableObject
     public string SelectedBrandTitle => SelectedBrand != null ? $"Surveys for {SelectedBrand.Name}" : "Surveys";
 
     public ICommand OpretBrandCommand { get; }
-    public ICommand RedigerBrandCommand { get; }
-    public ICommand GemBrandCommand { get; }
-    public ICommand AnnullerBrandEditCommand { get; }
     public ICommand OpretSurveyCommand { get; }
     public ICommand SletSurveyCommand { get; }
     public ICommand GemSurveyGenereltCommand { get; }
     public ICommand GemAendringerCommand { get; }
-    public ICommand FlereHandlingerCommand { get; }
     public ICommand SelectTabCommand { get; }
     public ICommand SelectQuestionCommand { get; }
     public ICommand SletSpoergsmaalCommand { get; }
@@ -255,7 +201,7 @@ public class OrganizationBrandsViewModel : ObservableObject
     public ICommand SletOversaettelseCommand { get; }
     public ICommand NavigateOrgTabCommand { get; }
 
-    public OrganizationBrandsViewModel(IMockDataService data, MainShellViewModel shellVm)
+    public SurveysViewModel(IMockDataService data, MainShellViewModel shellVm)
     {
         _data = data;
         ShellVm = shellVm;
@@ -274,19 +220,15 @@ public class OrganizationBrandsViewModel : ObservableObject
         var allBrands = _data.GetBrands(ShellVm.ActiveOrganization?.Id);
         foreach (var b in allBrands) Brands.Add(b);
 
-        SelectedBrand = Brands.FirstOrDefault();
+        SelectedBrand = Brands.FirstOrDefault(b => b.Id == ShellVm.ActiveBrand?.Id) ?? Brands.FirstOrDefault();
 
         _selectedQuestion = new SurveyQuestionEditorViewModel(new SurveyQuestionModel());
 
-        OpretBrandCommand = new RelayCommand(async () => await OpretBrandAsync());
-        RedigerBrandCommand = new RelayCommand(() => IsEditingBrand = !IsEditingBrand);
-        GemBrandCommand = new RelayCommand(GemBrand);
-        AnnullerBrandEditCommand = new RelayCommand(() => IsEditingBrand = false);
+        OpretBrandCommand = new RelayCommand(() => ShellVm.RequestNavigation("Organizations"));
         OpretSurveyCommand = new RelayCommand(async () => await OpretSurveyAsync());
         SletSurveyCommand = new RelayCommand<SurveyModel>(async (s) => await SletSurveyAsync(s));
         GemSurveyGenereltCommand = new RelayCommand(GemSurveyGenerelt);
         GemAendringerCommand = new RelayCommand(async () => await GemAendringerAsync());
-        FlereHandlingerCommand = new RelayCommand(async () => await FlereHandlingerAsync());
         SelectTabCommand = new RelayCommand<string>(tab => ActiveSurveyTab = tab ?? "Byg");
         SelectQuestionCommand = new RelayCommand<SurveyQuestionModel>(SelectQuestion);
         SletSpoergsmaalCommand = new RelayCommand<object>(SletSpoergsmaal);
@@ -306,27 +248,19 @@ public class OrganizationBrandsViewModel : ObservableObject
         SletLogikRegelCommand = new RelayCommand<string>(SletLogikRegel);
         TilfoejOversaettelseCommand = new RelayCommand(async () => await TilfoejOversaettelseAsync());
         SletOversaettelseCommand = new RelayCommand<TranslationItemModel>(SletOversaettelse);
-        NavigateOrgTabCommand = new RelayCommand<string>(key => ShellVm.RequestNavigation(key ?? "Brands"));
+        NavigateOrgTabCommand = new RelayCommand<string>(key => ShellVm.RequestNavigation(key ?? "Surveys"));
     }
 
     private void OnBrandSelected(BrandModel? brand)
     {
         Surveys.Clear();
-        IsEditingBrand = false;
         Raise(nameof(SelectedBrandTitle));
 
         if (brand == null)
         {
             SelectedSurvey = null;
-            BrandNameBuffer = string.Empty;
-            BrandDescriptionBuffer = string.Empty;
-            BrandLogoBuffer = "🏬";
             return;
         }
-
-        BrandNameBuffer = brand.Name;
-        BrandDescriptionBuffer = brand.Description;
-        BrandLogoBuffer = string.IsNullOrEmpty(brand.LogoUrl) ? "🏬" : brand.LogoUrl;
 
         var filteredSurveys = _data.GetSurveys(brand.Id);
         foreach (var s in filteredSurveys) Surveys.Add(s);
@@ -786,19 +720,6 @@ public class OrganizationBrandsViewModel : ObservableObject
         }
     }
 
-    private void GemBrand()
-    {
-        if (SelectedBrand == null) return;
-
-        SelectedBrand.Name = string.IsNullOrWhiteSpace(BrandNameBuffer) ? SelectedBrand.Name : BrandNameBuffer.Trim();
-        SelectedBrand.Description = BrandDescriptionBuffer?.Trim() ?? string.Empty;
-        SelectedBrand.LogoUrl = string.IsNullOrWhiteSpace(BrandLogoBuffer) ? "🏬" : BrandLogoBuffer;
-
-        _data.SaveBrand(SelectedBrand);
-        IsEditingBrand = false;
-        Raise(nameof(SelectedBrandTitle));
-    }
-
     private async Task AdministrerSektionerAsync()
     {
         var action = await Application.Current!.MainPage!.DisplayActionSheet(
@@ -997,38 +918,6 @@ public class OrganizationBrandsViewModel : ObservableObject
             Sections.Add(sec1);
         }
         UpdateQuestionCount();
-    }
-
-    private async Task FlereHandlingerAsync()
-    {
-        if (SelectedBrand == null)
-        {
-            await Application.Current!.MainPage!.DisplayAlert("Flere handlinger", "Vælg venligst et brand først.", "OK");
-            return;
-        }
-
-        var action = await Application.Current!.MainPage!.DisplayActionSheet(
-            $"Flere handlinger for {SelectedBrand.Name}",
-            "Annuller",
-            "Slet brand",
-            null,
-            "Eksporter data",
-            "Dupliker brand");
-
-        if (action == "Slet brand")
-        {
-            bool confirm = await Application.Current!.MainPage!.DisplayAlert(
-                "Bekræft sletning",
-                $"Er du sikker på, at du vil slette brandet '{SelectedBrand.Name}' og alle tilhørende surveys?",
-                "Ja, slet",
-                "Annuller");
-
-            if (confirm)
-            {
-                Brands.Remove(SelectedBrand);
-                SelectedBrand = Brands.FirstOrDefault();
-            }
-        }
     }
 
     private async Task TilfoejLogikRegelAsync()

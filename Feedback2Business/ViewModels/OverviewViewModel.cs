@@ -30,7 +30,7 @@ public class OverviewViewModel : ObservableObject
         ShellVm = shellVm;
 
         GoToOrganizationsCommand = new RelayCommand(() => ShellVm.RequestNavigation("Organizations"));
-        GoToSurveysCommand = new RelayCommand(() => ShellVm.RequestNavigation("Brands"));
+        GoToSurveysCommand = new RelayCommand(() => ShellVm.RequestNavigation("Surveys"));
         GoToUsersCommand = new RelayCommand(() => ShellVm.RequestNavigation("Users"));
         GoToActivityLogCommand = new RelayCommand(() => ShellVm.RequestNavigation("ActivityLog"));
 

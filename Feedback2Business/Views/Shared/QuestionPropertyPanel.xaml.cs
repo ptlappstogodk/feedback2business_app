@@ -17,12 +17,12 @@ public partial class QuestionPropertyPanel : ContentView
         }
     }
 
-    private OrganizationBrandsViewModel? FindViewModel()
+    private SurveysViewModel? FindViewModel()
     {
         Element? parent = this;
         while (parent != null)
         {
-            if (parent.BindingContext is OrganizationBrandsViewModel vm)
+            if (parent.BindingContext is SurveysViewModel vm)
             {
                 return vm;
             }
