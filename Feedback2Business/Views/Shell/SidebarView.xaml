@@ -11,19 +11,138 @@
             <Label Text="Konfiguration" TextColor="#B8C7E0" FontSize="12" />
         </VerticalStackLayout>
 
-        <VerticalStackLayout Grid.Row="1" Margin="0,20,0,20" Spacing="8">
-            <Button Text="Overblik" Clicked="Overview_Clicked" />
-            <Button Text="Organisationer" Clicked="Organizations_Clicked" />
-            <Button Text="Brands" Clicked="Brands_Clicked" />
-            <Button Text="Brugere" Clicked="Users_Clicked" />
-            <Button Text="Skabeloner" Clicked="Templates_Clicked" />
-            <Button Text="Variabler" Clicked="Variables_Clicked" />
-            <Button Text="Mediebibliotek" Clicked="Media_Clicked" />
-            <Button Text="Indstillinger" Clicked="SettingsGeneral_Clicked" />
-            <Button Text="App-indstillinger" Clicked="SettingsApp_Clicked" />
-            <Button Text="Roller &amp; rettigheder" Clicked="Roles_Clicked" />
-            <Button Text="Aktivitetslog" Clicked="ActivityLog_Clicked" />
-            <Button Text="Log ud" Clicked="Logout_Clicked" Style="{StaticResource SecondaryButtonStyle}" Margin="0,16,0,0" />
+        <VerticalStackLayout Grid.Row="1" Margin="0,20,0,20" Spacing="4">
+            <Border Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="Overview_Clicked" />
+                    <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="10" VerticalOptions="Center">
+                    <Label Text="📊" FontSize="14" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Overblik" TextColor="White" FontSize="14" HorizontalOptions="Start" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="Organizations_Clicked" />
+                    <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="10" VerticalOptions="Center">
+                    <Label Text="🏢" FontSize="14" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Organisationer" TextColor="White" FontSize="14" HorizontalOptions="Start" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="Brands_Clicked" />
+                    <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="10" VerticalOptions="Center">
+                    <Label Text="🏷️" FontSize="14" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Brands" TextColor="White" FontSize="14" HorizontalOptions="Start" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="Users_Clicked" />
+                    <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="10" VerticalOptions="Center">
+                    <Label Text="👥" FontSize="14" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Brugere" TextColor="White" FontSize="14" HorizontalOptions="Start" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="Templates_Clicked" />
+                    <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="10" VerticalOptions="Center">
+                    <Label Text="📋" FontSize="14" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Skabeloner" TextColor="White" FontSize="14" HorizontalOptions="Start" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="Variables_Clicked" />
+                    <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="10" VerticalOptions="Center">
+                    <Label Text="🧩" FontSize="14" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Variabler" TextColor="White" FontSize="14" HorizontalOptions="Start" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="Media_Clicked" />
+                    <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="10" VerticalOptions="Center">
+                    <Label Text="🖼️" FontSize="14" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Mediebibliotek" TextColor="White" FontSize="14" HorizontalOptions="Start" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="SettingsGeneral_Clicked" />
+                    <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="10" VerticalOptions="Center">
+                    <Label Text="⚙️" FontSize="14" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Indstillinger" TextColor="White" FontSize="14" HorizontalOptions="Start" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="SettingsApp_Clicked" />
+                    <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="10" VerticalOptions="Center">
+                    <Label Text="📱" FontSize="14" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="App-indstillinger" TextColor="White" FontSize="14" HorizontalOptions="Start" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="Roles_Clicked" />
+                    <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="10" VerticalOptions="Center">
+                    <Label Text="🛡️" FontSize="14" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Roller &amp; rettigheder" TextColor="White" FontSize="14" HorizontalOptions="Start" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="ActivityLog_Clicked" />
+                    <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="10" VerticalOptions="Center">
+                    <Label Text="🕒" FontSize="14" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Aktivitetslog" TextColor="White" FontSize="14" HorizontalOptions="Start" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Padding="10,8" BackgroundColor="Transparent" StrokeThickness="0" StrokeShape="RoundRectangle 6" Margin="0,12,0,0">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="Logout_Clicked" />
+                    <PointerGestureRecognizer PointerEntered="OnPointerEntered" PointerExited="OnPointerExited" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="10" VerticalOptions="Center">
+                    <Label Text="🚪" FontSize="14" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="Log ud" TextColor="White" FontSize="14" HorizontalOptions="Start" VerticalOptions="Center" />
+                </Grid>
+            </Border>
         </VerticalStackLayout>
 
         <Border Grid.Row="2"

@@ -9,6 +9,22 @@ public partial class SidebarView : ContentView
         InitializeComponent();
     }
 
+    private void OnPointerEntered(object? sender, PointerEventArgs e)
+    {
+        if (sender is Border border)
+        {
+            border.BackgroundColor = Color.FromArgb("#0D2D52");
+        }
+    }
+
+    private void OnPointerExited(object? sender, PointerEventArgs e)
+    {
+        if (sender is Border border)
+        {
+            border.BackgroundColor = Colors.Transparent;
+        }
+    }
+
     private void Raise(string key) => NavigationRequested?.Invoke(this, key);
 
     private void Overview_Clicked(object sender, EventArgs e) => Raise("Overview");
