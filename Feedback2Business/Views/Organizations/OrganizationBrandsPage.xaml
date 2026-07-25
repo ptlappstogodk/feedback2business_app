@@ -84,7 +84,7 @@
                                             <VisualStateGroup x:Name="CommonStates">
                                                 <VisualState x:Name="Normal">
                                                     <VisualState.Setters>
-                                                        <Setter Property="Stroke" Value="{StaticResource CardBorder}" />
+                                                        <Setter Property="Stroke" Value="{StaticResource BorderColor}" />
                                                         <Setter Property="StrokeThickness" Value="1" />
                                                         <Setter Property="BackgroundColor" Value="White" />
                                                     </VisualState.Setters>
@@ -125,7 +125,7 @@
                     </Grid>
 
                     <!-- Brand Details Header / Edit Form -->
-                    <Border Grid.Row="1" Margin="16,0,16,12" Padding="12" BackgroundColor="{StaticResource OffWhite}" Stroke="{StaticResource CardBorder}" StrokeShape="RoundRectangle 8">
+                    <Border Grid.Row="1" Margin="16,0,16,12" Padding="12" BackgroundColor="{StaticResource PageBackground}" Stroke="{StaticResource BorderColor}" StrokeShape="RoundRectangle 8">
                         <VerticalStackLayout Spacing="8">
                             <!-- View Mode -->
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" IsVisible="{Binding IsEditingBrand, Converter={StaticResource InvertedBoolConverter}}">
@@ -173,7 +173,7 @@
                                             <VisualStateGroup x:Name="CommonStates">
                                                 <VisualState x:Name="Normal">
                                                     <VisualState.Setters>
-                                                        <Setter Property="Stroke" Value="{StaticResource CardBorder}" />
+                                                        <Setter Property="Stroke" Value="{StaticResource BorderColor}" />
                                                         <Setter Property="StrokeThickness" Value="1" />
                                                         <Setter Property="BackgroundColor" Value="White" />
                                                     </VisualState.Setters>
