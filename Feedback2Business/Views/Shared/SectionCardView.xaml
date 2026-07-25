@@ -25,22 +25,19 @@
 
                 <Button Grid.Column="2"
                         Text="▲"
-                        Command="{Binding BindingContext.MoveSectionUpCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                        CommandParameter="{Binding Section, Source={x:Reference This}}"
+                        Clicked="OnMoveSectionUpClicked"
                         Style="{StaticResource SecondaryButtonStyle}"
                         WidthRequest="28" HeightRequest="28" Padding="0" FontSize="11" ToolTipProperties.Text="Flyt sektion op" />
 
                 <Button Grid.Column="3"
                         Text="▼"
-                        Command="{Binding BindingContext.MoveSectionDownCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                        CommandParameter="{Binding Section, Source={x:Reference This}}"
+                        Clicked="OnMoveSectionDownClicked"
                         Style="{StaticResource SecondaryButtonStyle}"
                         WidthRequest="28" HeightRequest="28" Padding="0" FontSize="11" ToolTipProperties.Text="Flyt sektion ned" />
 
                 <Button Grid.Column="4"
                         Text="🗑"
-                        Command="{Binding BindingContext.SletSektionCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                        CommandParameter="{Binding Section, Source={x:Reference This}}"
+                        Clicked="OnDeleteSectionClicked"
                         BackgroundColor="Transparent"
                         TextColor="Red"
                         WidthRequest="28" HeightRequest="28" Padding="0" FontSize="14" ToolTipProperties.Text="Slet sektion" />
@@ -54,16 +51,17 @@
                             <Border.GestureRecognizers>
                                 <DragGestureRecognizer CanDrag="True" DragStarting="OnQuestionDragStarting" />
                                 <DropGestureRecognizer AllowDrop="True" Drop="OnQuestionDrop" />
+                                <TapGestureRecognizer Tapped="OnQuestionTapped" />
                             </Border.GestureRecognizers>
 
                             <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto" ColumnSpacing="8">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnQuestionTapped" />
+                                </Grid.GestureRecognizers>
+
                                 <Label Text="⋮⋮" VerticalOptions="Center" TextColor="{StaticResource TextSecondary}" FontSize="12" />
 
                                 <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                                    <VerticalStackLayout.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding BindingContext.SelectQuestionCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                                                              CommandParameter="{Binding .}" />
-                                    </VerticalStackLayout.GestureRecognizers>
                                     <Label Text="{Binding DisplayTitle}" FontAttributes="Bold" FontSize="13" />
                                 </VerticalStackLayout>
 
@@ -75,22 +73,19 @@
 
                                 <Button Grid.Column="3"
                                         Text="▲"
-                                        Command="{Binding BindingContext.MoveQuestionUpCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                                        CommandParameter="{Binding .}"
+                                        Clicked="OnMoveQuestionUpClicked"
                                         Style="{StaticResource SecondaryButtonStyle}"
                                         WidthRequest="24" HeightRequest="24" Padding="0" FontSize="10" ToolTipProperties.Text="Flyt spørgsmål op" />
 
                                 <Button Grid.Column="4"
                                         Text="▼"
-                                        Command="{Binding BindingContext.MoveQuestionDownCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                                        CommandParameter="{Binding .}"
+                                        Clicked="OnMoveQuestionDownClicked"
                                         Style="{StaticResource SecondaryButtonStyle}"
                                         WidthRequest="24" HeightRequest="24" Padding="0" FontSize="10" ToolTipProperties.Text="Flyt spørgsmål ned" />
 
                                 <Button Grid.Column="5"
                                         Text="🗑"
-                                        Command="{Binding BindingContext.SletSpoergsmaalCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                                        CommandParameter="{Binding .}"
+                                        Clicked="OnDeleteQuestionClicked"
                                         BackgroundColor="Transparent"
                                         TextColor="Red"
                                         WidthRequest="24" HeightRequest="24" Padding="0" FontSize="12" ToolTipProperties.Text="Slet spørgsmål" />
@@ -102,8 +97,7 @@
 
             <!-- Add Question Button -->
             <Button Text="+ Tilføj spørgsmål"
-                    Command="{Binding BindingContext.TilfoejSpoergsmaalTilSektionCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                    CommandParameter="{Binding Section, Source={x:Reference This}}"
+                    Clicked="OnAddQuestionClicked"
                     Style="{StaticResource SecondaryButtonStyle}"
                     HeightRequest="32"
                     FontSize="12"

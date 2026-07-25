@@ -70,6 +70,70 @@ public partial class SectionCardView : ContentView
         InitializeComponent();
     }
 
+    private void OnAddQuestionClicked(object? sender, EventArgs e)
+    {
+        if (Section != null)
+        {
+            FindViewModel()?.TilfoejSpoergsmaalTilSektionDirect(Section);
+        }
+    }
+
+    private void OnMoveSectionUpClicked(object? sender, EventArgs e)
+    {
+        if (Section != null)
+        {
+            FindViewModel()?.MoveSectionUpDirect(Section);
+        }
+    }
+
+    private void OnMoveSectionDownClicked(object? sender, EventArgs e)
+    {
+        if (Section != null)
+        {
+            FindViewModel()?.MoveSectionDownDirect(Section);
+        }
+    }
+
+    private void OnDeleteSectionClicked(object? sender, EventArgs e)
+    {
+        if (Section != null)
+        {
+            FindViewModel()?.SletSektionDirect(Section);
+        }
+    }
+
+    private void OnQuestionTapped(object? sender, EventArgs e)
+    {
+        if (sender is Element element && element.BindingContext is SurveyQuestionModel question)
+        {
+            FindViewModel()?.SelectQuestionDirect(question);
+        }
+    }
+
+    private void OnMoveQuestionUpClicked(object? sender, EventArgs e)
+    {
+        if (sender is Element element && element.BindingContext is SurveyQuestionModel question)
+        {
+            FindViewModel()?.MoveQuestionUpDirect(question);
+        }
+    }
+
+    private void OnMoveQuestionDownClicked(object? sender, EventArgs e)
+    {
+        if (sender is Element element && element.BindingContext is SurveyQuestionModel question)
+        {
+            FindViewModel()?.MoveQuestionDownDirect(question);
+        }
+    }
+
+    private void OnDeleteQuestionClicked(object? sender, EventArgs e)
+    {
+        if (sender is Element element && element.BindingContext is SurveyQuestionModel question)
+        {
+            FindViewModel()?.SletSpoergsmaalDirect(question);
+        }
+    }
+
     private void OnSectionDragStarting(object? sender, DragStartingEventArgs e)
     {
         if (Section != null)

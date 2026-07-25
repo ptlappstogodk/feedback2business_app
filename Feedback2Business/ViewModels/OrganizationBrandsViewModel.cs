@@ -535,6 +535,46 @@ public class OrganizationBrandsViewModel : ObservableObject
         }
     }
 
+    public void SelectQuestionDirect(SurveyQuestionModel question)
+    {
+        SelectQuestion(question);
+    }
+
+    public void TilfoejSpoergsmaalTilSektionDirect(SectionModel section)
+    {
+        TilfoejSpoergsmaalTilSektion(section);
+    }
+
+    public void SletSektionDirect(SectionModel section)
+    {
+        SletSektion(section);
+    }
+
+    public void SletSpoergsmaalDirect(object param)
+    {
+        SletSpoergsmaal(param);
+    }
+
+    public void MoveSectionUpDirect(SectionModel section)
+    {
+        MoveSectionUp(section);
+    }
+
+    public void MoveSectionDownDirect(SectionModel section)
+    {
+        MoveSectionDown(section);
+    }
+
+    public void MoveQuestionUpDirect(SurveyQuestionModel question)
+    {
+        MoveQuestionUp(question);
+    }
+
+    public void MoveQuestionDownDirect(SurveyQuestionModel question)
+    {
+        MoveQuestionDown(question);
+    }
+
     public void ReorderSection(SectionModel source, SectionModel target)
     {
         if (source == null || target == null || source == target) return;
