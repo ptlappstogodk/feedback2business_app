@@ -25,11 +25,31 @@
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout Spacing="24">
-                    <Label Text="Overblik" Style="{StaticResource TabTextStyle}" />
-                    <Label Text="Brands" Style="{StaticResource ActiveTabTextStyle}" />
-                    <Label Text="Brugere" Style="{StaticResource TabTextStyle}" />
-                    <Label Text="Indstillinger" Style="{StaticResource TabTextStyle}" />
-                    <Label Text="App-udgivelse" Style="{StaticResource TabTextStyle}" />
+                    <Label Text="Overblik" Style="{StaticResource TabTextStyle}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NavigateOrgTabCommand}" CommandParameter="Overview" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="Brands" Style="{StaticResource ActiveTabTextStyle}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NavigateOrgTabCommand}" CommandParameter="Brands" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="Brugere" Style="{StaticResource TabTextStyle}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NavigateOrgTabCommand}" CommandParameter="Users" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="Indstillinger" Style="{StaticResource TabTextStyle}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NavigateOrgTabCommand}" CommandParameter="SettingsGeneral" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="App-udgivelse" Style="{StaticResource TabTextStyle}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NavigateOrgTabCommand}" CommandParameter="AppPublishing" />
+                        </Label.GestureRecognizers>
+                    </Label>
                 </HorizontalStackLayout>
             </VerticalStackLayout>
 

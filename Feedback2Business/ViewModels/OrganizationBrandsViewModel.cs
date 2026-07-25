@@ -113,6 +113,7 @@ public class OrganizationBrandsViewModel : ObservableObject
     public ICommand SletLogikRegelCommand { get; }
     public ICommand TilfoejOversaettelseCommand { get; }
     public ICommand SletOversaettelseCommand { get; }
+    public ICommand NavigateOrgTabCommand { get; }
 
     public OrganizationBrandsViewModel(IMockDataService data, MainShellViewModel shellVm)
     {
@@ -143,6 +144,7 @@ public class OrganizationBrandsViewModel : ObservableObject
         SletLogikRegelCommand = new RelayCommand<string>(SletLogikRegel);
         TilfoejOversaettelseCommand = new RelayCommand(async () => await TilfoejOversaettelseAsync());
         SletOversaettelseCommand = new RelayCommand<TranslationItemModel>(SletOversaettelse);
+        NavigateOrgTabCommand = new RelayCommand<string>(key => ShellVm.RequestNavigation(key ?? "Brands"));
     }
 
     private void OnBrandSelected(BrandModel? brand)
