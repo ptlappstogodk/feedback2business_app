@@ -8,7 +8,10 @@
 
     <Grid ColumnDefinitions="250,*">
         <shell:SidebarView x:Name="Sidebar" Grid.Column="0" />
-        <ContentView x:Name="PageHost" Grid.Column="1" />
+        <Grid Grid.Column="1" RowDefinitions="Auto,*">
+            <shell:TopHeaderView x:Name="Header" Grid.Row="0" />
+            <ContentView x:Name="PageHost" Grid.Row="1" />
+        </Grid>
     </Grid>
 </ContentPage>
 

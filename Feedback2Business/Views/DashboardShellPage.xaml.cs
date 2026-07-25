@@ -24,6 +24,7 @@ public partial class DashboardShellPage : ContentPage
         _vm = vm;
 
         BindingContext = _vm;
+        Header.BindingContext = _vm;
         Sidebar.BindingContext = _vm;
 
         Sidebar.NavigationRequested += Sidebar_NavigationRequested;
