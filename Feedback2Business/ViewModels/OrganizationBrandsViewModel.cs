@@ -43,8 +43,16 @@ public class OrganizationBrandsViewModel : ObservableObject
     public bool IsEditingBrand
     {
         get => _isEditingBrand;
-        set => SetProperty(ref _isEditingBrand, value);
+        set
+        {
+            if (SetProperty(ref _isEditingBrand, value))
+            {
+                Raise(nameof(IsNotEditingBrand));
+            }
+        }
     }
+
+    public bool IsNotEditingBrand => !_isEditingBrand;
 
     public ObservableCollection<string> BrandLogoOptions { get; } = new()
     {

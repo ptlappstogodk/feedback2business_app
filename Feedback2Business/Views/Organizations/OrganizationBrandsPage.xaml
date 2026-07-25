@@ -128,7 +128,7 @@
                     <Border Grid.Row="1" Margin="16,0,16,12" Padding="12" BackgroundColor="{StaticResource PageBackground}" Stroke="{StaticResource BorderColor}" StrokeShape="RoundRectangle 8">
                         <VerticalStackLayout Spacing="8">
                             <!-- View Mode -->
-                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" IsVisible="{Binding IsEditingBrand, Converter={StaticResource InvertedBoolConverter}}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" IsVisible="{Binding IsNotEditingBrand}">
                                 <Border WidthRequest="44" HeightRequest="44" BackgroundColor="{StaticResource PrimaryBlueLight}" StrokeThickness="0" StrokeShape="RoundRectangle 10" VerticalOptions="Start">
                                     <Label Text="{Binding SelectedBrand.LogoUrl}" FontSize="22" HorizontalOptions="Center" VerticalOptions="Center" />
                                 </Border>
