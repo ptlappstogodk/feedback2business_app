@@ -12,6 +12,7 @@
         </VerticalStackLayout>
 
         <VerticalStackLayout Grid.Row="1" Margin="0,20,0,20" Spacing="8">
+            <Button Text="Overblik" Clicked="Overview_Clicked" />
             <Button Text="Organisationer" Clicked="Organizations_Clicked" />
             <Button Text="Brands" Clicked="Brands_Clicked" />
             <Button Text="Brugere" Clicked="Users_Clicked" />
