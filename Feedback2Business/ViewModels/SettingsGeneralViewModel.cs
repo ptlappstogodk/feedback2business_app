@@ -1,4 +1,7 @@
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using Feedback2Business.Models;
 using Feedback2Business.Services;
 
@@ -9,6 +12,7 @@ public class SettingsGeneralViewModel : ObservableObject
     private readonly IMockDataService _data;
     private readonly MainShellViewModel _shellVm;
     private AppSettingModel _settings = new();
+    private bool _isLoading;
 
     public string OrganizationName
     {
@@ -32,6 +36,8 @@ public class SettingsGeneralViewModel : ObservableObject
         get => _settings.Language;
         set
         {
+            if (string.IsNullOrWhiteSpace(value)) return;
+
             if (_settings.Language != value)
             {
                 _settings.Language = value;
@@ -46,6 +52,8 @@ public class SettingsGeneralViewModel : ObservableObject
         get => _settings.Timezone;
         set
         {
+            if (string.IsNullOrWhiteSpace(value)) return;
+
             if (_settings.Timezone != value)
             {
                 _settings.Timezone = value;
@@ -67,6 +75,8 @@ public class SettingsGeneralViewModel : ObservableObject
         get => _settings.DateFormat;
         set
         {
+            if (string.IsNullOrWhiteSpace(value)) return;
+
             if (_settings.DateFormat != value)
             {
                 _settings.DateFormat = value;
@@ -76,10 +86,15 @@ public class SettingsGeneralViewModel : ObservableObject
         }
     }
 
+    public ICommand SaveCommand { get; }
+
     public SettingsGeneralViewModel(IMockDataService data, MainShellViewModel shellVm)
     {
+        _isLoading = true;
         _data = data;
         _shellVm = shellVm;
+
+        SaveCommand = new RelayCommand(async () => await SaveExplicitAsync());
 
         if (_shellVm.ActiveOrganization == null)
         {
@@ -92,11 +107,31 @@ public class SettingsGeneralViewModel : ObservableObject
 
         int orgId = _shellVm.ActiveOrganization?.Id ?? 1;
         _settings = data.GetAppSettings(orgId);
+
+        if (string.IsNullOrWhiteSpace(_settings.Language)) _settings.Language = "Dansk";
+        if (string.IsNullOrWhiteSpace(_settings.Timezone)) _settings.Timezone = "UTC+01:00 København";
+        if (string.IsNullOrWhiteSpace(_settings.DateFormat)) _settings.DateFormat = "DD-MM-YYYY";
+        if (string.IsNullOrWhiteSpace(_settings.SelectedMaxFileSize)) _settings.SelectedMaxFileSize = "2 MB";
+
+        _isLoading = false;
     }
 
     private void Save()
     {
+        if (_isLoading) return;
+
+        if (string.IsNullOrWhiteSpace(_settings.Language)) _settings.Language = "Dansk";
+        if (string.IsNullOrWhiteSpace(_settings.Timezone)) _settings.Timezone = "UTC+01:00 København";
+        if (string.IsNullOrWhiteSpace(_settings.DateFormat)) _settings.DateFormat = "DD-MM-YYYY";
+        if (string.IsNullOrWhiteSpace(_settings.SelectedMaxFileSize)) _settings.SelectedMaxFileSize = "2 MB";
+
         _data.SaveAppSettings(_settings);
+    }
+
+    private async Task SaveExplicitAsync()
+    {
+        Save();
+        await Application.Current!.MainPage!.DisplayAlert("Generelle indstillinger", "Indstillinger er gemt.", "OK");
     }
 }
 

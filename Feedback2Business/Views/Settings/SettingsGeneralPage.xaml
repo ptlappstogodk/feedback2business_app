@@ -13,7 +13,7 @@
             <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
                 <Label Text="Indstillinger" Style="{StaticResource PageTitleStyle}" />
                 <HorizontalStackLayout Grid.Column="1" Spacing="12">
-                    <Button Text="Gem ændringer" Style="{StaticResource PrimaryButtonStyle}" />
+                    <Button Text="Gem ændringer" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButtonStyle}" />
                     <Button Text="Flere handlinger" Style="{StaticResource SecondaryButtonStyle}" />
                 </HorizontalStackLayout>
             </Grid>
