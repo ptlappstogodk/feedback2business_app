@@ -79,7 +79,23 @@ public class ApiDataService : IMockDataService
     public AppSettingModel GetAppSettings(int organizationId) => Get<AppSettingModel>($"appsettings?organizationId={organizationId}");
     public void SaveAppSettings(AppSettingModel settings) => Put("appsettings", settings);
     public void SaveRole(RoleModel role) => Put($"roles/{role.Id}", role);
-    public void SaveSurvey(SurveyModel survey) => Put($"surveys/{survey.Id}", survey);
+    public void SaveSurvey(SurveyModel survey)
+    {
+        if (survey.Id <= 0)
+        {
+            CreateSurvey(survey);
+            return;
+        }
+
+        try
+        {
+            Put($"surveys/{survey.Id}", survey);
+        }
+        catch (Exception ex) when (ex.Message.Contains("NotFound") || ex.Message.Contains("404"))
+        {
+            CreateSurvey(survey);
+        }
+    }
     public MobilePreviewModel GetPreview() => Get<MobilePreviewModel>("preview");
 
     private void Post<T>(string endpoint, T data)
@@ -117,9 +133,28 @@ public class ApiDataService : IMockDataService
 
     public void CreateOrganization(OrganizationModel org, int? creatorUserId = null) => Post(creatorUserId.HasValue ? $"organizations?creatorUserId={creatorUserId.Value}" : "organizations", org);
     public void CreateBrand(BrandModel brand) => Post("brands", brand);
-    public void CreateSurvey(SurveyModel survey) => Post("surveys", survey);
+    public void CreateSurvey(SurveyModel survey)
+    {
+        var created = PostWithResult<SurveyModel, SurveyModel>("surveys", survey);
+        if (created != null && created.Id > 0)
+        {
+            survey.Id = created.Id;
+        }
+    }
     public void CreateUser(UserModel user) => Post("users", user);
     public void CreateTemplate(TemplateModel template) => Post("templates", template);
     public void CreateVariable(VariableModel variable) => Post("variables", variable);
     public void CreateRole(RoleModel role) => Post("roles", role);
+
+    private TResult? PostWithResult<TData, TResult>(string endpoint, TData data)
+    {
+        var response = _httpClient.PostAsJsonAsync(endpoint, data).GetAwaiter().GetResult();
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            System.Diagnostics.Debug.WriteLine($"API Post failed with status {response.StatusCode}. Details: {errorBody}");
+            throw new Exception($"API Post failed with status {response.StatusCode}. Details: {errorBody}");
+        }
+        return response.Content.ReadFromJsonAsync<TResult>().GetAwaiter().GetResult();
+    }
 }
