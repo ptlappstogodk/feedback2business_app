@@ -249,6 +249,7 @@ public class MockDataService : IMockDataService
     public AppSettingModel GetAppSettings(int organizationId) => new() { OrganizationId = organizationId };
     public void SaveAppSettings(AppSettingModel settings) { }
     public void SaveRole(RoleModel role) { }
+    public void SaveSurvey(SurveyModel survey) { }
 
     public MobilePreviewModel GetPreview() => new()
     {

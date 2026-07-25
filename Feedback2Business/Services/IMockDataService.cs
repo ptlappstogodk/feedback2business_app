@@ -23,6 +23,7 @@ public interface IMockDataService
     AppSettingModel GetAppSettings(int organizationId);
     void SaveAppSettings(AppSettingModel settings);
     void SaveRole(RoleModel role);
+    void SaveSurvey(SurveyModel survey);
     MobilePreviewModel GetPreview();
 
     void CreateOrganization(OrganizationModel org, int? creatorUserId = null);

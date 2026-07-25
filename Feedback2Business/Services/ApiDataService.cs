@@ -78,6 +78,7 @@ public class ApiDataService : IMockDataService
     public AppSettingModel GetAppSettings(int organizationId) => Get<AppSettingModel>($"appsettings?organizationId={organizationId}");
     public void SaveAppSettings(AppSettingModel settings) => Put("appsettings", settings);
     public void SaveRole(RoleModel role) => Put($"roles/{role.Id}", role);
+    public void SaveSurvey(SurveyModel survey) => Put($"surveys/{survey.Id}", survey);
     public MobilePreviewModel GetPreview() => Get<MobilePreviewModel>("preview");
 
     private void Post<T>(string endpoint, T data)

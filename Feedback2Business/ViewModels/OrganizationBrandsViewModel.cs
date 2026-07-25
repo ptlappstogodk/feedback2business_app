@@ -797,6 +797,7 @@ public class OrganizationBrandsViewModel : ObservableObject
             SelectedSurvey.Description = SurveyDescriptionBuffer;
             SelectedSurvey.Icon = SurveyIconBuffer;
             SelectedSurvey.SelectedTemplateName = SelectedTemplateNameBuffer;
+            _data.SaveSurvey(SelectedSurvey);
         }
 
         ActiveSurveyTab = "Byg";
