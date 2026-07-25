@@ -146,6 +146,16 @@
                     </Grid>
 
                     <HorizontalStackLayout Grid.Row="1" Spacing="24" Padding="16,0">
+                        <Label Text="Generelt" Style="{StaticResource TabTextStyle}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Generelt" />
+                            </Label.GestureRecognizers>
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsGenereltTabActive}" Value="True">
+                                    <Setter Property="Style" Value="{StaticResource ActiveTabTextStyle}" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                         <Label Text="Byg" Style="{StaticResource TabTextStyle}">
                             <Label.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding SelectTabCommand}" CommandParameter="Byg" />
@@ -206,13 +216,42 @@
                     </HorizontalStackLayout>
 
                     <Grid Grid.Row="3" ColumnDefinitions="*,300" ColumnSpacing="16" Padding="16">
+                        <!-- Generelt Tab Panel -->
+                        <ScrollView Grid.Column="0" IsVisible="{Binding IsGenereltTabActive}">
+                            <VerticalStackLayout Spacing="16" Padding="12">
+                                <Label Text="Generelle oplysninger om survey" FontAttributes="Bold" FontSize="16" />
+
+                                <Label Text="Survey Navn" Style="{StaticResource FormLabelStyle}" />
+                                <Entry Text="{Binding SurveyNameBuffer, Mode=TwoWay}" Placeholder="Indtast surveynavn" />
+
+                                <Label Text="Survey Type" Style="{StaticResource FormLabelStyle}" />
+                                <Picker ItemsSource="{Binding SurveyTypes}" SelectedItem="{Binding SurveyTypeBuffer, Mode=TwoWay}" />
+
+                                <Label Text="Oprettelsestype / Skabelon" Style="{StaticResource FormLabelStyle}" />
+                                <Picker ItemsSource="{Binding SurveyTemplateOptions}" SelectedItem="{Binding SelectedTemplateNameBuffer, Mode=TwoWay}" />
+
+                                <Label Text="Beskrivelse" Style="{StaticResource FormLabelStyle}" />
+                                <Editor Text="{Binding SurveyDescriptionBuffer, Mode=TwoWay}" HeightRequest="90" Placeholder="Beskrivelse af survey..." />
+
+                                <Label Text="Survey Ikon" Style="{StaticResource FormLabelStyle}" />
+                                <Picker ItemsSource="{Binding SurveyIcons}" SelectedItem="{Binding SurveyIconBuffer, Mode=TwoWay}" />
+
+                                <Button Text="Gem &amp; fortvis i Byg"
+                                        Command="{Binding GemSurveyGenereltCommand}"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        HorizontalOptions="Start"
+                                        Margin="0,10,0,0" />
+                            </VerticalStackLayout>
+                        </ScrollView>
+
                         <!-- Byg Tab Panel -->
                         <ScrollView Grid.Column="0" IsVisible="{Binding IsBygTabActive}">
                             <VerticalStackLayout Spacing="12">
                                 <CollectionView ItemsSource="{Binding Sections}">
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate x:DataType="models:SectionModel">
-                                            <shared:SectionCardView Title="{Binding Title}"
+                                            <shared:SectionCardView Section="{Binding .}"
+                                                                    Title="{Binding Title}"
                                                                     ItemsSource="{Binding Questions}"
                                                                     Margin="0,0,0,12" />
                                         </DataTemplate>

@@ -3,34 +3,112 @@
     x:Class="Feedback2Business.Views.Shared.SectionCardView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:Feedback2Business.Models"
     x:Name="This">
 
     <Border Style="{StaticResource InnerCardStyle}">
-        <VerticalStackLayout>
-            <Grid Padding="12" ColumnDefinitions="Auto,*">
-                <Label Text="⌄" />
-                <Label Grid.Column="1"
-                       Text="{Binding Title, Source={x:Reference This}}"
-                       FontAttributes="Bold" />
+        <Border.GestureRecognizers>
+            <DragGestureRecognizer CanDrag="True" DragStarting="OnSectionDragStarting" />
+            <DropGestureRecognizer AllowDrop="True" Drop="OnSectionDrop" />
+        </Border.GestureRecognizers>
+
+        <VerticalStackLayout Spacing="8" Padding="12">
+            <!-- Section Header -->
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="8">
+                <Label Text="⋮⋮" VerticalOptions="Center" TextColor="{StaticResource TextSecondary}" FontSize="14" ToolTipProperties.Text="Træk for at flytte sektion" />
+                
+                <Entry Grid.Column="1"
+                       Text="{Binding SectionTitle, Source={x:Reference This}, Mode=TwoWay}"
+                       FontAttributes="Bold"
+                       FontSize="15"
+                       VerticalOptions="Center" />
+
+                <Button Grid.Column="2"
+                        Text="▲"
+                        Command="{Binding BindingContext.MoveSectionUpCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                        CommandParameter="{Binding Section, Source={x:Reference This}}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        WidthRequest="28" HeightRequest="28" Padding="0" FontSize="11" ToolTipProperties.Text="Flyt sektion op" />
+
+                <Button Grid.Column="3"
+                        Text="▼"
+                        Command="{Binding BindingContext.MoveSectionDownCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                        CommandParameter="{Binding Section, Source={x:Reference This}}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        WidthRequest="28" HeightRequest="28" Padding="0" FontSize="11" ToolTipProperties.Text="Flyt sektion ned" />
+
+                <Button Grid.Column="4"
+                        Text="🗑"
+                        Command="{Binding BindingContext.SletSektionCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                        CommandParameter="{Binding Section, Source={x:Reference This}}"
+                        BackgroundColor="Transparent"
+                        TextColor="Red"
+                        WidthRequest="28" HeightRequest="28" Padding="0" FontSize="14" ToolTipProperties.Text="Slet sektion" />
             </Grid>
 
-            <CollectionView ItemsSource="{Binding ItemsSource, Source={x:Reference This}}">
+            <!-- Questions List -->
+            <CollectionView ItemsSource="{Binding SectionQuestions, Source={x:Reference This}}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="10,8" ColumnDefinitions="*,Auto">
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding BindingContext.SelectQuestionCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                                                      CommandParameter="{Binding}" />
-                            </Grid.GestureRecognizers>
-                            <Label Text="{Binding DisplayTitle}" />
-                            <Label Grid.Column="1"
-                                   Text="{Binding TypeLabel}"
-                                   FontSize="12"
-                                   TextColor="{StaticResource TextSecondary}" />
-                        </Grid>
+                    <DataTemplate x:DataType="models:SurveyQuestionModel">
+                        <Border Margin="0,4" Padding="8,6" Style="{StaticResource CardStyle}">
+                            <Border.GestureRecognizers>
+                                <DragGestureRecognizer CanDrag="True" DragStarting="OnQuestionDragStarting" />
+                                <DropGestureRecognizer AllowDrop="True" Drop="OnQuestionDrop" />
+                            </Border.GestureRecognizers>
+
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto" ColumnSpacing="8">
+                                <Label Text="⋮⋮" VerticalOptions="Center" TextColor="{StaticResource TextSecondary}" FontSize="12" />
+
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <VerticalStackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding BindingContext.SelectQuestionCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                                              CommandParameter="{Binding .}" />
+                                    </VerticalStackLayout.GestureRecognizers>
+                                    <Label Text="{Binding DisplayTitle}" FontAttributes="Bold" FontSize="13" />
+                                </VerticalStackLayout>
+
+                                <Label Grid.Column="2"
+                                       Text="{Binding TypeLabel}"
+                                       FontSize="11"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       VerticalOptions="Center" />
+
+                                <Button Grid.Column="3"
+                                        Text="▲"
+                                        Command="{Binding BindingContext.MoveQuestionUpCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                        CommandParameter="{Binding .}"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        WidthRequest="24" HeightRequest="24" Padding="0" FontSize="10" ToolTipProperties.Text="Flyt spørgsmål op" />
+
+                                <Button Grid.Column="4"
+                                        Text="▼"
+                                        Command="{Binding BindingContext.MoveQuestionDownCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                        CommandParameter="{Binding .}"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        WidthRequest="24" HeightRequest="24" Padding="0" FontSize="10" ToolTipProperties.Text="Flyt spørgsmål ned" />
+
+                                <Button Grid.Column="5"
+                                        Text="🗑"
+                                        Command="{Binding BindingContext.SletSpoergsmaalCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="Transparent"
+                                        TextColor="Red"
+                                        WidthRequest="24" HeightRequest="24" Padding="0" FontSize="12" ToolTipProperties.Text="Slet spørgsmål" />
+                            </Grid>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
+            <!-- Add Question Button -->
+            <Button Text="+ Tilføj spørgsmål"
+                    Command="{Binding BindingContext.TilfoejSpoergsmaalTilSektionCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                    CommandParameter="{Binding Section, Source={x:Reference This}}"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    HeightRequest="32"
+                    FontSize="12"
+                    HorizontalOptions="Start"
+                    Margin="0,4,0,0" />
         </VerticalStackLayout>
     </Border>
 </ContentView>

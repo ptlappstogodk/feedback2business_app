@@ -16,6 +16,75 @@ public class OrganizationBrandsViewModel : ObservableObject
     private SurveyQuestionEditorViewModel _selectedQuestion;
     private string _activeSurveyTab = "Byg";
 
+    // Survey Generelt Buffers
+    private string _surveyNameBuffer = string.Empty;
+    private string _surveyTypeBuffer = "Inspektion";
+    private string _surveyDescriptionBuffer = string.Empty;
+    private string _surveyIconBuffer = "📋";
+    private string _selectedTemplateNameBuffer = "Blank survey";
+    private bool _isCreatingNewSurvey;
+
+    public string SurveyNameBuffer
+    {
+        get => _surveyNameBuffer;
+        set => SetProperty(ref _surveyNameBuffer, value);
+    }
+
+    public string SurveyTypeBuffer
+    {
+        get => _surveyTypeBuffer;
+        set => SetProperty(ref _surveyTypeBuffer, value);
+    }
+
+    public string SurveyDescriptionBuffer
+    {
+        get => _surveyDescriptionBuffer;
+        set => SetProperty(ref _surveyDescriptionBuffer, value);
+    }
+
+    public string SurveyIconBuffer
+    {
+        get => _surveyIconBuffer;
+        set => SetProperty(ref _surveyIconBuffer, value);
+    }
+
+    public string SelectedTemplateNameBuffer
+    {
+        get => _selectedTemplateNameBuffer;
+        set => SetProperty(ref _selectedTemplateNameBuffer, value);
+    }
+
+    public bool IsCreatingNewSurvey
+    {
+        get => _isCreatingNewSurvey;
+        set => SetProperty(ref _isCreatingNewSurvey, value);
+    }
+
+    public ObservableCollection<string> SurveyTypes { get; } = new()
+    {
+        "Inspektion",
+        "Tjekliste",
+        "Audit",
+        "Evaluering",
+        "Kundetilfredshed"
+    };
+
+    public ObservableCollection<string> SurveyIcons { get; } = new()
+    {
+        "📋",
+        "🔍",
+        "📝",
+        "🏬",
+        "⭐",
+        "⚡",
+        "🛡️"
+    };
+
+    public ObservableCollection<string> SurveyTemplateOptions { get; } = new()
+    {
+        "Blank survey"
+    };
+
     public MainShellViewModel ShellVm { get; }
 
     public ObservableCollection<BrandModel> Brands { get; } = new();
@@ -79,6 +148,7 @@ public class OrganizationBrandsViewModel : ObservableObject
         {
             if (SetProperty(ref _activeSurveyTab, value))
             {
+                Raise(nameof(IsGenereltTabActive));
                 Raise(nameof(IsBygTabActive));
                 Raise(nameof(IsLogikTabActive));
                 Raise(nameof(IsIndstillingerTabActive));
@@ -88,6 +158,7 @@ public class OrganizationBrandsViewModel : ObservableObject
         }
     }
 
+    public bool IsGenereltTabActive => ActiveSurveyTab == "Generelt";
     public bool IsBygTabActive => ActiveSurveyTab == "Byg";
     public bool IsLogikTabActive => ActiveSurveyTab == "Logik";
     public bool IsIndstillingerTabActive => ActiveSurveyTab == "Indstillinger";
@@ -98,6 +169,7 @@ public class OrganizationBrandsViewModel : ObservableObject
 
     public ICommand OpretBrandCommand { get; }
     public ICommand OpretSurveyCommand { get; }
+    public ICommand GemSurveyGenereltCommand { get; }
     public ICommand FlereHandlingerCommand { get; }
     public ICommand SelectTabCommand { get; }
     public ICommand SelectQuestionCommand { get; }
@@ -105,8 +177,16 @@ public class OrganizationBrandsViewModel : ObservableObject
     
     // Sektioner & Spørgsmål administration
     public ICommand TilfoejSektionCommand { get; }
+    public ICommand SletSektionCommand { get; }
     public ICommand AdministrerSektionerCommand { get; }
     public ICommand TilfoejSpoergsmaalCommand { get; }
+    public ICommand TilfoejSpoergsmaalTilSektionCommand { get; }
+
+    // Reordering commands
+    public ICommand MoveSectionUpCommand { get; }
+    public ICommand MoveSectionDownCommand { get; }
+    public ICommand MoveQuestionUpCommand { get; }
+    public ICommand MoveQuestionDownCommand { get; }
 
     // Logik & Oversættelser commands
     public ICommand TilfoejLogikRegelCommand { get; }
@@ -122,6 +202,15 @@ public class OrganizationBrandsViewModel : ObservableObject
 
         Preview = data.GetPreview();
 
+        var templates = _data.GetTemplates();
+        foreach (var t in templates)
+        {
+            if (!SurveyTemplateOptions.Contains(t.Name))
+            {
+                SurveyTemplateOptions.Add(t.Name);
+            }
+        }
+
         var allBrands = _data.GetBrands(ShellVm.ActiveOrganization?.Id);
         foreach (var b in allBrands) Brands.Add(b);
 
@@ -131,14 +220,22 @@ public class OrganizationBrandsViewModel : ObservableObject
 
         OpretBrandCommand = new RelayCommand(async () => await OpretBrandAsync());
         OpretSurveyCommand = new RelayCommand(async () => await OpretSurveyAsync());
+        GemSurveyGenereltCommand = new RelayCommand(GemSurveyGenerelt);
         FlereHandlingerCommand = new RelayCommand(async () => await FlereHandlingerAsync());
         SelectTabCommand = new RelayCommand<string>(tab => ActiveSurveyTab = tab ?? "Byg");
         SelectQuestionCommand = new RelayCommand<SurveyQuestionModel>(SelectQuestion);
-        SletSpoergsmaalCommand = new RelayCommand<SurveyQuestionEditorViewModel>(SletSpoergsmaal);
+        SletSpoergsmaalCommand = new RelayCommand<object>(SletSpoergsmaal);
         
-        TilfoejSektionCommand = new RelayCommand(async () => await TilfoejSektionAsync());
+        TilfoejSektionCommand = new RelayCommand(TilfoejSektionDirect);
+        SletSektionCommand = new RelayCommand<SectionModel>(SletSektion);
         AdministrerSektionerCommand = new RelayCommand(async () => await AdministrerSektionerAsync());
         TilfoejSpoergsmaalCommand = new RelayCommand(async () => await TilfoejSpoergsmaalAsync());
+        TilfoejSpoergsmaalTilSektionCommand = new RelayCommand<SectionModel>(TilfoejSpoergsmaalTilSektion);
+
+        MoveSectionUpCommand = new RelayCommand<SectionModel>(MoveSectionUp);
+        MoveSectionDownCommand = new RelayCommand<SectionModel>(MoveSectionDown);
+        MoveQuestionUpCommand = new RelayCommand<SurveyQuestionModel>(MoveQuestionUp);
+        MoveQuestionDownCommand = new RelayCommand<SurveyQuestionModel>(MoveQuestionDown);
 
         TilfoejLogikRegelCommand = new RelayCommand(async () => await TilfoejLogikRegelAsync());
         SletLogikRegelCommand = new RelayCommand<string>(SletLogikRegel);
@@ -175,6 +272,13 @@ public class OrganizationBrandsViewModel : ObservableObject
             SelectedQuestion = new SurveyQuestionEditorViewModel(new SurveyQuestionModel());
             return;
         }
+
+        IsCreatingNewSurvey = false;
+        SurveyNameBuffer = survey.Name;
+        SurveyTypeBuffer = string.IsNullOrEmpty(survey.Type) ? "Inspektion" : survey.Type;
+        SurveyDescriptionBuffer = survey.Description ?? string.Empty;
+        SurveyIconBuffer = string.IsNullOrEmpty(survey.Icon) ? "📋" : survey.Icon;
+        SelectedTemplateNameBuffer = string.IsNullOrEmpty(survey.SelectedTemplateName) ? "Blank survey" : survey.SelectedTemplateName;
 
         // 1. Fetch questions for the selected survey from the database!
         var dbQuestions = _data.GetQuestionsForSurvey(survey.Id);
@@ -304,26 +408,33 @@ public class OrganizationBrandsViewModel : ObservableObject
         }
     }
 
-    private void SletSpoergsmaal(SurveyQuestionEditorViewModel? editorVm)
+    private void SletSpoergsmaal(object? param)
     {
-        if (editorVm == null) return;
-        var question = editorVm.SourceQuestion;
+        if (param == null) return;
+
+        SurveyQuestionModel? question = null;
+        if (param is SurveyQuestionEditorViewModel editorVm)
+        {
+            question = editorVm.SourceQuestion;
+        }
+        else if (param is SurveyQuestionModel qModel)
+        {
+            question = qModel;
+        }
+
+        if (question == null) return;
 
         foreach (var sec in Sections)
         {
             if (sec.Questions.Contains(question))
             {
                 sec.Questions.Remove(question);
-
-                var secNumStr = new string(sec.Title.TakeWhile(char.IsDigit).ToArray());
-                int secNum = string.IsNullOrEmpty(secNumStr) ? 1 : int.Parse(secNumStr);
-                for (int i = 0; i < sec.Questions.Count; i++)
-                {
-                    sec.Questions[i].NumberLabel = $"{secNum}.{i + 1}";
-                }
                 break;
             }
         }
+
+        RecalculateSectionAndQuestionNumbers();
+        UpdateQuestionCount();
 
         var nextQuestion = Sections.SelectMany(s => s.Questions).FirstOrDefault();
         if (nextQuestion != null)
@@ -336,14 +447,151 @@ public class OrganizationBrandsViewModel : ObservableObject
         }
     }
 
-    private async Task TilfoejSektionAsync()
+    private void TilfoejSektionDirect()
     {
-        var title = await Application.Current!.MainPage!.DisplayPromptAsync("Ny sektion", "Indtast sektionsnavn:", "Gem", "Annuller", "Navn");
-        if (!string.IsNullOrWhiteSpace(title))
+        int newNum = Sections.Count + 1;
+        var newSection = new SectionModel { Title = $"{newNum}. Ny sektion" };
+        Sections.Add(newSection);
+    }
+
+    private void SletSektion(SectionModel? section)
+    {
+        if (section == null || !Sections.Contains(section)) return;
+        Sections.Remove(section);
+        RecalculateSectionAndQuestionNumbers();
+        UpdateQuestionCount();
+    }
+
+    private void TilfoejSpoergsmaalTilSektion(SectionModel? section)
+    {
+        if (section == null) return;
+
+        int secIndex = Sections.IndexOf(section) + 1;
+        string numberLabel = $"{secIndex}.{section.Questions.Count + 1}";
+
+        var newQuestion = new SurveyQuestionModel
         {
-            int newNum = Sections.Count + 1;
-            var newSection = new SectionModel { Title = $"{newNum}. {title.Trim()}" };
-            Sections.Add(newSection);
+            NumberLabel = numberLabel,
+            Title = "Nyt spørgsmål",
+            Type = "Ja / Nej",
+            Description = "",
+            IsRequired = false,
+            VariableName = "",
+            DisplayMode = "Standard",
+            SectionIndex = secIndex,
+            SurveyId = SelectedSurvey?.Id ?? 0
+        };
+
+        section.Questions.Add(newQuestion);
+        SelectedQuestion = new SurveyQuestionEditorViewModel(newQuestion);
+        UpdateQuestionCount();
+    }
+
+    private void MoveSectionUp(SectionModel? section)
+    {
+        if (section == null) return;
+        int idx = Sections.IndexOf(section);
+        if (idx > 0)
+        {
+            Sections.Move(idx, idx - 1);
+            RecalculateSectionAndQuestionNumbers();
+        }
+    }
+
+    private void MoveSectionDown(SectionModel? section)
+    {
+        if (section == null) return;
+        int idx = Sections.IndexOf(section);
+        if (idx >= 0 && idx < Sections.Count - 1)
+        {
+            Sections.Move(idx, idx + 1);
+            RecalculateSectionAndQuestionNumbers();
+        }
+    }
+
+    private void MoveQuestionUp(SurveyQuestionModel? question)
+    {
+        if (question == null) return;
+        var section = Sections.FirstOrDefault(s => s.Questions.Contains(question));
+        if (section == null) return;
+        int idx = section.Questions.IndexOf(question);
+        if (idx > 0)
+        {
+            section.Questions.Move(idx, idx - 1);
+            RecalculateSectionAndQuestionNumbers();
+        }
+    }
+
+    private void MoveQuestionDown(SurveyQuestionModel? question)
+    {
+        if (question == null) return;
+        var section = Sections.FirstOrDefault(s => s.Questions.Contains(question));
+        if (section == null) return;
+        int idx = section.Questions.IndexOf(question);
+        if (idx >= 0 && idx < section.Questions.Count - 1)
+        {
+            section.Questions.Move(idx, idx + 1);
+            RecalculateSectionAndQuestionNumbers();
+        }
+    }
+
+    public void ReorderSection(SectionModel source, SectionModel target)
+    {
+        if (source == null || target == null || source == target) return;
+        int oldIndex = Sections.IndexOf(source);
+        int newIndex = Sections.IndexOf(target);
+        if (oldIndex >= 0 && newIndex >= 0)
+        {
+            Sections.Move(oldIndex, newIndex);
+            RecalculateSectionAndQuestionNumbers();
+        }
+    }
+
+    public void ReorderQuestion(SurveyQuestionModel sourceQuestion, SurveyQuestionModel targetQuestion)
+    {
+        if (sourceQuestion == null || targetQuestion == null || sourceQuestion == targetQuestion) return;
+
+        SectionModel? sourceSection = Sections.FirstOrDefault(s => s.Questions.Contains(sourceQuestion));
+        SectionModel? targetSection = Sections.FirstOrDefault(s => s.Questions.Contains(targetQuestion));
+
+        if (sourceSection != null && targetSection != null)
+        {
+            sourceSection.Questions.Remove(sourceQuestion);
+            int targetIdx = targetSection.Questions.IndexOf(targetQuestion);
+            if (targetIdx >= 0)
+            {
+                targetSection.Questions.Insert(targetIdx, sourceQuestion);
+            }
+            else
+            {
+                targetSection.Questions.Add(sourceQuestion);
+            }
+            RecalculateSectionAndQuestionNumbers();
+        }
+    }
+
+    public void RecalculateSectionAndQuestionNumbers()
+    {
+        for (int i = 0; i < Sections.Count; i++)
+        {
+            var sec = Sections[i];
+            var parts = sec.Title.Split('.', 2);
+            string baseName = parts.Length == 2 ? parts[1].Trim() : sec.Title.Trim();
+            sec.Title = $"{i + 1}. {baseName}";
+
+            for (int q = 0; q < sec.Questions.Count; q++)
+            {
+                sec.Questions[q].NumberLabel = $"{i + 1}.{q + 1}";
+                sec.Questions[q].SectionIndex = i + 1;
+            }
+        }
+    }
+
+    private void UpdateQuestionCount()
+    {
+        if (SelectedSurvey != null)
+        {
+            SelectedSurvey.QuestionCount = Sections.Sum(s => s.Questions.Count);
         }
     }
 
@@ -354,7 +602,7 @@ public class OrganizationBrandsViewModel : ObservableObject
 
         if (action == "Tilføj ny sektion")
         {
-            await TilfoejSektionAsync();
+            TilfoejSektionDirect();
         }
         else if (action == "Slet eksisterende sektion")
         {
@@ -373,18 +621,7 @@ public class OrganizationBrandsViewModel : ObservableObject
                 var secToRemove = Sections.FirstOrDefault(s => s.Title == deleteChoice);
                 if (secToRemove != null)
                 {
-                    Sections.Remove(secToRemove);
-                    for (int i = 0; i < Sections.Count; i++)
-                    {
-                        var parts = Sections[i].Title.Split('.', 2);
-                        string baseName = parts.Length == 2 ? parts[1].Trim() : Sections[i].Title;
-                        Sections[i].Title = $"{i + 1}. {baseName}";
-
-                        for (int q = 0; q < Sections[i].Questions.Count; q++)
-                        {
-                            Sections[i].Questions[q].NumberLabel = $"{i + 1}.{q + 1}";
-                        }
-                    }
+                    SletSektion(secToRemove);
                 }
             }
         }
@@ -394,40 +631,13 @@ public class OrganizationBrandsViewModel : ObservableObject
     {
         if (Sections.Count == 0)
         {
-            await Application.Current!.MainPage!.DisplayAlert("Tilføj spørgsmål", "Opret venligst en sektion først.", "OK");
-            return;
+            TilfoejSektionDirect();
         }
 
-        var sectionTitles = Sections.Select(s => s.Title).ToArray();
-        var sectionChoice = await Application.Current!.MainPage!.DisplayActionSheet(
-            "Tilføj spørgsmål til hvilken sektion?", "Annuller", null, sectionTitles);
-
-        if (sectionChoice != null && sectionChoice != "Annuller")
+        var selectedSec = Sections.FirstOrDefault();
+        if (selectedSec != null)
         {
-            var selectedSec = Sections.FirstOrDefault(s => s.Title == sectionChoice);
-            if (selectedSec != null)
-            {
-                var title = await Application.Current!.MainPage!.DisplayPromptAsync("Nyt spørgsmål", "Indtast spørgsmålstekst:", "Opret", "Annuller", "Spørgsmålstekst");
-                if (!string.IsNullOrWhiteSpace(title))
-                {
-                    var secNumStr = new string(selectedSec.Title.TakeWhile(char.IsDigit).ToArray());
-                    int secNum = string.IsNullOrEmpty(secNumStr) ? 1 : int.Parse(secNumStr);
-                    string numberLabel = $"{secNum}.{selectedSec.Questions.Count + 1}";
-
-                    var newQuestion = new SurveyQuestionModel
-                    {
-                        NumberLabel = numberLabel,
-                        Title = title.Trim(),
-                        Type = "Ja / Nej",
-                        Description = "",
-                        IsRequired = false,
-                        VariableName = "",
-                        DisplayMode = "Standard"
-                    };
-                    selectedSec.Questions.Add(newQuestion);
-                    SelectedQuestion = new SurveyQuestionEditorViewModel(newQuestion);
-                }
-            }
+            TilfoejSpoergsmaalTilSektion(selectedSec);
         }
     }
 
@@ -457,21 +667,73 @@ public class OrganizationBrandsViewModel : ObservableObject
             return;
         }
 
-        var name = await Application.Current!.MainPage!.DisplayPromptAsync("Opret survey", "Indtast surveynavn:", "Gem", "Annuller", "Navn");
-        if (!string.IsNullOrWhiteSpace(name))
+        IsCreatingNewSurvey = true;
+        SurveyNameBuffer = "Ny Survey";
+        SurveyTypeBuffer = "Inspektion";
+        SurveyDescriptionBuffer = "";
+        SurveyIconBuffer = "📋";
+        SelectedTemplateNameBuffer = "Blank survey";
+
+        ActiveSurveyTab = "Generelt";
+    }
+
+    private void GemSurveyGenerelt()
+    {
+        if (SelectedBrand == null) return;
+
+        if (IsCreatingNewSurvey)
         {
-            var survey = new SurveyModel
+            var newSurvey = new SurveyModel
             {
-                Name = name.Trim(),
+                Name = string.IsNullOrWhiteSpace(SurveyNameBuffer) ? "Ny Survey" : SurveyNameBuffer.Trim(),
+                Type = SurveyTypeBuffer,
+                Description = SurveyDescriptionBuffer,
+                Icon = SurveyIconBuffer,
+                SelectedTemplateName = SelectedTemplateNameBuffer,
+                BrandId = SelectedBrand.Id,
                 Version = 1,
-                QuestionCount = 0,
-                BrandId = SelectedBrand.Id
+                QuestionCount = 0
             };
 
-            _data.CreateSurvey(survey);
-            Surveys.Add(survey);
-            SelectedSurvey = survey;
+            _data.CreateSurvey(newSurvey);
+            Surveys.Add(newSurvey);
+            IsCreatingNewSurvey = false;
+            SelectedSurvey = newSurvey;
+
+            if (SelectedTemplateNameBuffer != "Blank survey")
+            {
+                PopulateTemplateQuestions(newSurvey, SelectedTemplateNameBuffer);
+            }
         }
+        else if (SelectedSurvey != null)
+        {
+            SelectedSurvey.Name = string.IsNullOrWhiteSpace(SurveyNameBuffer) ? SelectedSurvey.Name : SurveyNameBuffer.Trim();
+            SelectedSurvey.Type = SurveyTypeBuffer;
+            SelectedSurvey.Description = SurveyDescriptionBuffer;
+            SelectedSurvey.Icon = SurveyIconBuffer;
+            SelectedSurvey.SelectedTemplateName = SelectedTemplateNameBuffer;
+        }
+
+        ActiveSurveyTab = "Byg";
+    }
+
+    private void PopulateTemplateQuestions(SurveyModel survey, string templateName)
+    {
+        Sections.Clear();
+        if (templateName == "HACCP Tjekliste")
+        {
+            var sec1 = new SectionModel { Title = "1. Temperaturmåling" };
+            sec1.Questions.Add(new SurveyQuestionModel { NumberLabel = "1.1", Title = "Køleskab temperatur (C)", Type = "Tekst", SurveyId = survey.Id, SectionIndex = 1 });
+            sec1.Questions.Add(new SurveyQuestionModel { NumberLabel = "1.2", Title = "Fryser temperatur (C)", Type = "Tekst", SurveyId = survey.Id, SectionIndex = 1 });
+            Sections.Add(sec1);
+        }
+        else
+        {
+            var sec1 = new SectionModel { Title = "1. Generel kontrol" };
+            sec1.Questions.Add(new SurveyQuestionModel { NumberLabel = "1.1", Title = "Status OK?", Type = "Ja / Nej", SurveyId = survey.Id, SectionIndex = 1 });
+            Sections.Add(sec1);
+        }
+        UpdateQuestionCount();
     }
 
     private async Task FlereHandlingerAsync()
