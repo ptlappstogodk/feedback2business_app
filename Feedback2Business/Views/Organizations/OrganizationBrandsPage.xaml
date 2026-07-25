@@ -123,7 +123,7 @@
             </Border>
 
             <Border Grid.Column="2" Style="{StaticResource CardStyle}">
-                <Grid RowDefinitions="Auto,Auto,Auto,*" x:DataType="viewmodels:OrganizationBrandsViewModel">
+                <Grid RowDefinitions="Auto,Auto,*" x:DataType="viewmodels:OrganizationBrandsViewModel">
                     <Grid Padding="16" ColumnDefinitions="Auto,*">
                         <Border WidthRequest="40"
                                 HeightRequest="40"
@@ -208,14 +208,7 @@
                         </Label>
                     </HorizontalStackLayout>
 
-                    <HorizontalStackLayout Grid.Row="2" Spacing="8" Padding="16,12" IsVisible="{Binding IsBygTabActive}">
-                        <Button Text="Sektion" Command="{Binding AdministrerSektionerCommand}" />
-                        <Button Text="Spørgsmål" Command="{Binding TilfoejSpoergsmaalCommand}" />
-                        <Button Text="Indhold" />
-                        <Button Text="Side" />
-                    </HorizontalStackLayout>
-
-                    <Grid Grid.Row="3" ColumnDefinitions="*,300" ColumnSpacing="16" Padding="16">
+                    <Grid Grid.Row="2" ColumnDefinitions="*,300" ColumnSpacing="16" Padding="16">
                         <!-- Generelt Tab Panel -->
                         <ScrollView Grid.Column="0" IsVisible="{Binding IsGenereltTabActive}">
                             <VerticalStackLayout Spacing="16" Padding="12">
