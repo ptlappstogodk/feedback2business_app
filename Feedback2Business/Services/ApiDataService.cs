@@ -10,6 +10,7 @@ public class ApiDataService : IMockDataService
 {
     private readonly HttpClient _httpClient;
     private const string BaseUrl = "https://feedback2business-g9bafwfuetdxdcds.denmarkeast-01.azurewebsites.net/api/";
+    private readonly Dictionary<int, List<SurveyQuestionModel>> _localQuestionsCache = new();
 
     public ApiDataService()
     {
@@ -64,8 +65,43 @@ public class ApiDataService : IMockDataService
     }
     public List<BrandModel> GetBrands(int? organizationId = null) => Get<List<BrandModel>>(organizationId.HasValue ? $"brands?organizationId={organizationId.Value}" : "brands");
     public List<SurveyModel> GetSurveys(int? brandId = null) => Get<List<SurveyModel>>(brandId.HasValue ? $"surveys?brandId={brandId.Value}" : "surveys");
-    public List<SurveyQuestionModel> GetQuestionsForSurvey(int surveyId) => Get<List<SurveyQuestionModel>>($"surveys/questions?surveyId={surveyId}");
-    public void SaveSurveyQuestions(int surveyId, List<SurveyQuestionModel> questions) => Post($"surveys/{surveyId}/questions", questions);
+    public List<SurveyQuestionModel> GetQuestionsForSurvey(int surveyId)
+    {
+        if (_localQuestionsCache.TryGetValue(surveyId, out var cachedQuestions))
+        {
+            return new List<SurveyQuestionModel>(cachedQuestions);
+        }
+
+        try
+        {
+            var apiQuestions = Get<List<SurveyQuestionModel>>($"surveys/questions?surveyId={surveyId}");
+            if (apiQuestions != null && apiQuestions.Count > 0)
+            {
+                _localQuestionsCache[surveyId] = new List<SurveyQuestionModel>(apiQuestions);
+                return apiQuestions;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"API GetQuestionsForSurvey failed: {ex.Message}");
+        }
+
+        return new List<SurveyQuestionModel>();
+    }
+
+    public void SaveSurveyQuestions(int surveyId, List<SurveyQuestionModel> questions)
+    {
+        _localQuestionsCache[surveyId] = new List<SurveyQuestionModel>(questions);
+
+        try
+        {
+            Post($"surveys/questions?surveyId={surveyId}", questions);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"API SaveSurveyQuestions failed: {ex.Message}");
+        }
+    }
     public List<SurveyQuestionModel> GetSection1Questions() => Get<List<SurveyQuestionModel>>("surveys/questions?section=1");
     public List<SurveyQuestionModel> GetSection2Questions() => Get<List<SurveyQuestionModel>>("surveys/questions?section=2");
     public List<SurveyQuestionModel> GetSection3Questions() => Get<List<SurveyQuestionModel>>("surveys/questions?section=3");

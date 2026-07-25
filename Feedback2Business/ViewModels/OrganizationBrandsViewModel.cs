@@ -634,27 +634,34 @@ public class OrganizationBrandsViewModel : ObservableObject
     {
         if (SelectedSurvey == null) return;
 
-        var allQuestions = new List<SurveyQuestionModel>();
-        for (int secIdx = 0; secIdx < Sections.Count; secIdx++)
+        try
         {
-            var section = Sections[secIdx];
-            string secTitle = section.Title;
-            var parts = secTitle.Split('.', 2);
-            string cleanSecTitle = parts.Length == 2 ? parts[1].Trim() : secTitle.Trim();
-
-            for (int qIdx = 0; qIdx < section.Questions.Count; qIdx++)
+            var allQuestions = new List<SurveyQuestionModel>();
+            for (int secIdx = 0; secIdx < Sections.Count; secIdx++)
             {
-                var q = section.Questions[qIdx];
-                q.SectionIndex = secIdx + 1;
-                q.SectionTitle = cleanSecTitle;
-                q.SurveyId = SelectedSurvey.Id;
-                q.NumberLabel = $"{secIdx + 1}.{qIdx + 1}";
-                allQuestions.Add(q);
-            }
-        }
+                var section = Sections[secIdx];
+                string secTitle = section.Title;
+                var parts = secTitle.Split('.', 2);
+                string cleanSecTitle = parts.Length == 2 ? parts[1].Trim() : secTitle.Trim();
 
-        _data.SaveSurveyQuestions(SelectedSurvey.Id, allQuestions);
-        SelectedSurvey.QuestionCount = allQuestions.Count;
+                for (int qIdx = 0; qIdx < section.Questions.Count; qIdx++)
+                {
+                    var q = section.Questions[qIdx];
+                    q.SectionIndex = secIdx + 1;
+                    q.SectionTitle = cleanSecTitle;
+                    q.SurveyId = SelectedSurvey.Id;
+                    q.NumberLabel = $"{secIdx + 1}.{qIdx + 1}";
+                    allQuestions.Add(q);
+                }
+            }
+
+            _data.SaveSurveyQuestions(SelectedSurvey.Id, allQuestions);
+            SelectedSurvey.QuestionCount = allQuestions.Count;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error saving survey state: {ex.Message}");
+        }
     }
 
     private async Task GemAendringerAsync()
