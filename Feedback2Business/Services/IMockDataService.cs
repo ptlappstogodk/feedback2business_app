@@ -9,6 +9,7 @@ public interface IMockDataService
     UserModel? Register(string name, string email, string password, string organizationName);
     List<BrandModel> GetBrands(int? organizationId = null);
     List<SurveyModel> GetSurveys(int? brandId = null);
+    void DeleteSurvey(int surveyId);
     List<SurveyQuestionModel> GetQuestionsForSurvey(int surveyId);
     void SaveSurveyQuestions(int surveyId, List<SurveyQuestionModel> questions);
     List<SurveyQuestionModel> GetSection1Questions();

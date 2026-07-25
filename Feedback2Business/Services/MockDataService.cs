@@ -103,6 +103,11 @@ public class MockDataService : IMockDataService
         return list;
     }
 
+    public void DeleteSurvey(int surveyId)
+    {
+        _surveyQuestionsStore.Remove(surveyId);
+    }
+
     public List<SurveyQuestionModel> GetQuestionsForSurvey(int surveyId)
     {
         if (_surveyQuestionsStore.TryGetValue(surveyId, out var questions))

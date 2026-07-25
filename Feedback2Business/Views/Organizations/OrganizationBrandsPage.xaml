@@ -103,14 +103,23 @@
                                     SelectionMode="Single"
                                     SelectedItem="{Binding SelectedSurvey}">
                         <CollectionView.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate x:DataType="models:SurveyModel">
                                 <Border Margin="12,6" Padding="12" Style="{StaticResource InnerCardStyle}">
-                                    <VerticalStackLayout>
-                                        <Label Text="{Binding Name}" FontAttributes="Bold" />
-                                        <Label Text="{Binding VersionText}"
-                                               FontSize="12"
-                                               TextColor="{StaticResource TextSecondary}" />
-                                    </VerticalStackLayout>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <VerticalStackLayout VerticalOptions="Center">
+                                            <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                            <Label Text="{Binding VersionText}"
+                                                   FontSize="12"
+                                                   TextColor="{StaticResource TextSecondary}" />
+                                        </VerticalStackLayout>
+                                        <Button Grid.Column="1"
+                                                Text="🗑"
+                                                Command="{Binding BindingContext.SletSurveyCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                                CommandParameter="{Binding .}"
+                                                BackgroundColor="Transparent"
+                                                TextColor="Red"
+                                                WidthRequest="28" HeightRequest="28" Padding="0" FontSize="14" ToolTipProperties.Text="Slet survey" />
+                                    </Grid>
                                 </Border>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>

@@ -64,6 +64,7 @@ public class ApiDataService : IMockDataService
     }
     public List<BrandModel> GetBrands(int? organizationId = null) => Get<List<BrandModel>>(organizationId.HasValue ? $"brands?organizationId={organizationId.Value}" : "brands");
     public List<SurveyModel> GetSurveys(int? brandId = null) => Get<List<SurveyModel>>(brandId.HasValue ? $"surveys?brandId={brandId.Value}" : "surveys");
+    public void DeleteSurvey(int surveyId) => Delete($"surveys/{surveyId}");
     public List<SurveyQuestionModel> GetQuestionsForSurvey(int surveyId) => Get<List<SurveyQuestionModel>>($"surveys/questions?surveyId={surveyId}");
     public void SaveSurveyQuestions(int surveyId, List<SurveyQuestionModel> questions) => Post($"surveys/{surveyId}/questions", questions);
     public List<SurveyQuestionModel> GetSection1Questions() => Get<List<SurveyQuestionModel>>("surveys/questions?section=1");
@@ -100,6 +101,17 @@ public class ApiDataService : IMockDataService
             var errorBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             System.Diagnostics.Debug.WriteLine($"API Put failed with status {response.StatusCode}. Details: {errorBody}");
             throw new Exception($"API Put failed with status {response.StatusCode}. Details: {errorBody}");
+        }
+    }
+
+    private void Delete(string endpoint)
+    {
+        var response = _httpClient.DeleteAsync(endpoint).GetAwaiter().GetResult();
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            System.Diagnostics.Debug.WriteLine($"API Delete failed with status {response.StatusCode}. Details: {errorBody}");
+            throw new Exception($"API Delete failed with status {response.StatusCode}. Details: {errorBody}");
         }
     }
 

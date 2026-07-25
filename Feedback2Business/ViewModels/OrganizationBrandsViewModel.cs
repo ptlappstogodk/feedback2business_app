@@ -169,6 +169,7 @@ public class OrganizationBrandsViewModel : ObservableObject
 
     public ICommand OpretBrandCommand { get; }
     public ICommand OpretSurveyCommand { get; }
+    public ICommand SletSurveyCommand { get; }
     public ICommand GemSurveyGenereltCommand { get; }
     public ICommand GemAendringerCommand { get; }
     public ICommand FlereHandlingerCommand { get; }
@@ -221,6 +222,7 @@ public class OrganizationBrandsViewModel : ObservableObject
 
         OpretBrandCommand = new RelayCommand(async () => await OpretBrandAsync());
         OpretSurveyCommand = new RelayCommand(async () => await OpretSurveyAsync());
+        SletSurveyCommand = new RelayCommand<SurveyModel>(async (s) => await SletSurveyAsync(s));
         GemSurveyGenereltCommand = new RelayCommand(GemSurveyGenerelt);
         GemAendringerCommand = new RelayCommand(async () => await GemAendringerAsync());
         FlereHandlingerCommand = new RelayCommand(async () => await FlereHandlingerAsync());
@@ -297,7 +299,10 @@ public class OrganizationBrandsViewModel : ObservableObject
             var section = new SectionModel { Title = sectionTitle };
             foreach (var q in group)
             {
-                section.Questions.Add(q);
+                if (q.Type != "_SectionHeader_")
+                {
+                    section.Questions.Add(q);
+                }
             }
             Sections.Add(section);
         }
@@ -644,14 +649,29 @@ public class OrganizationBrandsViewModel : ObservableObject
                 var parts = secTitle.Split('.', 2);
                 string cleanSecTitle = parts.Length == 2 ? parts[1].Trim() : secTitle.Trim();
 
-                for (int qIdx = 0; qIdx < section.Questions.Count; qIdx++)
+                if (section.Questions.Count == 0)
                 {
-                    var q = section.Questions[qIdx];
-                    q.SectionIndex = secIdx + 1;
-                    q.SectionTitle = cleanSecTitle;
-                    q.SurveyId = SelectedSurvey.Id;
-                    q.NumberLabel = $"{secIdx + 1}.{qIdx + 1}";
-                    allQuestions.Add(q);
+                    allQuestions.Add(new SurveyQuestionModel
+                    {
+                        SectionIndex = secIdx + 1,
+                        SectionTitle = cleanSecTitle,
+                        SurveyId = SelectedSurvey.Id,
+                        Type = "_SectionHeader_",
+                        Title = "",
+                        NumberLabel = ""
+                    });
+                }
+                else
+                {
+                    for (int qIdx = 0; qIdx < section.Questions.Count; qIdx++)
+                    {
+                        var q = section.Questions[qIdx];
+                        q.SectionIndex = secIdx + 1;
+                        q.SectionTitle = cleanSecTitle;
+                        q.SurveyId = SelectedSurvey.Id;
+                        q.NumberLabel = $"{secIdx + 1}.{qIdx + 1}";
+                        allQuestions.Add(q);
+                    }
                 }
             }
 
@@ -752,14 +772,60 @@ public class OrganizationBrandsViewModel : ObservableObject
             return;
         }
 
-        IsCreatingNewSurvey = true;
-        SurveyNameBuffer = "Ny Survey";
-        SurveyTypeBuffer = "Inspektion";
-        SurveyDescriptionBuffer = "";
-        SurveyIconBuffer = "📋";
-        SelectedTemplateNameBuffer = "Blank survey";
+        var newSurvey = new SurveyModel
+        {
+            Name = "Ny Survey",
+            Type = "Inspektion",
+            Description = "",
+            Icon = "📋",
+            SelectedTemplateName = "Blank survey",
+            BrandId = SelectedBrand.Id,
+            Version = 1,
+            QuestionCount = 0
+        };
+
+        _data.CreateSurvey(newSurvey);
+        Surveys.Add(newSurvey);
+        SelectedSurvey = newSurvey;
+
+        IsCreatingNewSurvey = false;
+        SurveyNameBuffer = newSurvey.Name;
+        SurveyTypeBuffer = newSurvey.Type;
+        SurveyDescriptionBuffer = newSurvey.Description;
+        SurveyIconBuffer = newSurvey.Icon;
+        SelectedTemplateNameBuffer = newSurvey.SelectedTemplateName;
 
         ActiveSurveyTab = "Generelt";
+    }
+
+    private async Task SletSurveyAsync(SurveyModel? survey)
+    {
+        var surveyToDelete = survey ?? SelectedSurvey;
+        if (surveyToDelete == null) return;
+
+        bool confirm = await Application.Current!.MainPage!.DisplayAlert(
+            "Slet survey",
+            $"Er du sikker på, at du vil slette survey'en '{surveyToDelete.Name}'?",
+            "Slet",
+            "Annuller");
+
+        if (confirm)
+        {
+            try
+            {
+                _data.DeleteSurvey(surveyToDelete.Id);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Delete survey error: {ex.Message}");
+            }
+
+            Surveys.Remove(surveyToDelete);
+            if (SelectedSurvey == surveyToDelete)
+            {
+                SelectedSurvey = Surveys.FirstOrDefault();
+            }
+        }
     }
 
     private void GemSurveyGenerelt()
