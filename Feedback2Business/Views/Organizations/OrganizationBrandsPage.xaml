@@ -54,7 +54,7 @@
             </VerticalStackLayout>
 
             <HorizontalStackLayout Grid.Column="2" Spacing="12">
-                <Button Text="Gem ændringer" Style="{StaticResource PrimaryButtonStyle}" />
+                <Button Text="Gem ændringer" Command="{Binding GemAendringerCommand}" Style="{StaticResource PrimaryButtonStyle}" />
                 <Button Text="Flere handlinger" Command="{Binding FlereHandlingerCommand}" Style="{StaticResource SecondaryButtonStyle}" />
             </HorizontalStackLayout>
         </Grid>

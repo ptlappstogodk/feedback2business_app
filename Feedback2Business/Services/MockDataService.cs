@@ -4,6 +4,47 @@ namespace Feedback2Business.Services;
 
 public class MockDataService : IMockDataService
 {
+    private static readonly Dictionary<int, List<SurveyQuestionModel>> _surveyQuestionsStore = new();
+    private static int _nextSurveyId = 100;
+
+    static MockDataService()
+    {
+        InitializeDefaultQuestions();
+    }
+
+    private static void InitializeDefaultQuestions()
+    {
+        _surveyQuestionsStore[1] = new List<SurveyQuestionModel>
+        {
+            new() { Id = 1, NumberLabel = "1.1", Title = "Dato og tidspunkt", Type = "Dato & tid", SectionIndex = 1, SectionTitle = "Butiksinformation", SurveyId = 1 },
+            new() { Id = 2, NumberLabel = "1.2", Title = "Butik", Type = "Sted (fra app)", SectionIndex = 1, SectionTitle = "Butiksinformation", SurveyId = 1 },
+            new() { Id = 3, NumberLabel = "1.3", Title = "Inspektør", Type = "Bruger (fra app)", SectionIndex = 1, SectionTitle = "Butiksinformation", SurveyId = 1 },
+            new() { Id = 4, NumberLabel = "2.1", Title = "Facade ren og vedligeholdt?", Type = "Ja / Nej", Description = "Angiv om facaden fremstår ren og uden skader.", IsRequired = true, VariableName = "facade_ren", DisplayMode = "Standard", SectionIndex = 2, SectionTitle = "Eksteriør", SurveyId = 1 },
+            new() { Id = 5, NumberLabel = "2.2", Title = "Skiltning intakt og synlig?", Type = "Ja / Nej", SectionIndex = 2, SectionTitle = "Eksteriør", SurveyId = 1 },
+            new() { Id = 6, NumberLabel = "2.3", Title = "Vinduer rene", Type = "Ja / Nej", SectionIndex = 2, SectionTitle = "Eksteriør", SurveyId = 1 },
+            new() { Id = 7, NumberLabel = "2.4", Title = "Billede af facade", Type = "Billede", SectionIndex = 2, SectionTitle = "Eksteriør", SurveyId = 1 },
+            new() { Id = 8, NumberLabel = "3.1", Title = "Butikken fremstår ryddelig", Type = "Skala 1-5", SectionIndex = 3, SectionTitle = "Indretning & præsentation", SurveyId = 1 },
+            new() { Id = 9, NumberLabel = "3.2", Title = "Produkter korrekt prissat", Type = "Ja / Nej", SectionIndex = 3, SectionTitle = "Indretning & præsentation", SurveyId = 1 },
+            new() { Id = 10, NumberLabel = "3.3", Title = "Kampagnemateriale på plads", Type = "Ja / Nej", SectionIndex = 3, SectionTitle = "Indretning & præsentation", SurveyId = 1 },
+            new() { Id = 11, NumberLabel = "3.4", Title = "Billede af kampagne", Type = "Billede", SectionIndex = 3, SectionTitle = "Indretning & præsentation", SurveyId = 1 }
+        };
+
+        _surveyQuestionsStore[2] = new List<SurveyQuestionModel>
+        {
+            new() { Id = 12, NumberLabel = "1.1", Title = "Køleskab temperatur (C)", Type = "Tekst", Description = "Indtast temperaturen i køleskabet i Celsius.", IsRequired = true, VariableName = "temp_kole", DisplayMode = "Standard", SectionIndex = 1, SectionTitle = "Temperaturmåling", SurveyId = 2 },
+            new() { Id = 13, NumberLabel = "1.2", Title = "Fryser temperatur (C)", Type = "Tekst", Description = "Indtast temperaturen i fryseren i Celsius.", IsRequired = true, VariableName = "temp_frys", DisplayMode = "Standard", SectionIndex = 1, SectionTitle = "Temperaturmåling", SurveyId = 2 },
+            new() { Id = 14, NumberLabel = "2.1", Title = "Personlig hygiejne OK?", Type = "Ja / Nej", Description = "Tjek om alt personale har rent arbejdstøj og korrekt håndhygiejne.", IsRequired = true, VariableName = "pers_hyg", DisplayMode = "Standard", SectionIndex = 2, SectionTitle = "Rengøring & hygiejne", SurveyId = 2 },
+            new() { Id = 15, NumberLabel = "2.2", Title = "Rengøringsplan udfyldt?", Type = "Ja / Nej", VariableName = "reng_plan", SectionIndex = 2, SectionTitle = "Rengøring & hygiejne", SurveyId = 2 }
+        };
+
+        _surveyQuestionsStore[3] = new List<SurveyQuestionModel>
+        {
+            new() { Id = 16, NumberLabel = "1.1", Title = "Hovedskilt på plads ved indgang?", Type = "Ja / Nej", VariableName = "hovedskilt", SectionIndex = 1, SectionTitle = "Kampagnemateriale", SurveyId = 3 },
+            new() { Id = 17, NumberLabel = "1.2", Title = "Brochurer tilgængelige?", Type = "Ja / Nej", VariableName = "brochurer", SectionIndex = 1, SectionTitle = "Kampagnemateriale", SurveyId = 3 },
+            new() { Id = 18, NumberLabel = "1.3", Title = "Billede af udstilling", Type = "Billede", VariableName = "img_udstil", SectionIndex = 1, SectionTitle = "Kampagnemateriale", SurveyId = 3 }
+        };
+    }
+
     public List<OrganizationModel> GetOrganizations(int? userId = null)
     {
         var list = new List<OrganizationModel>
@@ -64,43 +105,16 @@ public class MockDataService : IMockDataService
 
     public List<SurveyQuestionModel> GetQuestionsForSurvey(int surveyId)
     {
-        if (surveyId == 1)
+        if (_surveyQuestionsStore.TryGetValue(surveyId, out var questions))
         {
-            return new List<SurveyQuestionModel>
-            {
-                new() { Id = 1, NumberLabel = "1.1", Title = "Dato og tidspunkt", Type = "Dato & tid", SectionIndex = 1, SectionTitle = "Butiksinformation", SurveyId = 1 },
-                new() { Id = 2, NumberLabel = "1.2", Title = "Butik", Type = "Sted (fra app)", SectionIndex = 1, SectionTitle = "Butiksinformation", SurveyId = 1 },
-                new() { Id = 3, NumberLabel = "1.3", Title = "Inspektør", Type = "Bruger (fra app)", SectionIndex = 1, SectionTitle = "Butiksinformation", SurveyId = 1 },
-                new() { Id = 4, NumberLabel = "2.1", Title = "Facade ren og vedligeholdt?", Type = "Ja / Nej", Description = "Angiv om facaden fremstår ren og uden skader.", IsRequired = true, VariableName = "facade_ren", DisplayMode = "Standard", SectionIndex = 2, SectionTitle = "Eksteriør", SurveyId = 1 },
-                new() { Id = 5, NumberLabel = "2.2", Title = "Skiltning intakt og synlig?", Type = "Ja / Nej", SectionIndex = 2, SectionTitle = "Eksteriør", SurveyId = 1 },
-                new() { Id = 6, NumberLabel = "2.3", Title = "Vinduer rene", Type = "Ja / Nej", SectionIndex = 2, SectionTitle = "Eksteriør", SurveyId = 1 },
-                new() { Id = 7, NumberLabel = "2.4", Title = "Billede af facade", Type = "Billede", SectionIndex = 2, SectionTitle = "Eksteriør", SurveyId = 1 },
-                new() { Id = 8, NumberLabel = "3.1", Title = "Butikken fremstår ryddelig", Type = "Skala 1-5", SectionIndex = 3, SectionTitle = "Indretning & præsentation", SurveyId = 1 },
-                new() { Id = 9, NumberLabel = "3.2", Title = "Produkter korrekt prissat", Type = "Ja / Nej", SectionIndex = 3, SectionTitle = "Indretning & præsentation", SurveyId = 1 },
-                new() { Id = 10, NumberLabel = "3.3", Title = "Kampagnemateriale på plads", Type = "Ja / Nej", SectionIndex = 3, SectionTitle = "Indretning & præsentation", SurveyId = 1 },
-                new() { Id = 11, NumberLabel = "3.4", Title = "Billede af kampagne", Type = "Billede", SectionIndex = 3, SectionTitle = "Indretning & præsentation", SurveyId = 1 }
-            };
-        }
-        else if (surveyId == 2)
-        {
-            return new List<SurveyQuestionModel>
-            {
-                new() { Id = 12, NumberLabel = "1.1", Title = "Køleskab temperatur (C)", Type = "Tekst", Description = "Indtast temperaturen i køleskabet i Celsius.", IsRequired = true, VariableName = "temp_kole", DisplayMode = "Standard", SectionIndex = 1, SectionTitle = "Temperaturmåling", SurveyId = 2 },
-                new() { Id = 13, NumberLabel = "1.2", Title = "Fryser temperatur (C)", Type = "Tekst", Description = "Indtast temperaturen i fryseren i Celsius.", IsRequired = true, VariableName = "temp_frys", DisplayMode = "Standard", SectionIndex = 1, SectionTitle = "Temperaturmåling", SurveyId = 2 },
-                new() { Id = 14, NumberLabel = "2.1", Title = "Personlig hygiejne OK?", Type = "Ja / Nej", Description = "Tjek om alt personale har rent arbejdstøj og korrekt håndhygiejne.", IsRequired = true, VariableName = "pers_hyg", DisplayMode = "Standard", SectionIndex = 2, SectionTitle = "Rengøring & hygiejne", SurveyId = 2 },
-                new() { Id = 15, NumberLabel = "2.2", Title = "Rengøringsplan udfyldt?", Type = "Ja / Nej", VariableName = "reng_plan", SectionIndex = 2, SectionTitle = "Rengøring & hygiejne", SurveyId = 2 }
-            };
-        }
-        else if (surveyId == 3)
-        {
-            return new List<SurveyQuestionModel>
-            {
-                new() { Id = 16, NumberLabel = "1.1", Title = "Hovedskilt på plads ved indgang?", Type = "Ja / Nej", VariableName = "hovedskilt", SectionIndex = 1, SectionTitle = "Kampagnemateriale", SurveyId = 3 },
-                new() { Id = 17, NumberLabel = "1.2", Title = "Brochurer tilgængelige?", Type = "Ja / Nej", VariableName = "brochurer", SectionIndex = 1, SectionTitle = "Kampagnemateriale", SurveyId = 3 },
-                new() { Id = 18, NumberLabel = "1.3", Title = "Billede af udstilling", Type = "Billede", VariableName = "img_udstil", SectionIndex = 1, SectionTitle = "Kampagnemateriale", SurveyId = 3 }
-            };
+            return new List<SurveyQuestionModel>(questions);
         }
         return new List<SurveyQuestionModel>();
+    }
+
+    public void SaveSurveyQuestions(int surveyId, List<SurveyQuestionModel> questions)
+    {
+        _surveyQuestionsStore[surveyId] = new List<SurveyQuestionModel>(questions);
     }
 
     public List<SurveyQuestionModel> GetSection1Questions() =>
@@ -247,7 +261,17 @@ public class MockDataService : IMockDataService
 
     public void CreateOrganization(OrganizationModel org, int? creatorUserId = null) { }
     public void CreateBrand(BrandModel brand) { }
-    public void CreateSurvey(SurveyModel survey) { }
+    public void CreateSurvey(SurveyModel survey)
+    {
+        if (survey.Id == 0)
+        {
+            survey.Id = _nextSurveyId++;
+        }
+        if (!_surveyQuestionsStore.ContainsKey(survey.Id))
+        {
+            _surveyQuestionsStore[survey.Id] = new List<SurveyQuestionModel>();
+        }
+    }
     public void CreateUser(UserModel user) { }
     public void CreateTemplate(TemplateModel template) { }
     public void CreateVariable(VariableModel variable) { }

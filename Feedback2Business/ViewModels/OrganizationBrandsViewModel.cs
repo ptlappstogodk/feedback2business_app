@@ -170,6 +170,7 @@ public class OrganizationBrandsViewModel : ObservableObject
     public ICommand OpretBrandCommand { get; }
     public ICommand OpretSurveyCommand { get; }
     public ICommand GemSurveyGenereltCommand { get; }
+    public ICommand GemAendringerCommand { get; }
     public ICommand FlereHandlingerCommand { get; }
     public ICommand SelectTabCommand { get; }
     public ICommand SelectQuestionCommand { get; }
@@ -221,6 +222,7 @@ public class OrganizationBrandsViewModel : ObservableObject
         OpretBrandCommand = new RelayCommand(async () => await OpretBrandAsync());
         OpretSurveyCommand = new RelayCommand(async () => await OpretSurveyAsync());
         GemSurveyGenereltCommand = new RelayCommand(GemSurveyGenerelt);
+        GemAendringerCommand = new RelayCommand(async () => await GemAendringerAsync());
         FlereHandlingerCommand = new RelayCommand(async () => await FlereHandlingerAsync());
         SelectTabCommand = new RelayCommand<string>(tab => ActiveSurveyTab = tab ?? "Byg");
         SelectQuestionCommand = new RelayCommand<SurveyQuestionModel>(SelectQuestion);
@@ -452,6 +454,7 @@ public class OrganizationBrandsViewModel : ObservableObject
         int newNum = Sections.Count + 1;
         var newSection = new SectionModel { Title = $"{newNum}. Ny sektion" };
         Sections.Add(newSection);
+        SaveCurrentSurveyState();
     }
 
     private void SletSektion(SectionModel? section)
@@ -459,7 +462,6 @@ public class OrganizationBrandsViewModel : ObservableObject
         if (section == null || !Sections.Contains(section)) return;
         Sections.Remove(section);
         RecalculateSectionAndQuestionNumbers();
-        UpdateQuestionCount();
     }
 
     private void TilfoejSpoergsmaalTilSektion(SectionModel? section)
@@ -484,7 +486,7 @@ public class OrganizationBrandsViewModel : ObservableObject
 
         section.Questions.Add(newQuestion);
         SelectedQuestion = new SurveyQuestionEditorViewModel(newQuestion);
-        UpdateQuestionCount();
+        SaveCurrentSurveyState();
     }
 
     private void MoveSectionUp(SectionModel? section)
@@ -625,6 +627,42 @@ public class OrganizationBrandsViewModel : ObservableObject
                 sec.Questions[q].SectionIndex = i + 1;
             }
         }
+        SaveCurrentSurveyState();
+    }
+
+    public void SaveCurrentSurveyState()
+    {
+        if (SelectedSurvey == null) return;
+
+        var allQuestions = new List<SurveyQuestionModel>();
+        for (int secIdx = 0; secIdx < Sections.Count; secIdx++)
+        {
+            var section = Sections[secIdx];
+            string secTitle = section.Title;
+            var parts = secTitle.Split('.', 2);
+            string cleanSecTitle = parts.Length == 2 ? parts[1].Trim() : secTitle.Trim();
+
+            for (int qIdx = 0; qIdx < section.Questions.Count; qIdx++)
+            {
+                var q = section.Questions[qIdx];
+                q.SectionIndex = secIdx + 1;
+                q.SectionTitle = cleanSecTitle;
+                q.SurveyId = SelectedSurvey.Id;
+                q.NumberLabel = $"{secIdx + 1}.{qIdx + 1}";
+                allQuestions.Add(q);
+            }
+        }
+
+        _data.SaveSurveyQuestions(SelectedSurvey.Id, allQuestions);
+        SelectedSurvey.QuestionCount = allQuestions.Count;
+    }
+
+    private async Task GemAendringerAsync()
+    {
+        if (SelectedSurvey == null) return;
+
+        SaveCurrentSurveyState();
+        await Application.Current!.MainPage!.DisplayAlert("Gemt", $"Ændringer for survey '{SelectedSurvey.Name}' er blevet gemt.", "OK");
     }
 
     private void UpdateQuestionCount()
