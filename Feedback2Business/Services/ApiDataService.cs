@@ -79,6 +79,23 @@ public class ApiDataService : IMockDataService
     public AppSettingModel GetAppSettings(int organizationId) => Get<AppSettingModel>($"appsettings?organizationId={organizationId}");
     public void SaveAppSettings(AppSettingModel settings) => Put("appsettings", settings);
     public void SaveRole(RoleModel role) => Put($"roles/{role.Id}", role);
+    public void SaveBrand(BrandModel brand)
+    {
+        if (brand.Id <= 0)
+        {
+            CreateBrand(brand);
+            return;
+        }
+
+        try
+        {
+            Put($"brands/{brand.Id}", brand);
+        }
+        catch (Exception ex) when (ex.Message.Contains("NotFound") || ex.Message.Contains("404"))
+        {
+            CreateBrand(brand);
+        }
+    }
     public void SaveSurvey(SurveyModel survey)
     {
         if (survey.Id <= 0)

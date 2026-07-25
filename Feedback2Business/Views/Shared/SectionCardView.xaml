@@ -44,10 +44,18 @@
             </Grid>
 
             <!-- Questions List -->
-            <CollectionView ItemsSource="{Binding SectionQuestions, Source={x:Reference This}}">
-                <CollectionView.ItemTemplate>
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding SectionQuestions, Source={x:Reference This}}">
+                <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="models:SurveyQuestionModel">
                         <Border Margin="0,4" Padding="8,6" Style="{StaticResource CardStyle}">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                    <Setter Property="Stroke" Value="{StaticResource PrimaryBlue}" />
+                                    <Setter Property="StrokeThickness" Value="2" />
+                                    <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBlueLight}" />
+                                </DataTrigger>
+                            </Border.Triggers>
+
                             <Border.GestureRecognizers>
                                 <DragGestureRecognizer CanDrag="True" DragStarting="OnQuestionDragStarting" />
                                 <DropGestureRecognizer AllowDrop="True" Drop="OnQuestionDrop" />
@@ -92,8 +100,8 @@
                             </Grid>
                         </Border>
                     </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
 
             <!-- Add Question Button -->
             <Button Text="+ Tilføj spørgsmål"

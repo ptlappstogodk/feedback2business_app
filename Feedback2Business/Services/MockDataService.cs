@@ -73,19 +73,26 @@ public class MockDataService : IMockDataService
         return newUser;
     }
 
+    private static readonly List<BrandModel> _mockBrands = new()
+    {
+        new() { Id = 1, Name = "Coffee House", Description = "Kaffekæde med kvalitetskaffe og bagværk", LogoUrl = "☕", OrganizationId = 1 },
+        new() { Id = 2, Name = "GreenFuel", Description = "Bæredygtige servicestationer og el-ladere", LogoUrl = "⚡", OrganizationId = 1 },
+        new() { Id = 3, Name = "Urban Eats", Description = "Moderne street food og konceptrestauranter", LogoUrl = "🍔", OrganizationId = 2 }
+    };
+
     public List<BrandModel> GetBrands(int? organizationId = null)
     {
-        var list = new List<BrandModel>
+        var filtered = organizationId.HasValue
+            ? _mockBrands.Where(b => b.OrganizationId == organizationId.Value).ToList()
+            : _mockBrands.ToList();
+
+        var allSurveys = GetSurveys();
+        foreach (var b in filtered)
         {
-            new() { Id = 1, Name = "Coffee House", SurveyCount = 3, OrganizationId = 1 },
-            new() { Id = 2, Name = "GreenFuel", SurveyCount = 2, OrganizationId = 1 },
-            new() { Id = 3, Name = "Urban Eats", SurveyCount = 4, OrganizationId = 2 }
-        };
-        if (organizationId.HasValue)
-        {
-            return list.Where(b => b.OrganizationId == organizationId.Value).ToList();
+            b.SurveyCount = allSurveys.Count(s => s.BrandId == b.Id);
         }
-        return list;
+
+        return filtered;
     }
 
     public List<SurveyModel> GetSurveys(int? brandId = null)
@@ -254,6 +261,16 @@ public class MockDataService : IMockDataService
     public AppSettingModel GetAppSettings(int organizationId) => new() { OrganizationId = organizationId };
     public void SaveAppSettings(AppSettingModel settings) { }
     public void SaveRole(RoleModel role) { }
+    public void SaveBrand(BrandModel brand)
+    {
+        var existing = _mockBrands.FirstOrDefault(b => b.Id == brand.Id);
+        if (existing != null)
+        {
+            existing.Name = brand.Name;
+            existing.Description = brand.Description;
+            existing.LogoUrl = brand.LogoUrl;
+        }
+    }
     public void SaveSurvey(SurveyModel survey) { }
 
     public MobilePreviewModel GetPreview() => new()

@@ -15,6 +15,13 @@ public class SurveyQuestionModel : ObservableObject
     private int _sectionIndex;
     private string _sectionTitle = string.Empty;
     private int _surveyId;
+    private bool _isSelected;
+
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set => SetProperty(ref _isSelected, value);
+    }
 
     public int Id
     {

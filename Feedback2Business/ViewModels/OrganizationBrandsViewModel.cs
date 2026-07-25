@@ -16,6 +16,48 @@ public class OrganizationBrandsViewModel : ObservableObject
     private SurveyQuestionEditorViewModel _selectedQuestion;
     private string _activeSurveyTab = "Byg";
 
+    // Brand Editing Buffers
+    private string _brandNameBuffer = string.Empty;
+    private string _brandDescriptionBuffer = string.Empty;
+    private string _brandLogoBuffer = "🏬";
+    private bool _isEditingBrand;
+
+    public string BrandNameBuffer
+    {
+        get => _brandNameBuffer;
+        set => SetProperty(ref _brandNameBuffer, value);
+    }
+
+    public string BrandDescriptionBuffer
+    {
+        get => _brandDescriptionBuffer;
+        set => SetProperty(ref _brandDescriptionBuffer, value);
+    }
+
+    public string BrandLogoBuffer
+    {
+        get => _brandLogoBuffer;
+        set => SetProperty(ref _brandLogoBuffer, value);
+    }
+
+    public bool IsEditingBrand
+    {
+        get => _isEditingBrand;
+        set => SetProperty(ref _isEditingBrand, value);
+    }
+
+    public ObservableCollection<string> BrandLogoOptions { get; } = new()
+    {
+        "🏬",
+        "☕",
+        "⚡",
+        "🍔",
+        "⭐",
+        "🛒",
+        "🏷️",
+        "🏢"
+    };
+
     // Survey Generelt Buffers
     private string _surveyNameBuffer = string.Empty;
     private string _surveyTypeBuffer = "Inspektion";
@@ -123,6 +165,9 @@ public class OrganizationBrandsViewModel : ObservableObject
         }
     }
 
+    public bool IsSurveySelected => SelectedSurvey != null;
+    public bool HasNoSurveySelected => SelectedSurvey == null;
+
     public SurveyModel? SelectedSurvey
     {
         get => _selectedSurvey;
@@ -131,6 +176,8 @@ public class OrganizationBrandsViewModel : ObservableObject
             if (SetProperty(ref _selectedSurvey, value))
             {
                 OnSurveySelected(value);
+                Raise(nameof(IsSurveySelected));
+                Raise(nameof(HasNoSurveySelected));
             }
         }
     }
@@ -168,6 +215,9 @@ public class OrganizationBrandsViewModel : ObservableObject
     public string SelectedBrandTitle => SelectedBrand != null ? $"Surveys for {SelectedBrand.Name}" : "Surveys";
 
     public ICommand OpretBrandCommand { get; }
+    public ICommand RedigerBrandCommand { get; }
+    public ICommand GemBrandCommand { get; }
+    public ICommand AnnullerBrandEditCommand { get; }
     public ICommand OpretSurveyCommand { get; }
     public ICommand SletSurveyCommand { get; }
     public ICommand GemSurveyGenereltCommand { get; }
@@ -221,6 +271,9 @@ public class OrganizationBrandsViewModel : ObservableObject
         _selectedQuestion = new SurveyQuestionEditorViewModel(new SurveyQuestionModel());
 
         OpretBrandCommand = new RelayCommand(async () => await OpretBrandAsync());
+        RedigerBrandCommand = new RelayCommand(() => IsEditingBrand = !IsEditingBrand);
+        GemBrandCommand = new RelayCommand(GemBrand);
+        AnnullerBrandEditCommand = new RelayCommand(() => IsEditingBrand = false);
         OpretSurveyCommand = new RelayCommand(async () => await OpretSurveyAsync());
         SletSurveyCommand = new RelayCommand<SurveyModel>(async (s) => await SletSurveyAsync(s));
         GemSurveyGenereltCommand = new RelayCommand(GemSurveyGenerelt);
@@ -251,20 +304,29 @@ public class OrganizationBrandsViewModel : ObservableObject
     private void OnBrandSelected(BrandModel? brand)
     {
         Surveys.Clear();
+        IsEditingBrand = false;
         Raise(nameof(SelectedBrandTitle));
 
         if (brand == null)
         {
             SelectedSurvey = null;
+            BrandNameBuffer = string.Empty;
+            BrandDescriptionBuffer = string.Empty;
+            BrandLogoBuffer = "🏬";
             return;
         }
 
+        BrandNameBuffer = brand.Name;
+        BrandDescriptionBuffer = brand.Description;
+        BrandLogoBuffer = string.IsNullOrEmpty(brand.LogoUrl) ? "🏬" : brand.LogoUrl;
+
         var filteredSurveys = _data.GetSurveys(brand.Id);
         foreach (var s in filteredSurveys) Surveys.Add(s);
+        brand.SurveyCount = Surveys.Count;
         SelectedSurvey = Surveys.FirstOrDefault();
     }
 
-    private void OnSurveySelected(SurveyModel? survey)
+    private async void OnSurveySelected(SurveyModel? survey)
     {
         Sections.Clear();
         LogicRules.Clear();
@@ -284,10 +346,20 @@ public class OrganizationBrandsViewModel : ObservableObject
         SurveyIconBuffer = string.IsNullOrEmpty(survey.Icon) ? "📋" : survey.Icon;
         SelectedTemplateNameBuffer = string.IsNullOrEmpty(survey.SelectedTemplateName) ? "Blank survey" : survey.SelectedTemplateName;
 
-        // 1. Fetch questions for the selected survey from the database!
-        var dbQuestions = _data.GetQuestionsForSurvey(survey.Id);
+        // 1. Fetch questions asynchronously from data service
+        List<SurveyQuestionModel> dbQuestions;
+        try
+        {
+            dbQuestions = await Task.Run(() => _data.GetQuestionsForSurvey(survey.Id));
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error fetching survey questions: {ex.Message}");
+            dbQuestions = new List<SurveyQuestionModel>();
+        }
         
         // Group questions by SectionIndex and build SectionModel dynamically!
+        var newSections = new List<SectionModel>();
         var grouped = dbQuestions.GroupBy(q => q.SectionIndex).OrderBy(g => g.Key);
         foreach (var group in grouped)
         {
@@ -304,15 +376,20 @@ public class OrganizationBrandsViewModel : ObservableObject
                     section.Questions.Add(q);
                 }
             }
-            Sections.Add(section);
+            newSections.Add(section);
         }
 
         // Fallback if no questions are found in the database
-        if (Sections.Count == 0)
+        if (newSections.Count == 0)
         {
             var sec1 = new SectionModel { Title = "1. Ny Sektion" };
             sec1.Questions.Add(new SurveyQuestionModel { NumberLabel = "1.1", Title = "Nyt Spørgsmål", Type = "Ja / Nej", SectionIndex = 1, SectionTitle = "Ny Sektion", SurveyId = survey.Id });
-            Sections.Add(sec1);
+            newSections.Add(sec1);
+        }
+
+        foreach (var sec in newSections)
+        {
+            Sections.Add(sec);
         }
 
         // 2. Populate dynamic settings fields
@@ -397,18 +474,19 @@ public class OrganizationBrandsViewModel : ObservableObject
         }
 
         var firstQuestion = Sections.SelectMany(s => s.Questions).FirstOrDefault();
-        if (firstQuestion != null)
-        {
-            SelectedQuestion = new SurveyQuestionEditorViewModel(firstQuestion);
-        }
-        else
-        {
-            SelectedQuestion = new SurveyQuestionEditorViewModel(new SurveyQuestionModel());
-        }
+        SelectQuestion(firstQuestion);
     }
 
     private void SelectQuestion(SurveyQuestionModel? question)
     {
+        foreach (var sec in Sections)
+        {
+            foreach (var q in sec.Questions)
+            {
+                q.IsSelected = (q == question);
+            }
+        }
+
         if (question != null)
         {
             SelectedQuestion = new SurveyQuestionEditorViewModel(question);
@@ -700,6 +778,19 @@ public class OrganizationBrandsViewModel : ObservableObject
         }
     }
 
+    private void GemBrand()
+    {
+        if (SelectedBrand == null) return;
+
+        SelectedBrand.Name = string.IsNullOrWhiteSpace(BrandNameBuffer) ? SelectedBrand.Name : BrandNameBuffer.Trim();
+        SelectedBrand.Description = BrandDescriptionBuffer?.Trim() ?? string.Empty;
+        SelectedBrand.LogoUrl = string.IsNullOrWhiteSpace(BrandLogoBuffer) ? "🏬" : BrandLogoBuffer;
+
+        _data.SaveBrand(SelectedBrand);
+        IsEditingBrand = false;
+        Raise(nameof(SelectedBrandTitle));
+    }
+
     private async Task AdministrerSektionerAsync()
     {
         var action = await Application.Current!.MainPage!.DisplayActionSheet(
@@ -786,6 +877,10 @@ public class OrganizationBrandsViewModel : ObservableObject
 
         _data.CreateSurvey(newSurvey);
         Surveys.Add(newSurvey);
+        if (SelectedBrand != null)
+        {
+            SelectedBrand.SurveyCount = Surveys.Count;
+        }
         SelectedSurvey = newSurvey;
 
         IsCreatingNewSurvey = false;
@@ -821,6 +916,10 @@ public class OrganizationBrandsViewModel : ObservableObject
             }
 
             Surveys.Remove(surveyToDelete);
+            if (SelectedBrand != null)
+            {
+                SelectedBrand.SurveyCount = Surveys.Count;
+            }
             if (SelectedSurvey == surveyToDelete)
             {
                 SelectedSurvey = Surveys.FirstOrDefault();
@@ -848,6 +947,10 @@ public class OrganizationBrandsViewModel : ObservableObject
 
             _data.CreateSurvey(newSurvey);
             Surveys.Add(newSurvey);
+            if (SelectedBrand != null)
+            {
+                SelectedBrand.SurveyCount = Surveys.Count;
+            }
             IsCreatingNewSurvey = false;
             SelectedSurvey = newSurvey;
 
