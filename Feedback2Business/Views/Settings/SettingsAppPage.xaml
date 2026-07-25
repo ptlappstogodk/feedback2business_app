@@ -12,7 +12,7 @@
         <Grid Grid.Column="1" RowDefinitions="Auto,*">
             <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
                 <Label Text="App-indstillinger" Style="{StaticResource PageTitleStyle}" />
-                <Button Grid.Column="1" Text="Gem ændringer" Style="{StaticResource PrimaryButtonStyle}" />
+                <Button Grid.Column="1" Text="Gem ændringer" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButtonStyle}" />
             </Grid>
 
             <Border Grid.Row="1" Style="{StaticResource CardStyle}">

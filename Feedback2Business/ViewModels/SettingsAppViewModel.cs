@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using Feedback2Business.Models;
 using Feedback2Business.Services;
 
@@ -9,6 +11,7 @@ public class SettingsAppViewModel : ObservableObject
     private readonly IMockDataService _data;
     private readonly MainShellViewModel _shellVm;
     private AppSettingModel _settings = new();
+    private bool _isLoading;
 
     public bool OfflineEnabled
     {
@@ -87,6 +90,9 @@ public class SettingsAppViewModel : ObservableObject
         get => _settings.SelectedMaxFileSize;
         set
         {
+            if (string.IsNullOrWhiteSpace(value))
+                return;
+
             if (_settings.SelectedMaxFileSize != value)
             {
                 _settings.SelectedMaxFileSize = value;
@@ -124,17 +130,41 @@ public class SettingsAppViewModel : ObservableObject
         }
     }
 
+    public ICommand SaveCommand { get; }
+
     public SettingsAppViewModel(IMockDataService data, MainShellViewModel shellVm)
     {
+        _isLoading = true;
         _data = data;
         _shellVm = shellVm;
+
+        SaveCommand = new RelayCommand(async () => await SaveExplicitAsync());
+
         int orgId = _shellVm.ActiveOrganization?.Id ?? 1;
         _settings = data.GetAppSettings(orgId);
+        if (string.IsNullOrWhiteSpace(_settings.SelectedMaxFileSize))
+        {
+            _settings.SelectedMaxFileSize = "2 MB";
+        }
+        _isLoading = false;
     }
 
     private void Save()
     {
+        if (_isLoading) return;
+
+        if (string.IsNullOrWhiteSpace(_settings.SelectedMaxFileSize))
+        {
+            _settings.SelectedMaxFileSize = "2 MB";
+        }
+
         _data.SaveAppSettings(_settings);
+    }
+
+    private async Task SaveExplicitAsync()
+    {
+        Save();
+        await Application.Current!.MainPage!.DisplayAlert("App-indstillinger", "App-indstillinger er gemt.", "OK");
     }
 }
 
