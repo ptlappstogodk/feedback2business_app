@@ -112,8 +112,10 @@ public class MainShellViewModel : ObservableObject
     {
         _data = data;
 
+        NavigationItems.Add(new NavigationItem { Key = "Overview", Title = "Overblik" });
         NavigationItems.Add(new NavigationItem { Key = "Organizations", Title = "Organisationer" });
         NavigationItems.Add(new NavigationItem { Key = "Brands", Title = "Brands" });
+        NavigationItems.Add(new NavigationItem { Key = "AppPublishing", Title = "App-udgivelse" });
         NavigationItems.Add(new NavigationItem { Key = "Users", Title = "Brugere" });
         NavigationItems.Add(new NavigationItem { Key = "Templates", Title = "Skabeloner" });
         NavigationItems.Add(new NavigationItem { Key = "Variables", Title = "Variabler" });

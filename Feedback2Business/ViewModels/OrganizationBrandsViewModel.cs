@@ -108,6 +108,12 @@ public class OrganizationBrandsViewModel : ObservableObject
     public ICommand AdministrerSektionerCommand { get; }
     public ICommand TilfoejSpoergsmaalCommand { get; }
 
+    // Logik & Oversættelser commands
+    public ICommand TilfoejLogikRegelCommand { get; }
+    public ICommand SletLogikRegelCommand { get; }
+    public ICommand TilfoejOversaettelseCommand { get; }
+    public ICommand SletOversaettelseCommand { get; }
+
     public OrganizationBrandsViewModel(IMockDataService data, MainShellViewModel shellVm)
     {
         _data = data;
@@ -132,6 +138,11 @@ public class OrganizationBrandsViewModel : ObservableObject
         TilfoejSektionCommand = new RelayCommand(async () => await TilfoejSektionAsync());
         AdministrerSektionerCommand = new RelayCommand(async () => await AdministrerSektionerAsync());
         TilfoejSpoergsmaalCommand = new RelayCommand(async () => await TilfoejSpoergsmaalAsync());
+
+        TilfoejLogikRegelCommand = new RelayCommand(async () => await TilfoejLogikRegelAsync());
+        SletLogikRegelCommand = new RelayCommand<string>(SletLogikRegel);
+        TilfoejOversaettelseCommand = new RelayCommand(async () => await TilfoejOversaettelseAsync());
+        SletOversaettelseCommand = new RelayCommand<TranslationItemModel>(SletOversaettelse);
     }
 
     private void OnBrandSelected(BrandModel? brand)
@@ -490,6 +501,51 @@ public class OrganizationBrandsViewModel : ObservableObject
                 Brands.Remove(SelectedBrand);
                 SelectedBrand = Brands.FirstOrDefault();
             }
+        }
+    }
+
+    private async Task TilfoejLogikRegelAsync()
+    {
+        var ruleText = await Application.Current!.MainPage!.DisplayPromptAsync(
+            "Ny logikregel",
+            "Indtast betinget logikregel (f.eks. 'Hvis facade_ren == Nej, vis spørgsmål 2.4'):",
+            "Gem", "Annuller", "Regeltekst");
+        if (!string.IsNullOrWhiteSpace(ruleText))
+        {
+            LogicRules.Add(ruleText.Trim());
+        }
+    }
+
+    private void SletLogikRegel(string? rule)
+    {
+        if (!string.IsNullOrEmpty(rule) && LogicRules.Contains(rule))
+        {
+            LogicRules.Remove(rule);
+        }
+    }
+
+    private async Task TilfoejOversaettelseAsync()
+    {
+        var danish = await Application.Current!.MainPage!.DisplayPromptAsync(
+            "Ny oversættelse",
+            "Indtast dansk spørgsmålstekst:",
+            "Næste", "Annuller", "Dansk tekst");
+        if (string.IsNullOrWhiteSpace(danish)) return;
+
+        var english = await Application.Current!.MainPage!.DisplayPromptAsync(
+            "Ny oversættelse",
+            "Indtast engelsk oversættelse:",
+            "Gem", "Annuller", "Engelsk tekst");
+        if (string.IsNullOrWhiteSpace(english)) english = danish;
+
+        Translations.Add(new TranslationItemModel { Danish = danish.Trim(), English = english.Trim() });
+    }
+
+    private void SletOversaettelse(TranslationItemModel? item)
+    {
+        if (item != null && Translations.Contains(item))
+        {
+            Translations.Remove(item);
         }
     }
 }

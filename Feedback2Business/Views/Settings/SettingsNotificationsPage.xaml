@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Feedback2Business.Views.Settings.SettingsNotificationsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:shared="clr-namespace:Feedback2Business.Views.Shared"
+    BackgroundColor="{StaticResource PageBackground}">
+
+    <Grid ColumnDefinitions="220,*" Padding="24" ColumnSpacing="16">
+        <shared:SettingsNavView Grid.Column="0" />
+
+        <Grid Grid.Column="1" RowDefinitions="Auto,*">
+            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+                <Label Text="Notifikationsindstillinger" Style="{StaticResource PageTitleStyle}" />
+                <Button Grid.Column="1" Text="Gem ændringer"
+                        Command="{Binding SaveNotificationsSettingsCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}" />
+            </Grid>
+
+            <Border Grid.Row="1" Style="{StaticResource CardStyle}">
+                <ScrollView>
+                    <VerticalStackLayout Padding="24" Spacing="18">
+                        <Border Style="{StaticResource InnerCardStyle}" Padding="16">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="E-mail adviseringer" FontAttributes="Bold" />
+                                <Label Text="Modtager e-mail" Style="{StaticResource FormLabelStyle}" />
+                                <Entry Text="{Binding NotificationEmail}" />
+                                <HorizontalStackLayout Margin="0,8,0,0">
+                                    <CheckBox IsChecked="{Binding EmailAlerts}" />
+                                    <Label Text="Send e-mail ved kritiske afvigelser ogfejl" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout>
+                                    <CheckBox IsChecked="{Binding WeeklySummary}" />
+                                    <Label Text="Send ugentlig opsummeringsrapport" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource InnerCardStyle}" Padding="16">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="System Notifikationer" FontAttributes="Bold" />
+                                <HorizontalStackLayout>
+                                    <CheckBox IsChecked="{Binding WebhookNotifications}" />
+                                    <Label Text="Udsend webhook events ved gennemførte surveys" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

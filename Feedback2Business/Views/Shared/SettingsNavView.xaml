@@ -5,13 +5,48 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Border Style="{StaticResource CardStyle}">
-        <VerticalStackLayout Padding="12" Spacing="8">
-            <Label Text="Generelt" />
-            <Label Text="App-indstillinger" />
-            <Label Text="Sikkerhed" />
-            <Label Text="Notifikationer" />
-            <Label Text="API &amp; integrationer" />
-            <Label Text="Udseende" />
+        <VerticalStackLayout Padding="8" Spacing="4">
+            <Border x:Name="NavGenerelt" Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnGenereltTapped" />
+                </Border.GestureRecognizers>
+                <Label Text="Generelt" FontAttributes="Bold" />
+            </Border>
+
+            <Border x:Name="NavApp" Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnAppTapped" />
+                </Border.GestureRecognizers>
+                <Label Text="App-indstillinger" FontAttributes="Bold" />
+            </Border>
+
+            <Border x:Name="NavSecurity" Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnSecurityTapped" />
+                </Border.GestureRecognizers>
+                <Label Text="Sikkerhed" FontAttributes="Bold" />
+            </Border>
+
+            <Border x:Name="NavNotifications" Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnNotificationsTapped" />
+                </Border.GestureRecognizers>
+                <Label Text="Notifikationer" FontAttributes="Bold" />
+            </Border>
+
+            <Border x:Name="NavIntegrations" Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnIntegrationsTapped" />
+                </Border.GestureRecognizers>
+                <Label Text="API &amp; integrationer" FontAttributes="Bold" />
+            </Border>
+
+            <Border x:Name="NavAppearance" Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnAppearanceTapped" />
+                </Border.GestureRecognizers>
+                <Label Text="Udseende" FontAttributes="Bold" />
+            </Border>
         </VerticalStackLayout>
     </Border>
 </ContentView>

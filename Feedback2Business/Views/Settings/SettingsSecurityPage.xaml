@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Feedback2Business.Views.Settings.SettingsSecurityPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:shared="clr-namespace:Feedback2Business.Views.Shared"
+    BackgroundColor="{StaticResource PageBackground}">
+
+    <Grid ColumnDefinitions="220,*" Padding="24" ColumnSpacing="16">
+        <shared:SettingsNavView Grid.Column="0" />
+
+        <Grid Grid.Column="1" RowDefinitions="Auto,*">
+            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+                <Label Text="Sikkerhedsindstillinger" Style="{StaticResource PageTitleStyle}" />
+                <Button Grid.Column="1" Text="Gem ændringer"
+                        Command="{Binding SaveSecuritySettingsCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}" />
+            </Grid>
+
+            <Border Grid.Row="1" Style="{StaticResource CardStyle}">
+                <ScrollView>
+                    <VerticalStackLayout Padding="24" Spacing="18">
+                        <Border Style="{StaticResource InnerCardStyle}" Padding="16">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="Single Sign-On &amp; 2FA" FontAttributes="Bold" />
+                                <HorizontalStackLayout>
+                                    <CheckBox IsChecked="{Binding SsoEnabled}" />
+                                    <Label Text="Aktivér SSO (SAML 2.0 / OpenID Connect)" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout>
+                                    <CheckBox IsChecked="{Binding RequireTwoFactor}" />
+                                    <Label Text="Påkrav to-faktor-godkendelse (2FA) for alle administratorer" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource InnerCardStyle}" Padding="16">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="Adgangskodepolitik" FontAttributes="Bold" />
+                                <Label Text="Udløb i dage" Style="{StaticResource FormLabelStyle}" />
+                                <Entry Text="{Binding PasswordExpiryDays}" Keyboard="Numeric" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource InnerCardStyle}" Padding="16">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="Netværk &amp; IP-begrænsninger" FontAttributes="Bold" />
+                                <Label Text="IP Whitelist (kommasepareret CIDR)" Style="{StaticResource FormLabelStyle}" />
+                                <Entry Text="{Binding IpWhitelist}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

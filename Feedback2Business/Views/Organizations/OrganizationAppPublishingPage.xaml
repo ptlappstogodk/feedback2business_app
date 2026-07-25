@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Feedback2Business.Views.Organizations.OrganizationAppPublishingPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="{StaticResource PageBackground}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20">
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout>
+                    <Label Text="App-udgivelse &amp; Synkronisering" Style="{StaticResource PageTitleStyle}" />
+                    <Label Text="Udgiv konfigurerede surveys til mobil- og feltenheder" Style="{StaticResource PageSubtitleStyle}" />
+                </VerticalStackLayout>
+                <HorizontalStackLayout Grid.Column="1" Spacing="12">
+                    <Button Text="Tving synk"
+                            Command="{Binding TvingSynkroniseringCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}" />
+                    <Button Text="Publicer udgivelse"
+                            Command="{Binding PublicerUdgivelseCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}" />
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- Deployment Configuration Bar -->
+            <Border Style="{StaticResource CardStyle}" Padding="20">
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="20">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Udgivelseskanal" Style="{StaticResource FormLabelStyle}" />
+                        <Picker ItemsSource="{Binding Channels}" SelectedItem="{Binding SelectedChannel}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" Spacing="8">
+                        <Label Text="App Version" Style="{StaticResource FormLabelStyle}" />
+                        <Entry Text="{Binding AppVersion}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="2" Spacing="8">
+                        <Label Text="Status" Style="{StaticResource FormLabelStyle}" />
+                        <Border Padding="12,10" BackgroundColor="#F0FDF4" StrokeThickness="0" StrokeShape="RoundRectangle 6">
+                            <Label Text="{Binding StatusMessage}" TextColor="#16A34A" FontAttributes="Bold" FontSize="13" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+
+            <!-- Surveys to Publish Table -->
+            <Border Style="{StaticResource CardStyle}" Padding="20">
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Surveys til inklusion i denne udgivelse" Style="{StaticResource SectionHeaderStyle}" />
+
+                    <CollectionView ItemsSource="{Binding SurveysForPublishing}">
+                        <CollectionView.Header>
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" Padding="12,8" BackgroundColor="#F8FAFC">
+                                <Label Text="Inkluder" FontAttributes="Bold" FontSize="12" WidthRequest="80" />
+                                <Label Grid.Column="1" Text="Surveynavn" FontAttributes="Bold" FontSize="12" />
+                                <Label Grid.Column="2" Text="Version" FontAttributes="Bold" FontSize="12" Margin="0,0,24,0" />
+                                <Label Grid.Column="3" Text="Spørgsmål" FontAttributes="Bold" FontSize="12" />
+                            </Grid>
+                        </CollectionView.Header>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,6" Padding="12" Style="{StaticResource InnerCardStyle}">
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                                        <CheckBox IsChecked="{Binding IsIncluded}" WidthRequest="80" VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="{Binding Survey.Name}" FontAttributes="Bold" VerticalOptions="Center" />
+                                        <Border Grid.Column="2" Padding="8,4" BackgroundColor="#E0F2FE" StrokeThickness="0" StrokeShape="RoundRectangle 4" Margin="0,0,24,0" VerticalOptions="Center">
+                                            <Label Text="{Binding Survey.Version, StringFormat='v{0}'}" FontSize="11" TextColor="#0284C7" FontAttributes="Bold" />
+                                        </Border>
+                                        <Label Grid.Column="3" Text="{Binding Survey.QuestionCount, StringFormat='{0} stk'}" VerticalOptions="Center" TextColor="{StaticResource TextSecondary}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Deployment History Log -->
+            <Border Style="{StaticResource CardStyle}" Padding="20">
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="Udgivelseshistorik &amp; Log" Style="{StaticResource SectionHeaderStyle}" />
+
+                    <CollectionView ItemsSource="{Binding DeploymentLogs}">
+                        <CollectionView.Header>
+                            <Grid ColumnDefinitions="*,*,*,*,*" Padding="12,8" BackgroundColor="#F8FAFC">
+                                <Label Text="Tidspunkt" FontAttributes="Bold" FontSize="12" />
+                                <Label Grid.Column="1" Text="Version" FontAttributes="Bold" FontSize="12" />
+                                <Label Grid.Column="2" Text="Kanal" FontAttributes="Bold" FontSize="12" />
+                                <Label Grid.Column="3" Text="Status" FontAttributes="Bold" FontSize="12" />
+                                <Label Grid.Column="4" Text="Udgivet af" FontAttributes="Bold" FontSize="12" />
+                            </Grid>
+                        </CollectionView.Header>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,6" Padding="12" Style="{StaticResource InnerCardStyle}">
+                                    <Grid ColumnDefinitions="*,*,*,*,*">
+                                        <Label Text="{Binding Timestamp}" FontSize="12" VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="{Binding Version}" FontAttributes="Bold" FontSize="12" VerticalOptions="Center" />
+                                        <Label Grid.Column="2" Text="{Binding Channel}" FontSize="12" VerticalOptions="Center" />
+                                        <Border Grid.Column="3" Padding="8,2" BackgroundColor="#F0FDF4" StrokeThickness="0" StrokeShape="RoundRectangle 4" HorizontalOptions="Start">
+                                            <Label Text="{Binding Status}" FontSize="11" TextColor="#16A34A" FontAttributes="Bold" />
+                                        </Border>
+                                        <Label Grid.Column="4" Text="{Binding Author}" FontSize="12" TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

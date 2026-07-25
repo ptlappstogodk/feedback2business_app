@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Feedback2Business.Views.Overview.OverviewPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="{StaticResource PageBackground}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20">
+            <!-- Header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout>
+                    <Label Text="Overblik" Style="{StaticResource PageTitleStyle}" />
+                    <Label Text="Administrativ status, nøgletal og seneste aktivitet" Style="{StaticResource PageSubtitleStyle}" />
+                </VerticalStackLayout>
+                <HorizontalStackLayout Grid.Column="1" Spacing="12">
+                    <Button Text="+ Opret organisation"
+                            Command="{Binding GoToOrganizationsCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}" />
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- KPI Cards Row -->
+            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="16">
+                <!-- Card 1 -->
+                <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Organisationer" Style="{StaticResource FormLabelStyle}" />
+                        <Label Text="{Binding TotalOrganizations}" FontSize="28" FontAttributes="Bold" TextColor="{StaticResource PrimaryBlue}" />
+                        <Button Text="Administrer &#x2192;"
+                                Command="{Binding GoToOrganizationsCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                HeightRequest="32" FontSize="12" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Card 2 -->
+                <Border Grid.Column="1" Style="{StaticResource CardStyle}" Padding="16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Aktive Surveys" Style="{StaticResource FormLabelStyle}" />
+                        <Label Text="{Binding ActiveSurveysCount}" FontSize="28" FontAttributes="Bold" TextColor="{StaticResource PrimaryBlue}" />
+                        <Button Text="Vis surveys &#x2192;"
+                                Command="{Binding GoToSurveysCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                HeightRequest="32" FontSize="12" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Card 3 -->
+                <Border Grid.Column="2" Style="{StaticResource CardStyle}" Padding="16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Total Brugere" Style="{StaticResource FormLabelStyle}" />
+                        <Label Text="{Binding TotalUsersCount}" FontSize="28" FontAttributes="Bold" TextColor="{StaticResource PrimaryBlue}" />
+                        <Button Text="Vis brugere &#x2192;"
+                                Command="{Binding GoToUsersCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                HeightRequest="32" FontSize="12" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Card 4 -->
+                <Border Grid.Column="3" Style="{StaticResource CardStyle}" Padding="16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Afventende Synk" Style="{StaticResource FormLabelStyle}" />
+                        <Label Text="{Binding PendingSyncsCount}" FontSize="28" FontAttributes="Bold" TextColor="#D97706" />
+                        <Label Text="Klar til synkronisering" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Main Split View -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                <!-- Left: Recent Activity -->
+                <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="20">
+                    <VerticalStackLayout Spacing="16">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Seneste aktiviteter" Style="{StaticResource SectionHeaderStyle}" />
+                            <Button Grid.Column="1" Text="Se alle"
+                                    Command="{Binding GoToActivityLogCommand}"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    HeightRequest="32" FontSize="12" />
+                        </Grid>
+
+                        <CollectionView ItemsSource="{Binding RecentActivity}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,8" Padding="12" Style="{StaticResource InnerCardStyle}">
+                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                            <Border WidthRequest="10" HeightRequest="10"
+                                                    StrokeShape="RoundRectangle 5"
+                                                    BackgroundColor="{StaticResource PrimaryBlue}"
+                                                    VerticalOptions="Center" />
+                                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                                <Label Text="{Binding Action}" FontAttributes="Bold" FontSize="13" />
+                                                <Label Text="{Binding Details}" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                                <Label Text="{Binding User}" FontSize="11" TextColor="{StaticResource TextSecondary}" />
+                                            </VerticalStackLayout>
+                                            <Label Grid.Column="2" Text="{Binding Timestamp}"
+                                                   FontSize="11" TextColor="{StaticResource TextSecondary}"
+                                                   VerticalOptions="Center" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Right: Top Active Surveys -->
+                <Border Grid.Column="1" Style="{StaticResource CardStyle}" Padding="20">
+                    <VerticalStackLayout Spacing="16">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Aktive Surveys" Style="{StaticResource SectionHeaderStyle}" />
+                            <Button Grid.Column="1" Text="Byg survey"
+                                    Command="{Binding GoToSurveysCommand}"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    HeightRequest="32" FontSize="12" />
+                        </Grid>
+
+                        <CollectionView ItemsSource="{Binding TopSurveys}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,8" Padding="12" Style="{StaticResource InnerCardStyle}">
+                                        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
+                                            <VerticalStackLayout Spacing="2">
+                                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="13" />
+                                                <Label Text="{Binding QuestionCount, StringFormat='{0} spørgsmål'}" FontSize="12" TextColor="{StaticResource TextSecondary}" />
+                                            </VerticalStackLayout>
+                                            <Border Grid.Column="1" Padding="8,4" BackgroundColor="#E0F2FE" StrokeThickness="0" StrokeShape="RoundRectangle 4">
+                                                <Label Text="{Binding Version, StringFormat='v{0}'}" FontSize="11" TextColor="#0284C7" FontAttributes="Bold" />
+                                            </Border>
+                                            <Button Grid.Column="2" Text="Åbn"
+                                                    Command="{Binding BindingContext.GoToSurveysCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                                    Style="{StaticResource SecondaryButtonStyle}"
+                                                    HeightRequest="28" FontSize="11" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

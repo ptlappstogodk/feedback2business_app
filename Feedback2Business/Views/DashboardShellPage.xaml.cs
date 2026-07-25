@@ -3,6 +3,7 @@ using Feedback2Business.ViewModels;
 using Feedback2Business.Views.ActivityLog;
 using Feedback2Business.Views.Media;
 using Feedback2Business.Views.Organizations;
+using Feedback2Business.Views.Overview;
 using Feedback2Business.Views.Roles;
 using Feedback2Business.Views.Settings;
 using Feedback2Business.Views.Templates;
@@ -34,7 +35,7 @@ public partial class DashboardShellPage : ContentPage
 
     private void DashboardShellPage_Loaded(object? sender, EventArgs e)
     {
-        NavigateTo("Organizations");
+        NavigateTo("Overview");
     }
 
     private void Sidebar_NavigationRequested(object? sender, string key)
@@ -48,6 +49,12 @@ public partial class DashboardShellPage : ContentPage
 
         switch (key)
         {
+            case "Overview":
+                _vm.BreadcrumbPrimary = "Overblik";
+                _vm.BreadcrumbSecondary = "";
+                page = _services.GetRequiredService<OverviewPage>();
+                break;
+
             case "Organizations":
                 _vm.BreadcrumbPrimary = "Organisationer";
                 _vm.BreadcrumbSecondary = "";
@@ -58,6 +65,12 @@ public partial class DashboardShellPage : ContentPage
                 _vm.BreadcrumbPrimary = "Organisationer";
                 _vm.BreadcrumbSecondary = _vm.ActiveOrganization?.Name ?? string.Empty;
                 page = _services.GetRequiredService<OrganizationBrandsPage>();
+                break;
+
+            case "AppPublishing":
+                _vm.BreadcrumbPrimary = "Organisationer";
+                _vm.BreadcrumbSecondary = _vm.ActiveOrganization?.Name ?? string.Empty;
+                page = _services.GetRequiredService<OrganizationAppPublishingPage>();
                 break;
 
             case "Users":
@@ -96,6 +109,30 @@ public partial class DashboardShellPage : ContentPage
                 page = _services.GetRequiredService<SettingsAppPage>();
                 break;
 
+            case "SettingsSecurity":
+                _vm.BreadcrumbPrimary = "Indstillinger";
+                _vm.BreadcrumbSecondary = "Sikkerhed";
+                page = _services.GetRequiredService<SettingsSecurityPage>();
+                break;
+
+            case "SettingsNotifications":
+                _vm.BreadcrumbPrimary = "Indstillinger";
+                _vm.BreadcrumbSecondary = "Notifikationer";
+                page = _services.GetRequiredService<SettingsNotificationsPage>();
+                break;
+
+            case "SettingsIntegrations":
+                _vm.BreadcrumbPrimary = "Indstillinger";
+                _vm.BreadcrumbSecondary = "API & integrationer";
+                page = _services.GetRequiredService<SettingsIntegrationsPage>();
+                break;
+
+            case "SettingsAppearance":
+                _vm.BreadcrumbPrimary = "Indstillinger";
+                _vm.BreadcrumbSecondary = "Udseende";
+                page = _services.GetRequiredService<SettingsAppearancePage>();
+                break;
+
             case "Roles":
                 _vm.BreadcrumbPrimary = "Roller & rettigheder";
                 _vm.BreadcrumbSecondary = "";
@@ -109,9 +146,9 @@ public partial class DashboardShellPage : ContentPage
                 break;
 
             default:
-                _vm.BreadcrumbPrimary = "Organisationer";
-                _vm.BreadcrumbSecondary = _vm.ActiveOrganization?.Name ?? string.Empty;
-                page = _services.GetRequiredService<OrganizationBrandsPage>();
+                _vm.BreadcrumbPrimary = "Overblik";
+                _vm.BreadcrumbSecondary = "";
+                page = _services.GetRequiredService<OverviewPage>();
                 break;
         }
 
