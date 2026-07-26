@@ -272,9 +272,6 @@ public class OrganizationsViewModel : ObservableObject
             if (SelectedBrand == null || Brands.Count == 0)
                 return false;
 
-            if (BrandSurveys.Count == 0)
-                return false;
-
             return true;
         }
     }
