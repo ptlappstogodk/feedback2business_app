@@ -23,9 +23,11 @@ public class OrganizationsViewModel : ObservableObject
 
     // Drawer state
     private bool _isDrawerOpen;
+    private string _drawerType = "Organization"; // "Organization" or "Brand"
     private string _drawerTitle = "Opret organisation";
     private bool _isEditingExistingOrg;
 
+    // Organization drawer fields
     private string _drawerName = string.Empty;
     private string _drawerDescription = string.Empty;
     private string _drawerStatus = "Aktiv";
@@ -37,8 +39,17 @@ public class OrganizationsViewModel : ObservableObject
     private string _drawerCity = string.Empty;
     private string _drawerCountry = "Danmark";
 
+    // Brand drawer fields & state
+    private string _selectedBrandTab = "Surveys";
+    private string _brandNameBuffer = string.Empty;
+    private string _brandDescriptionBuffer = string.Empty;
+    private string _brandLogoBuffer = "🏬";
+    private string _brandStatusBuffer = "Aktiv";
+    private bool _isCreatingBrand;
+
     public ObservableCollection<OrganizationModel> FilteredOrganizations { get; } = new();
     public ObservableCollection<BrandModel> Brands { get; } = new();
+    public ObservableCollection<SurveyModel> BrandSurveys { get; } = new();
 
     public ObservableCollection<string> StatusFilterOptions { get; } = new()
     {
@@ -48,6 +59,16 @@ public class OrganizationsViewModel : ObservableObject
     public ObservableCollection<string> DrawerStatusOptions { get; } = new()
     {
         "Aktiv", "Inviteret", "Inaktiv"
+    };
+
+    public ObservableCollection<string> BrandStatusOptions { get; } = new()
+    {
+        "Aktiv", "Inaktiv"
+    };
+
+    public ObservableCollection<string> BrandLogoOptions { get; } = new()
+    {
+        "🏬", "☕", "⚡", "🍔", "⭐", "🛒", "🏷️", "🏢"
     };
 
     public ObservableCollection<string> DrawerCountryOptions { get; } = new()
@@ -132,18 +153,45 @@ public class OrganizationsViewModel : ObservableObject
             if (SetProperty(ref _selectedBrand, value))
             {
                 Raise(nameof(IsBrandSelected));
+                if (value != null)
+                {
+                    PopulateBrandDrawer(value);
+                }
             }
         }
     }
 
     public bool IsBrandSelected => SelectedBrand != null;
 
-    // Drawer properties
+    // Drawer state properties
     public bool IsDrawerOpen
     {
         get => _isDrawerOpen;
-        set => SetProperty(ref _isDrawerOpen, value);
+        set
+        {
+            if (SetProperty(ref _isDrawerOpen, value))
+            {
+                Raise(nameof(IsOrganizationDrawerVisible));
+                Raise(nameof(IsBrandDrawerVisible));
+            }
+        }
     }
+
+    public string DrawerType
+    {
+        get => _drawerType;
+        set
+        {
+            if (SetProperty(ref _drawerType, value))
+            {
+                Raise(nameof(IsOrganizationDrawerVisible));
+                Raise(nameof(IsBrandDrawerVisible));
+            }
+        }
+    }
+
+    public bool IsOrganizationDrawerVisible => IsDrawerOpen && DrawerType == "Organization";
+    public bool IsBrandDrawerVisible => IsDrawerOpen && DrawerType == "Brand";
 
     public string DrawerTitle
     {
@@ -211,6 +259,49 @@ public class OrganizationsViewModel : ObservableObject
         set => SetProperty(ref _drawerCountry, value);
     }
 
+    // Brand Drawer Tab & Buffer Properties
+    public string SelectedBrandTab
+    {
+        get => _selectedBrandTab;
+        set
+        {
+            if (SetProperty(ref _selectedBrandTab, value))
+            {
+                Raise(nameof(IsBrandSurveysTabSelected));
+                Raise(nameof(IsBrandInfoTabSelected));
+                Raise(nameof(IsBrandSettingsTabSelected));
+            }
+        }
+    }
+
+    public bool IsBrandSurveysTabSelected => SelectedBrandTab == "Surveys";
+    public bool IsBrandInfoTabSelected => SelectedBrandTab == "Information";
+    public bool IsBrandSettingsTabSelected => SelectedBrandTab == "Indstillinger";
+
+    public string BrandNameBuffer
+    {
+        get => _brandNameBuffer;
+        set => SetProperty(ref _brandNameBuffer, value);
+    }
+
+    public string BrandDescriptionBuffer
+    {
+        get => _brandDescriptionBuffer;
+        set => SetProperty(ref _brandDescriptionBuffer, value);
+    }
+
+    public string BrandLogoBuffer
+    {
+        get => _brandLogoBuffer;
+        set => SetProperty(ref _brandLogoBuffer, value);
+    }
+
+    public string BrandStatusBuffer
+    {
+        get => _brandStatusBuffer;
+        set => SetProperty(ref _brandStatusBuffer, value);
+    }
+
     public string PaginationText => $"Viser 1-{FilteredOrganizations.Count} af {_allOrganizations.Count} organisationer";
 
     // Commands
@@ -222,6 +313,8 @@ public class OrganizationsViewModel : ObservableObject
     public ICommand SletOrganizationCommand { get; }
 
     public ICommand SelectTabCommand { get; }
+    public ICommand SelectBrandTabCommand { get; }
+    public ICommand SelectBrandCommand { get; }
     public ICommand OpretBrandCommand { get; }
     public ICommand GemBrandCommand { get; }
     public ICommand SletBrandCommand { get; }
@@ -234,15 +327,18 @@ public class OrganizationsViewModel : ObservableObject
 
         LoadOrganizations();
 
-        OpretOrganizationCommand = new RelayCommand(OpenCreateDrawer);
-        RedigerOrganizationCommand = new RelayCommand(OpenEditDrawer);
+        OpretOrganizationCommand = new RelayCommand(OpenCreateOrgDrawer);
+        RedigerOrganizationCommand = new RelayCommand(OpenEditOrgDrawer);
         CloseDrawerCommand = new RelayCommand(CloseDrawer);
         GemOrganizationCommand = new RelayCommand(GemOrganization);
         GemOgOpretBrandCommand = new RelayCommand(GemOgOpretBrand);
         SletOrganizationCommand = new RelayCommand(async () => await SletOrganizationAsync());
 
         SelectTabCommand = new RelayCommand<string>(tab => { if (!string.IsNullOrEmpty(tab)) SelectedTab = tab; });
-        OpretBrandCommand = new RelayCommand(async () => await OpretBrandAsync());
+        SelectBrandTabCommand = new RelayCommand<string>(tab => { if (!string.IsNullOrEmpty(tab)) SelectedBrandTab = tab; });
+        SelectBrandCommand = new RelayCommand<BrandModel>(OpenBrandDrawer);
+
+        OpretBrandCommand = new RelayCommand(OpenCreateBrandDrawer);
         GemBrandCommand = new RelayCommand(GemBrand);
         SletBrandCommand = new RelayCommand(async () => await SletBrandAsync());
         OpenSurveysForBrandCommand = new RelayCommand(OpenSurveysForBrand);
@@ -301,10 +397,31 @@ public class OrganizationsViewModel : ObservableObject
         SelectedBrand = Brands.FirstOrDefault();
     }
 
-    private void OpenCreateDrawer()
+    private void PopulateBrandDrawer(BrandModel brand)
+    {
+        BrandNameBuffer = brand.Name;
+        BrandDescriptionBuffer = brand.Description;
+        BrandLogoBuffer = string.IsNullOrEmpty(brand.LogoUrl) ? "🏬" : brand.LogoUrl;
+        BrandStatusBuffer = string.IsNullOrEmpty(brand.Status) ? "Aktiv" : brand.Status;
+
+        LoadBrandSurveys(brand.Id);
+    }
+
+    private void LoadBrandSurveys(int brandId)
+    {
+        BrandSurveys.Clear();
+        var list = _data.GetSurveys(brandId);
+        foreach (var survey in list)
+        {
+            BrandSurveys.Add(survey);
+        }
+    }
+
+    private void OpenCreateOrgDrawer()
     {
         _isEditingExistingOrg = false;
         DrawerTitle = "Opret organisation";
+        DrawerType = "Organization";
 
         DrawerName = string.Empty;
         DrawerDescription = string.Empty;
@@ -320,12 +437,13 @@ public class OrganizationsViewModel : ObservableObject
         IsDrawerOpen = true;
     }
 
-    private void OpenEditDrawer()
+    private void OpenEditOrgDrawer()
     {
         if (SelectedOrganization == null) return;
 
         _isEditingExistingOrg = true;
         DrawerTitle = "Rediger organisation";
+        DrawerType = "Organization";
 
         DrawerName = SelectedOrganization.Name;
         DrawerDescription = SelectedOrganization.Description;
@@ -338,6 +456,33 @@ public class OrganizationsViewModel : ObservableObject
         DrawerCity = SelectedOrganization.City;
         DrawerCountry = SelectedOrganization.Country;
 
+        IsDrawerOpen = true;
+    }
+
+    private void OpenBrandDrawer(BrandModel? brand)
+    {
+        if (brand == null) return;
+
+        SelectedBrand = brand;
+        _isCreatingBrand = false;
+        SelectedBrandTab = "Surveys";
+        DrawerType = "Brand";
+        IsDrawerOpen = true;
+    }
+
+    private void OpenCreateBrandDrawer()
+    {
+        if (SelectedOrganization == null) return;
+
+        _isCreatingBrand = true;
+        BrandNameBuffer = string.Empty;
+        BrandDescriptionBuffer = string.Empty;
+        BrandLogoBuffer = "🏬";
+        BrandStatusBuffer = "Aktiv";
+        BrandSurveys.Clear();
+
+        SelectedBrandTab = "Information";
+        DrawerType = "Brand";
         IsDrawerOpen = true;
     }
 
@@ -399,7 +544,7 @@ public class OrganizationsViewModel : ObservableObject
     private void GemOgOpretBrand()
     {
         GemOrganization();
-        _ = OpretBrandAsync();
+        OpenCreateBrandDrawer();
     }
 
     private async Task SletOrganizationAsync()
@@ -420,21 +565,18 @@ public class OrganizationsViewModel : ObservableObject
         }
     }
 
-    private async Task OpretBrandAsync()
+    private void GemBrand()
     {
-        if (SelectedOrganization == null) return;
+        if (SelectedOrganization == null || string.IsNullOrWhiteSpace(BrandNameBuffer)) return;
 
-        var name = await Application.Current!.MainPage!.DisplayPromptAsync(
-            "Opret brand", "Indtast brandets navn:", "Gem", "Annuller", "Brand navn");
-
-        if (!string.IsNullOrWhiteSpace(name))
+        if (_isCreatingBrand)
         {
             var brand = new BrandModel
             {
-                Name = name.Trim(),
-                Description = "Kort beskrivelse af brand",
-                LogoUrl = "🏬",
-                Status = "Aktiv",
+                Name = BrandNameBuffer.Trim(),
+                Description = BrandDescriptionBuffer.Trim(),
+                LogoUrl = BrandLogoBuffer,
+                Status = BrandStatusBuffer,
                 SurveyCount = 0,
                 OrganizationId = SelectedOrganization.Id,
                 UpdatedAt = DateTime.Now
@@ -444,16 +586,21 @@ public class OrganizationsViewModel : ObservableObject
             Brands.Add(brand);
             SelectedOrganization.BrandCount = Brands.Count;
             SelectedBrand = brand;
-            Raise(nameof(BrandTabSubtitle));
+            _isCreatingBrand = false;
         }
-    }
-
-    private void GemBrand()
-    {
-        if (SelectedBrand != null)
+        else if (SelectedBrand != null)
         {
+            SelectedBrand.Name = BrandNameBuffer.Trim();
+            SelectedBrand.Description = BrandDescriptionBuffer.Trim();
+            SelectedBrand.LogoUrl = BrandLogoBuffer;
+            SelectedBrand.Status = BrandStatusBuffer;
+            SelectedBrand.UpdatedAt = DateTime.Now;
+
             _data.SaveBrand(SelectedBrand);
         }
+
+        Raise(nameof(BrandTabSubtitle));
+        IsDrawerOpen = false;
     }
 
     private async Task SletBrandAsync()
@@ -472,6 +619,7 @@ public class OrganizationsViewModel : ObservableObject
             SelectedOrganization.BrandCount = Brands.Count;
             SelectedBrand = Brands.FirstOrDefault();
             Raise(nameof(BrandTabSubtitle));
+            IsDrawerOpen = false;
         }
     }
 
