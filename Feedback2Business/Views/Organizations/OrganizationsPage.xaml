@@ -237,20 +237,40 @@
                                 Command="{Binding SelectTabCommand}"
                                 CommandParameter="Brands"
                                 Style="{StaticResource LinkButtonStyle}"
-                                FontAttributes="Bold"
-                                TextColor="{StaticResource PrimaryBlue}" />
+                                TextColor="{StaticResource TextSecondary}">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Binding="{Binding IsBrandsTabSelected}" Value="True">
+                                    <Setter Property="TextColor" Value="{StaticResource PrimaryBlue}" />
+                                    <Setter Property="FontAttributes" Value="Bold" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
                         <Button Grid.Column="1"
                                 Text="Information"
                                 Command="{Binding SelectTabCommand}"
                                 CommandParameter="Information"
                                 Style="{StaticResource LinkButtonStyle}"
-                                TextColor="{StaticResource TextSecondary}" />
+                                TextColor="{StaticResource TextSecondary}">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Binding="{Binding IsInformationTabSelected}" Value="True">
+                                    <Setter Property="TextColor" Value="{StaticResource PrimaryBlue}" />
+                                    <Setter Property="FontAttributes" Value="Bold" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
                         <Button Grid.Column="2"
                                 Text="Indstillinger"
                                 Command="{Binding SelectTabCommand}"
                                 CommandParameter="Indstillinger"
                                 Style="{StaticResource LinkButtonStyle}"
-                                TextColor="{StaticResource TextSecondary}" />
+                                TextColor="{StaticResource TextSecondary}">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button" Binding="{Binding IsSettingsTabSelected}" Value="True">
+                                    <Setter Property="TextColor" Value="{StaticResource PrimaryBlue}" />
+                                    <Setter Property="FontAttributes" Value="Bold" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
                     </Grid>
 
                     <!-- Tab Body Content -->
@@ -539,20 +559,40 @@
                                     Command="{Binding SelectBrandTabCommand}"
                                     CommandParameter="Surveys"
                                     Style="{StaticResource LinkButtonStyle}"
-                                    FontAttributes="Bold"
-                                    TextColor="{StaticResource PrimaryBlue}" />
+                                    TextColor="{StaticResource TextSecondary}">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsBrandSurveysTabSelected}" Value="True">
+                                        <Setter Property="TextColor" Value="{StaticResource PrimaryBlue}" />
+                                        <Setter Property="FontAttributes" Value="Bold" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
                             <Button Grid.Column="1"
                                     Text="Information"
                                     Command="{Binding SelectBrandTabCommand}"
                                     CommandParameter="Information"
                                     Style="{StaticResource LinkButtonStyle}"
-                                    TextColor="{StaticResource TextSecondary}" />
+                                    TextColor="{StaticResource TextSecondary}">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsBrandInfoTabSelected}" Value="True">
+                                        <Setter Property="TextColor" Value="{StaticResource PrimaryBlue}" />
+                                        <Setter Property="FontAttributes" Value="Bold" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
                             <Button Grid.Column="2"
                                     Text="Indstillinger"
                                     Command="{Binding SelectBrandTabCommand}"
                                     CommandParameter="Indstillinger"
                                     Style="{StaticResource LinkButtonStyle}"
-                                    TextColor="{StaticResource TextSecondary}" />
+                                    TextColor="{StaticResource TextSecondary}">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsBrandSettingsTabSelected}" Value="True">
+                                        <Setter Property="TextColor" Value="{StaticResource PrimaryBlue}" />
+                                        <Setter Property="FontAttributes" Value="Bold" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
                         </Grid>
 
                         <!-- Brand Tab Body Content -->

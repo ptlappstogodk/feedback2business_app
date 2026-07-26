@@ -137,6 +137,30 @@ public class OrganizationsViewModel : ObservableObject
                 Raise(nameof(IsBrandsTabSelected));
                 Raise(nameof(IsInformationTabSelected));
                 Raise(nameof(IsSettingsTabSelected));
+
+                if (value == "Brands")
+                {
+                    if (SelectedBrand == null && Brands.Count > 0)
+                    {
+                        SelectedBrand = Brands.FirstOrDefault();
+                    }
+
+                    if (SelectedBrand != null)
+                    {
+                        DrawerType = "Brand";
+                        IsDrawerOpen = true;
+                    }
+                }
+                else
+                {
+                    if (DrawerType == "Brand")
+                    {
+                        IsDrawerOpen = false;
+                    }
+                }
+
+                Raise(nameof(IsOrganizationDrawerVisible));
+                Raise(nameof(IsBrandDrawerVisible));
             }
         }
     }
@@ -191,7 +215,7 @@ public class OrganizationsViewModel : ObservableObject
     }
 
     public bool IsOrganizationDrawerVisible => IsDrawerOpen && DrawerType == "Organization";
-    public bool IsBrandDrawerVisible => IsDrawerOpen && DrawerType == "Brand";
+    public bool IsBrandDrawerVisible => IsDrawerOpen && DrawerType == "Brand" && IsBrandsTabSelected;
 
     public string DrawerTitle
     {
@@ -395,6 +419,12 @@ public class OrganizationsViewModel : ObservableObject
             Brands.Add(item);
         }
         SelectedBrand = Brands.FirstOrDefault();
+
+        if (IsBrandsTabSelected && SelectedBrand != null)
+        {
+            DrawerType = "Brand";
+            IsDrawerOpen = true;
+        }
     }
 
     private void PopulateBrandDrawer(BrandModel brand)
@@ -465,7 +495,6 @@ public class OrganizationsViewModel : ObservableObject
 
         SelectedBrand = brand;
         _isCreatingBrand = false;
-        SelectedBrandTab = "Surveys";
         DrawerType = "Brand";
         IsDrawerOpen = true;
     }
