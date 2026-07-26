@@ -3,47 +3,85 @@
     x:Class="Feedback2Business.Views.Organizations.OrganizationsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:shared="clr-namespace:Feedback2Business.Views.Shared"
     BackgroundColor="{StaticResource PageBackground}">
 
-    <Grid RowDefinitions="Auto,*" Padding="24">
-        <!-- Page Header -->
-        <Grid ColumnDefinitions="*,Auto">
-            <VerticalStackLayout>
+    <Grid RowDefinitions="Auto,*" Padding="24" RowSpacing="16">
+        <!-- Page Header & Action Bar -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" RowSpacing="12">
+            <!-- Title & Subtitle -->
+            <VerticalStackLayout Grid.Column="0" Spacing="2">
                 <Label Text="Organisationer &amp; brands" Style="{StaticResource PageTitleStyle}" />
-                <Label Text="Administrer organisationer, tilknyttede brands og deres oplysninger."
+                <Label Text="Administrer organisationer og deres tilknyttede brands."
                        Style="{StaticResource PageSubtitleStyle}" />
             </VerticalStackLayout>
-            <Button Grid.Column="1"
-                    Text="+ Opret organisation"
-                    Command="{Binding OpretOrganizationCommand}"
-                    Style="{StaticResource PrimaryButtonStyle}" />
+
+            <!-- Filters & Opret Organisation Button Bar -->
+            <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
+                <!-- Search Bar -->
+                <Border Style="{StaticResource InnerCardStyle}" Padding="10,0" HeightRequest="38" WidthRequest="220">
+                    <Grid ColumnDefinitions="20,*">
+                        <Label Text="🔍" FontSize="12" VerticalOptions="Center" TextColor="{StaticResource TextSecondary}" />
+                        <Entry Grid.Column="1"
+                               Placeholder="Søg organisationer..."
+                               Text="{Binding SearchText}"
+                               FontSize="13"
+                               VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+
+                <!-- Status Filter Dropdown -->
+                <Border Style="{StaticResource InnerCardStyle}" Padding="8,0" HeightRequest="38" WidthRequest="130">
+                    <Picker ItemsSource="{Binding StatusFilterOptions}"
+                            SelectedItem="{Binding SelectedStatusFilter}"
+                            FontSize="13"
+                            VerticalOptions="Center" />
+                </Border>
+
+                <!-- Primary Button: + Opret organisation -->
+                <Button Text="+ Opret organisation"
+                        Command="{Binding OpretOrganizationCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        HeightRequest="38"
+                        Padding="16,0"
+                        FontSize="13"
+                        FontAttributes="Bold" />
+
+                <!-- Table View / Export Action Icon Button -->
+                <Border Style="{StaticResource InnerCardStyle}" HeightRequest="38" WidthRequest="38" Padding="0">
+                    <Label Text="📋" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+            </HorizontalStackLayout>
         </Grid>
 
-        <!-- Two Column Main Body -->
-        <Grid Grid.Row="1" Margin="0,20,0,0" ColumnDefinitions="*,*" ColumnSpacing="20">
-            <!-- Left Column: Organizations -->
-            <Grid Grid.Column="0" RowDefinitions="Auto,*,Auto" RowSpacing="12">
-                <!-- Search bar -->
-                <Border Grid.Row="0" Style="{StaticResource CardStyle}" Padding="10,6">
-                    <Entry Placeholder="Søg organisationer..." Text="{Binding SearchText}" HeightRequest="36" />
-                </Border>
+        <!-- Main Workspace Layout (Left: Organizations List, Right: Org Detail, Far Right: Slide-over Drawer) -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*,Auto" ColumnSpacing="16">
 
-                <!-- List of Organizations -->
-                <Border Grid.Row="1" Style="{StaticResource CardStyle}" Padding="0">
-                    <Grid RowDefinitions="Auto,*">
-                        <Grid Padding="16,12" ColumnDefinitions="*,Auto,Auto" BackgroundColor="{StaticResource PrimaryBlueLight}">
-                            <Label Text="Organisation" FontAttributes="Bold" TextColor="{StaticResource PrimaryBlue}" VerticalOptions="Center" />
-                            <Label Grid.Column="1" Text="Brands" FontAttributes="Bold" TextColor="{StaticResource PrimaryBlue}" HorizontalOptions="Center" VerticalOptions="Center" Margin="0,0,16,0" />
-                            <Label Grid.Column="2" Text="Surveys" FontAttributes="Bold" TextColor="{StaticResource PrimaryBlue}" HorizontalOptions="Center" VerticalOptions="Center" />
+            <!-- Left Card: Organisationer List -->
+            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="16">
+                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="12">
+                    <!-- Title -->
+                    <Label Grid.Row="0" Text="Organisationer" Style="{StaticResource SectionHeaderStyle}" />
+
+                    <!-- Table Header & Items -->
+                    <Grid Grid.Row="1" RowDefinitions="Auto,*">
+                        <!-- Header Row -->
+                        <Grid Grid.Row="0" ColumnDefinitions="*,50,50,80,120" ColumnSpacing="8" Padding="12,8" BackgroundColor="#F8FAFC">
+                            <Label Text="Organisation" Style="{StaticResource DataTableHeaderStyle}" />
+                            <Label Grid.Column="1" Text="Brands" Style="{StaticResource DataTableHeaderStyle}" HorizontalOptions="Center" />
+                            <Label Grid.Column="2" Text="Surveys" Style="{StaticResource DataTableHeaderStyle}" HorizontalOptions="Center" />
+                            <Label Grid.Column="3" Text="Status" Style="{StaticResource DataTableHeaderStyle}" HorizontalOptions="Center" />
+                            <Label Grid.Column="4" Text="Sidst opdateret ↑" Style="{StaticResource DataTableHeaderStyle}" HorizontalOptions="End" />
                         </Grid>
 
+                        <!-- CollectionView List -->
                         <CollectionView Grid.Row="1"
-                                        ItemsSource="{Binding Organizations}"
+                                        ItemsSource="{Binding FilteredOrganizations}"
                                         SelectionMode="Single"
-                                        SelectedItem="{Binding SelectedOrganization}">
+                                        SelectedItem="{Binding SelectedOrganization, Mode=TwoWay}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Margin="12,6" Padding="12" Style="{StaticResource InnerCardStyle}">
+                                    <Border Margin="0,4" Padding="10,8" Style="{StaticResource InnerCardStyle}">
                                         <VisualStateManager.VisualStateGroups>
                                             <VisualStateGroupList>
                                                 <VisualStateGroup x:Name="CommonStates">
@@ -64,121 +102,385 @@
                                                 </VisualStateGroup>
                                             </VisualStateGroupList>
                                         </VisualStateManager.VisualStateGroups>
-                                        <Grid ColumnDefinitions="*,40,40" ColumnSpacing="10">
-                                            <Label Text="{Binding Name}" FontAttributes="Bold" VerticalOptions="Center" />
-                                            <Label Grid.Column="1" Text="{Binding BrandCount}" HorizontalOptions="Center" VerticalOptions="Center" />
-                                            <Label Grid.Column="2" Text="{Binding SurveyCount}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                        <Grid ColumnDefinitions="Auto,*,50,50,80,120" ColumnSpacing="8" VerticalOptions="Center">
+                                            <!-- Logo Avatar -->
+                                            <Border Grid.Column="0"
+                                                    WidthRequest="32"
+                                                    HeightRequest="32"
+                                                    BackgroundColor="{StaticResource SidebarBackground}"
+                                                    StrokeThickness="0"
+                                                    StrokeShape="RoundRectangle 8">
+                                                <Label Text="{Binding LogoText}"
+                                                       TextColor="White"
+                                                       FontSize="11"
+                                                       FontAttributes="Bold"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center" />
+                                            </Border>
+
+                                            <!-- Name -->
+                                            <Label Grid.Column="1"
+                                                   Text="{Binding Name}"
+                                                   FontAttributes="Bold"
+                                                   FontSize="13"
+                                                   VerticalOptions="Center"
+                                                   Margin="6,0,0,0" />
+
+                                            <!-- Brand Count -->
+                                            <Label Grid.Column="2"
+                                                   Text="{Binding BrandCount}"
+                                                   FontSize="13"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
+
+                                            <!-- Survey Count -->
+                                            <Label Grid.Column="3"
+                                                   Text="{Binding SurveyCount}"
+                                                   FontSize="13"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
+
+                                            <!-- Status Badge -->
+                                            <shared:StatusBadgeView Grid.Column="4"
+                                                                    Text="{Binding Status}"
+                                                                    BadgeColor="{Binding StatusBadgeColor}"
+                                                                    BadgeTextColor="{Binding StatusBadgeTextColor}"
+                                                                    HorizontalOptions="Center"
+                                                                    VerticalOptions="Center" />
+
+                                            <!-- Updated At -->
+                                            <Label Grid.Column="5"
+                                                   Text="{Binding FormattedUpdatedAt}"
+                                                   FontSize="12"
+                                                   TextColor="{StaticResource TextSecondary}"
+                                                   HorizontalOptions="End"
+                                                   VerticalOptions="Center" />
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
                     </Grid>
-                </Border>
 
-                <!-- Org Details & Inline Editor -->
-                <Border Grid.Row="2" Style="{StaticResource CardStyle}" Padding="16" HeightRequest="110" VerticalOptions="End">
-                    <VerticalStackLayout Spacing="8" VerticalOptions="Center">
-                        <Label Text="Rediger Organisation" FontAttributes="Bold" FontSize="14" />
-                        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
-                            <Entry Text="{Binding OrgNameBuffer}" Placeholder="Organisationsnavn" HeightRequest="38" />
-                            <Button Grid.Column="1" Text="Gem" Command="{Binding GemOrganizationCommand}" Style="{StaticResource PrimaryButtonStyle}" HeightRequest="38" />
-                            <Button Grid.Column="2" Text="Slet" Command="{Binding SletOrganizationCommand}" BackgroundColor="Transparent" TextColor="Red" HeightRequest="38" />
-                        </Grid>
-                    </VerticalStackLayout>
-                </Border>
-            </Grid>
+                    <!-- Footer Pagination -->
+                    <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                        <Label Text="{Binding PaginationText}"
+                               FontSize="12"
+                               TextColor="{StaticResource TextSecondary}"
+                               VerticalOptions="Center" />
 
-            <!-- Right Column: Brands -->
-            <Grid Grid.Column="1" RowDefinitions="*,Auto" RowSpacing="12">
-                <!-- Brands List Card -->
-                <Border Grid.Row="0" Style="{StaticResource CardStyle}" Padding="0">
-                    <Grid RowDefinitions="Auto,*">
-                        <Grid Padding="16,12" ColumnDefinitions="*,Auto" BackgroundColor="{StaticResource PrimaryBlueLight}">
-                            <Label Text="Tilknyttede Brands" FontAttributes="Bold" TextColor="{StaticResource PrimaryBlue}" VerticalOptions="Center" />
-                            <Button Grid.Column="1"
-                                    Text="+ Opret brand"
-                                    Command="{Binding OpretBrandCommand}"
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    HeightRequest="30" Padding="12,0" FontSize="11" />
-                        </Grid>
-
-                        <CollectionView Grid.Row="1"
-                                        ItemsSource="{Binding Brands}"
-                                        SelectionMode="Single"
-                                        SelectedItem="{Binding SelectedBrand}">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Margin="12,6" Padding="12" Style="{StaticResource InnerCardStyle}">
-                                        <VisualStateManager.VisualStateGroups>
-                                            <VisualStateGroupList>
-                                                <VisualStateGroup x:Name="CommonStates">
-                                                    <VisualState x:Name="Normal">
-                                                        <VisualState.Setters>
-                                                            <Setter Property="Stroke" Value="{StaticResource BorderColor}" />
-                                                            <Setter Property="StrokeThickness" Value="1" />
-                                                            <Setter Property="BackgroundColor" Value="White" />
-                                                        </VisualState.Setters>
-                                                    </VisualState>
-                                                    <VisualState x:Name="Selected">
-                                                        <VisualState.Setters>
-                                                            <Setter Property="Stroke" Value="{StaticResource PrimaryBlue}" />
-                                                            <Setter Property="StrokeThickness" Value="2" />
-                                                            <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBlueLight}" />
-                                                        </VisualState.Setters>
-                                                    </VisualState>
-                                                </VisualStateGroup>
-                                            </VisualStateGroupList>
-                                        </VisualStateManager.VisualStateGroups>
-                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                                            <Label Text="{Binding LogoUrl}" FontSize="20" VerticalOptions="Center" />
-                                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                                                <Label Text="{Binding Name}" FontAttributes="Bold" />
-                                                <Label Text="{Binding Description}" FontSize="12" TextColor="{StaticResource TextSecondary}" MaxLines="1" LineBreakMode="TailTruncation" />
-                                            </VerticalStackLayout>
-                                            <Label Grid.Column="2" Text="{Binding SurveyCountText}" FontSize="12" TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
+                        <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                            <Border WidthRequest="28" HeightRequest="28" Style="{StaticResource InnerCardStyle}" BackgroundColor="{StaticResource PrimaryBlueLight}">
+                                <Label Text="1" TextColor="{StaticResource PrimaryBlue}" FontAttributes="Bold" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                            <Border WidthRequest="28" HeightRequest="28" Style="{StaticResource InnerCardStyle}">
+                                <Label Text="2" TextColor="{StaticResource TextSecondary}" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                            <Border WidthRequest="28" HeightRequest="28" Style="{StaticResource InnerCardStyle}">
+                                <Label Text="›" TextColor="{StaticResource TextSecondary}" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                        </HorizontalStackLayout>
                     </Grid>
-                </Border>
+                </Grid>
+            </Border>
 
-                <!-- Brand Creator/Editor Card -->
-                <Border Grid.Row="1" Style="{StaticResource CardStyle}" Padding="16" HeightRequest="250" VerticalOptions="End">
-                    <Grid>
-                        <!-- No Brand Selected Placeholder -->
-                        <VerticalStackLayout IsVisible="{Binding HasNoBrandSelected}"
-                                             VerticalOptions="Center" HorizontalOptions="Center" Spacing="8">
-                            <Label Text="Vælg et brand for at redigere oplysninger" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center" />
+            <!-- Right Card: Selected Organization Detail Card -->
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}" Padding="16">
+                <Grid RowDefinitions="Auto,Auto,*" RowSpacing="12">
+
+                    <!-- Organization Header View -->
+                    <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" VerticalOptions="Center">
+                        <!-- Organization Logo Avatar -->
+                        <Border WidthRequest="44"
+                                HeightRequest="44"
+                                BackgroundColor="{StaticResource SidebarBackground}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10">
+                            <Label Text="{Binding SelectedOrganization.LogoText}"
+                                   TextColor="White"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+
+                        <!-- Name, Status & Subtitle -->
+                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="{Binding SelectedOrganization.Name}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource TextPrimary}" />
+                                <shared:StatusBadgeView Text="{Binding SelectedOrganization.Status}"
+                                                        BadgeColor="{Binding SelectedOrganization.StatusBadgeColor}"
+                                                        BadgeTextColor="{Binding SelectedOrganization.StatusBadgeTextColor}"
+                                                        VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                            <Label Text="{Binding BrandTabSubtitle}"
+                                   FontSize="12"
+                                   TextColor="{StaticResource TextSecondary}" />
                         </VerticalStackLayout>
 
-                        <!-- Editor Panel -->
-                        <VerticalStackLayout Spacing="8" IsVisible="{Binding IsBrandSelected}">
-                            <Label Text="Brand Detaljer &amp; Konfiguration" FontAttributes="Bold" FontSize="14" />
-                            <Grid ColumnDefinitions="80,*" ColumnSpacing="10">
-                                <Label Text="Logo / Ikon:" VerticalOptions="Center" />
-                                <Picker Grid.Column="1" ItemsSource="{Binding BrandLogoOptions}" SelectedItem="{Binding BrandLogoBuffer}" HeightRequest="36" />
-                            </Grid>
-                            <Grid ColumnDefinitions="80,*" ColumnSpacing="10">
-                                <Label Text="Navn:" VerticalOptions="Center" />
-                                <Entry Grid.Column="1" Text="{Binding BrandNameBuffer}" Placeholder="Brand navn" HeightRequest="36" />
-                            </Grid>
-                            <Grid ColumnDefinitions="80,*" ColumnSpacing="10">
-                                <Label Text="Beskrivelse:" VerticalOptions="Center" />
-                                <Entry Grid.Column="1" Text="{Binding BrandDescriptionBuffer}" Placeholder="Kort brand beskrivelse" HeightRequest="36" />
-                            </Grid>
-                            <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8" Margin="0,4,0,0">
-                                <Button Text="Vis Surveys" Command="{Binding OpenSurveysForBrandCommand}" Style="{StaticResource PrimaryButtonStyle}" HeightRequest="36" IsVisible="{Binding IsNotCreatingBrand}" />
-                                <Button Grid.Column="1" Text="Annuller" Command="{Binding AnnullerBrandCommand}" Style="{StaticResource SecondaryButtonStyle}" HeightRequest="36" />
-                                <Button Grid.Column="2" Text="Gem" Command="{Binding GemBrandCommand}" Style="{StaticResource PrimaryButtonStyle}" HeightRequest="36" />
-                                <Button Grid.Column="3" Text="Slet" Command="{Binding SletBrandCommand}" BackgroundColor="Transparent" TextColor="Red" HeightRequest="36" IsVisible="{Binding IsNotCreatingBrand}" />
-                            </Grid>
-                        </VerticalStackLayout>
+                        <!-- Action Button (Edit Organization) -->
+                        <Border Grid.Column="2" Style="{StaticResource InnerCardStyle}" HeightRequest="32" WidthRequest="32">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding RedigerOrganizationCommand}" />
+                            </Border.GestureRecognizers>
+                            <Label Text="✏️" FontSize="12" HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
                     </Grid>
-                </Border>
-            </Grid>
+
+                    <!-- Sub-tabs Navigation Header -->
+                    <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,Auto,*" ColumnSpacing="16" Margin="0,4,0,0">
+                        <Button Text="Brands"
+                                Command="{Binding SelectTabCommand}"
+                                CommandParameter="Brands"
+                                Style="{StaticResource LinkButtonStyle}"
+                                FontAttributes="Bold"
+                                TextColor="{StaticResource PrimaryBlue}" />
+                        <Button Grid.Column="1"
+                                Text="Information"
+                                Command="{Binding SelectTabCommand}"
+                                CommandParameter="Information"
+                                Style="{StaticResource LinkButtonStyle}"
+                                TextColor="{StaticResource TextSecondary}" />
+                        <Button Grid.Column="2"
+                                Text="Indstillinger"
+                                Command="{Binding SelectTabCommand}"
+                                CommandParameter="Indstillinger"
+                                Style="{StaticResource LinkButtonStyle}"
+                                TextColor="{StaticResource TextSecondary}" />
+                    </Grid>
+
+                    <!-- Tab Body Content -->
+                    <Grid Grid.Row="2">
+                        <!-- BRANDS TAB -->
+                        <Grid IsVisible="{Binding IsBrandsTabSelected}" RowDefinitions="Auto,*">
+                            <!-- Top Bar inside Brands Tab -->
+                            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,4,0,8">
+                                <Button Grid.Column="1"
+                                        Text="+ Opret brand"
+                                        Command="{Binding OpretBrandCommand}"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        HeightRequest="32"
+                                        Padding="12,0"
+                                        FontSize="12"
+                                        FontAttributes="Bold" />
+                            </Grid>
+
+                            <!-- Brands Table -->
+                            <Grid Grid.Row="1" RowDefinitions="Auto,*">
+                                <Grid Grid.Row="0" ColumnDefinitions="*,60,80,120" ColumnSpacing="8" Padding="8,6" BackgroundColor="#F8FAFC">
+                                    <Label Text="Brand" Style="{StaticResource DataTableHeaderStyle}" />
+                                    <Label Grid.Column="1" Text="Surveys" Style="{StaticResource DataTableHeaderStyle}" HorizontalOptions="Center" />
+                                    <Label Grid.Column="2" Text="Status" Style="{StaticResource DataTableHeaderStyle}" HorizontalOptions="Center" />
+                                    <Label Grid.Column="3" Text="Sidst opdateret" Style="{StaticResource DataTableHeaderStyle}" HorizontalOptions="End" />
+                                </Grid>
+
+                                <CollectionView Grid.Row="1"
+                                                ItemsSource="{Binding Brands}"
+                                                SelectionMode="Single"
+                                                SelectedItem="{Binding SelectedBrand, Mode=TwoWay}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Margin="0,4" Padding="10,8" Style="{StaticResource InnerCardStyle}">
+                                                <Grid ColumnDefinitions="Auto,*,60,80,120" ColumnSpacing="8" VerticalOptions="Center">
+                                                    <!-- Logo -->
+                                                    <Label Text="{Binding LogoUrl}" FontSize="18" VerticalOptions="Center" />
+
+                                                    <!-- Name -->
+                                                    <Label Grid.Column="1"
+                                                           Text="{Binding Name}"
+                                                           FontAttributes="Bold"
+                                                           FontSize="13"
+                                                           VerticalOptions="Center"
+                                                           Margin="6,0,0,0" />
+
+                                                    <!-- Survey Count -->
+                                                    <Label Grid.Column="2"
+                                                           Text="{Binding SurveyCount}"
+                                                           FontSize="13"
+                                                           HorizontalOptions="Center"
+                                                           VerticalOptions="Center" />
+
+                                                    <!-- Status Badge -->
+                                                    <shared:StatusBadgeView Grid.Column="3"
+                                                                            Text="{Binding Status}"
+                                                                            BadgeColor="{Binding StatusBadgeColor}"
+                                                                            BadgeTextColor="{Binding StatusBadgeTextColor}"
+                                                                            HorizontalOptions="Center"
+                                                                            VerticalOptions="Center" />
+
+                                                    <!-- Updated At -->
+                                                    <Label Grid.Column="4"
+                                                           Text="{Binding FormattedUpdatedAt}"
+                                                           FontSize="12"
+                                                           TextColor="{StaticResource TextSecondary}"
+                                                           HorizontalOptions="End"
+                                                           VerticalOptions="Center" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </Grid>
+                        </Grid>
+
+                        <!-- INFORMATION TAB -->
+                        <ScrollView IsVisible="{Binding IsInformationTabSelected}" Padding="4">
+                            <VerticalStackLayout Spacing="12">
+                                <Label Text="Organisationsoplysninger" FontAttributes="Bold" FontSize="14" />
+                                <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                                    <Label Text="Kontaktperson:" FontAttributes="Bold" FontSize="12" />
+                                    <Label Grid.Column="1" Text="{Binding SelectedOrganization.ContactPerson}" FontSize="12" />
+
+                                    <Label Grid.Row="1" Text="E-mail:" FontAttributes="Bold" FontSize="12" />
+                                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding SelectedOrganization.Email}" FontSize="12" />
+
+                                    <Label Grid.Row="2" Text="Telefon:" FontAttributes="Bold" FontSize="12" />
+                                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding SelectedOrganization.Phone}" FontSize="12" />
+
+                                    <Label Grid.Row="3" Text="Adresse:" FontAttributes="Bold" FontSize="12" />
+                                    <Label Grid.Row="3" Grid.Column="1" Text="{Binding SelectedOrganization.Address}" FontSize="12" />
+
+                                    <Label Grid.Row="4" Text="By &amp; Land:" FontAttributes="Bold" FontSize="12" />
+                                    <Label Grid.Row="4" Grid.Column="1" Text="{Binding SelectedOrganization.City}" FontSize="12" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </ScrollView>
+
+                        <!-- INDSTILLINGER TAB -->
+                        <ScrollView IsVisible="{Binding IsSettingsTabSelected}" Padding="4">
+                            <VerticalStackLayout Spacing="12">
+                                <Label Text="Organisationsindstillinger" FontAttributes="Bold" FontSize="14" />
+                                <HorizontalStackLayout Spacing="8">
+                                    <CheckBox IsChecked="True" />
+                                    <Label Text="Aktiver automatisk synkronisering for denne organisation" VerticalOptions="Center" FontSize="12" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </ScrollView>
+
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- Slide-Over Drawer Panel (Opret / Rediger organisation) -->
+            <Border Grid.Column="2"
+                    IsVisible="{Binding IsDrawerOpen}"
+                    Style="{StaticResource CardStyle}"
+                    WidthRequest="360"
+                    Padding="20"
+                    BackgroundColor="White">
+                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
+                    <!-- Drawer Header -->
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                        <Label Text="{Binding DrawerTitle}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}"
+                               VerticalOptions="Center" />
+
+                        <Button Grid.Column="1"
+                                Text="✕"
+                                Command="{Binding CloseDrawerCommand}"
+                                BackgroundColor="Transparent"
+                                TextColor="{StaticResource TextSecondary}"
+                                FontSize="16"
+                                WidthRequest="32"
+                                HeightRequest="32"
+                                Padding="0" />
+                    </Grid>
+
+                    <!-- Drawer Scrollable Form Content -->
+                    <ScrollView Grid.Row="1" Padding="0,4">
+                        <VerticalStackLayout Spacing="16">
+
+                            <!-- Section 1: Organisation Information -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Organisation information" FontAttributes="Bold" FontSize="12" TextColor="{StaticResource TextPrimary}" />
+
+                                <Label Text="Navn *" Style="{StaticResource FormLabelStyle}" />
+                                <Entry Text="{Binding DrawerName}" Placeholder="Indtast organisationsnavn" HeightRequest="38" FontSize="13" />
+
+                                <Label Text="Beskrivelse" Style="{StaticResource FormLabelStyle}" />
+                                <Entry Text="{Binding DrawerDescription}" Placeholder="Kort beskrivelse af organisationen" HeightRequest="38" FontSize="13" />
+
+                                <Label Text="Status" Style="{StaticResource FormLabelStyle}" />
+                                <Border Style="{StaticResource InnerCardStyle}" Padding="8,0" HeightRequest="38">
+                                    <Picker ItemsSource="{Binding DrawerStatusOptions}" SelectedItem="{Binding DrawerStatus}" FontSize="13" VerticalOptions="Center" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!-- Section 2: Kontaktinformation -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Kontaktinformation" FontAttributes="Bold" FontSize="12" TextColor="{StaticResource TextPrimary}" />
+
+                                <Label Text="Kontaktperson" Style="{StaticResource FormLabelStyle}" />
+                                <Entry Text="{Binding DrawerContactPerson}" Placeholder="Navn på kontaktperson" HeightRequest="38" FontSize="13" />
+
+                                <Label Text="E-mail" Style="{StaticResource FormLabelStyle}" />
+                                <Entry Text="{Binding DrawerEmail}" Placeholder="kontakt@eksempel.dk" HeightRequest="38" FontSize="13" />
+
+                                <Label Text="Telefon" Style="{StaticResource FormLabelStyle}" />
+                                <Entry Text="{Binding DrawerPhone}" Placeholder="+45 12 34 56 78" HeightRequest="38" FontSize="13" />
+                            </VerticalStackLayout>
+
+                            <!-- Section 3: Adresse -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Adresse" FontAttributes="Bold" FontSize="12" TextColor="{StaticResource TextPrimary}" />
+
+                                <Label Text="Adresse" Style="{StaticResource FormLabelStyle}" />
+                                <Entry Text="{Binding DrawerAddress}" Placeholder="Vejnavn og nummer" HeightRequest="38" FontSize="13" />
+
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label Text="Postnr." Style="{StaticResource FormLabelStyle}" />
+                                        <Entry Text="{Binding DrawerPostalCode}" Placeholder="Postnr." HeightRequest="38" FontSize="13" />
+                                    </VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                        <Label Text="By" Style="{StaticResource FormLabelStyle}" />
+                                        <Entry Text="{Binding DrawerCity}" Placeholder="By" HeightRequest="38" FontSize="13" />
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                                <Label Text="Land" Style="{StaticResource FormLabelStyle}" />
+                                <Border Style="{StaticResource InnerCardStyle}" Padding="8,0" HeightRequest="38">
+                                    <Picker ItemsSource="{Binding DrawerCountryOptions}" SelectedItem="{Binding DrawerCountry}" FontSize="13" VerticalOptions="Center" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                        </VerticalStackLayout>
+                    </ScrollView>
+
+                    <!-- Drawer Footer Actions -->
+                    <Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                        <Button Text="Annuller"
+                                Command="{Binding CloseDrawerCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                HeightRequest="38"
+                                Padding="12,0"
+                                FontSize="12" />
+
+                        <Button Grid.Column="1"
+                                Text="Gem og opret brand"
+                                Command="{Binding GemOgOpretBrandCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                HeightRequest="38"
+                                Padding="8,0"
+                                FontSize="11" />
+
+                        <Button Grid.Column="2"
+                                Text="Gem organisation"
+                                Command="{Binding GemOrganizationCommand}"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                HeightRequest="38"
+                                Padding="12,0"
+                                FontSize="12"
+                                FontAttributes="Bold" />
+                    </Grid>
+                </Grid>
+            </Border>
+
         </Grid>
     </Grid>
 </ContentPage>

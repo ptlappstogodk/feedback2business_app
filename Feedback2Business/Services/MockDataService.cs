@@ -47,9 +47,120 @@ public class MockDataService : IMockDataService
 
     private static readonly List<OrganizationModel> _mockOrganizations = new()
     {
-        new() { Id = 1, Name = "Retail Group A", BrandCount = 3, SurveyCount = 20, UserCount = 5, UpdatedAt = DateTime.Today.AddDays(-2) },
-        new() { Id = 2, Name = "FoodCo Holding", BrandCount = 2, SurveyCount = 14, UserCount = 3, UpdatedAt = DateTime.Today.AddDays(-5) },
-        new() { Id = 3, Name = "Service Partners", BrandCount = 4, SurveyCount = 34, UserCount = 8, UpdatedAt = DateTime.Today.AddDays(-10) }
+        new()
+        {
+            Id = 1,
+            Name = "ATG",
+            Description = "Automated Trading Group - Multi-brand retail & food distribution",
+            Status = "Aktiv",
+            BrandCount = 4,
+            SurveyCount = 23,
+            UserCount = 12,
+            UpdatedAt = new DateTime(2025, 7, 26, 7, 40, 0),
+            LogoText = "ATG",
+            ContactPerson = "Anders Kirk",
+            Email = "kontakt@atg.dk",
+            Phone = "+45 12 34 56 78",
+            Address = "Hovedgaden 1",
+            PostalCode = "2800",
+            City = "Kgs. Lyngby",
+            Country = "Danmark"
+        },
+        new()
+        {
+            Id = 2,
+            Name = "Koncept Restauranter",
+            Description = "Luksus dining og fast-casual konceptrestauranter",
+            Status = "Aktiv",
+            BrandCount = 2,
+            SurveyCount = 8,
+            UserCount = 5,
+            UpdatedAt = new DateTime(2025, 7, 24, 15, 12, 0),
+            LogoText = "KR",
+            ContactPerson = "Mette Frederiksen",
+            Email = "kontakt@koncept.dk",
+            Phone = "+45 87 65 43 21",
+            Address = "Strandvejen 42",
+            PostalCode = "2900",
+            City = "Hellerup",
+            Country = "Danmark"
+        },
+        new()
+        {
+            Id = 3,
+            Name = "Pisiffik",
+            Description = "Grønlands førende detailhandelsvirksomhed",
+            Status = "Aktiv",
+            BrandCount = 1,
+            SurveyCount = 6,
+            UserCount = 8,
+            UpdatedAt = new DateTime(2025, 7, 23, 11, 3, 0),
+            LogoText = "P",
+            ContactPerson = "Jens Hansen",
+            Email = "info@pisiffik.gl",
+            Phone = "+299 34 20 00",
+            Address = "Aqqusinersuaq 12",
+            PostalCode = "3900",
+            City = "Nuuk",
+            Country = "Grønland"
+        },
+        new()
+        {
+            Id = 4,
+            Name = "Nordic Hotels",
+            Description = "Skandinavisk hotelkæde med boutique oplevelser",
+            Status = "Aktiv",
+            BrandCount = 5,
+            SurveyCount = 32,
+            UserCount = 18,
+            UpdatedAt = new DateTime(2025, 7, 21, 9, 22, 0),
+            LogoText = "NH",
+            ContactPerson = "Sofia Lindqvist",
+            Email = "booking@nordichotels.com",
+            Phone = "+45 33 11 22 33",
+            Address = "Vesterbrogade 100",
+            PostalCode = "1620",
+            City = "København V",
+            Country = "Danmark"
+        },
+        new()
+        {
+            Id = 5,
+            Name = "Service Partners",
+            Description = "Facility management og erhvervsrengøring",
+            Status = "Inviteret",
+            BrandCount = 3,
+            SurveyCount = 14,
+            UserCount = 6,
+            UpdatedAt = new DateTime(2025, 7, 18, 13, 55, 0),
+            LogoText = "SP",
+            ContactPerson = "Lars Nielsen",
+            Email = "kontakt@servicepartners.dk",
+            Phone = "+45 70 20 30 40",
+            Address = "Erhvervsvej 5",
+            PostalCode = "2600",
+            City = "Glostrup",
+            Country = "Danmark"
+        },
+        new()
+        {
+            Id = 6,
+            Name = "FoodCo Holding",
+            Description = "Fødevareproduktion og engrossalg",
+            Status = "Inaktiv",
+            BrandCount = 2,
+            SurveyCount = 7,
+            UserCount = 4,
+            UpdatedAt = new DateTime(2025, 7, 10, 8, 37, 0),
+            LogoText = "FH",
+            ContactPerson = "Karin Poulsen",
+            Email = "admin@foodco.dk",
+            Phone = "+45 88 99 00 11",
+            Address = "Industrivej 12",
+            PostalCode = "5000",
+            City = "Odense C",
+            Country = "Danmark"
+        }
     };
 
     public List<OrganizationModel> GetOrganizations(int? userId = null)
@@ -76,9 +187,12 @@ public class MockDataService : IMockDataService
 
     private static readonly List<BrandModel> _mockBrands = new()
     {
-        new() { Id = 1, Name = "Coffee House", Description = "Kaffekæde med kvalitetskaffe og bagværk", LogoUrl = "☕", OrganizationId = 1 },
-        new() { Id = 2, Name = "GreenFuel", Description = "Bæredygtige servicestationer og el-ladere", LogoUrl = "⚡", OrganizationId = 1 },
-        new() { Id = 3, Name = "Urban Eats", Description = "Moderne street food og konceptrestauranter", LogoUrl = "🍔", OrganizationId = 2 }
+        new() { Id = 1, Name = "SPAR", Description = "Dagligvarer og supermarked", LogoUrl = "🛒", Status = "Aktiv", SurveyCount = 5, OrganizationId = 1, UpdatedAt = new DateTime(2025, 7, 26, 7, 40, 0) },
+        new() { Id = 2, Name = "Akiki", Description = "Specialforretning og deli", LogoUrl = "☕", Status = "Aktiv", SurveyCount = 8, OrganizationId = 1, UpdatedAt = new DateTime(2025, 7, 24, 12, 10, 0) },
+        new() { Id = 3, Name = "Pisiffik", Description = "Detail og varehus", LogoUrl = "🏬", Status = "Aktiv", SurveyCount = 6, OrganizationId = 1, UpdatedAt = new DateTime(2025, 7, 23, 11, 3, 0) },
+        new() { Id = 4, Name = "Buzz", Description = "Convenience og kiosker", LogoUrl = "⚡", Status = "Aktiv", SurveyCount = 4, OrganizationId = 1, UpdatedAt = new DateTime(2025, 7, 22, 9, 10, 0) },
+        new() { Id = 5, Name = "Urban Eats", Description = "Fast casual restaurant", LogoUrl = "🍔", Status = "Aktiv", SurveyCount = 5, OrganizationId = 2, UpdatedAt = new DateTime(2025, 7, 24, 15, 0, 0) },
+        new() { Id = 6, Name = "Nordic Stay", Description = "Boutique hoteller", LogoUrl = "🏢", Status = "Aktiv", SurveyCount = 12, OrganizationId = 4, UpdatedAt = new DateTime(2025, 7, 21, 9, 0, 0) }
     };
 
     public List<BrandModel> GetBrands(int? organizationId = null)
