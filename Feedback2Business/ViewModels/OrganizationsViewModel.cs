@@ -498,7 +498,7 @@ public class OrganizationsViewModel : ObservableObject
         }
         SelectedBrand = Brands.FirstOrDefault();
 
-        if (IsBrandsTabSelected && SelectedBrand != null && BrandSurveys.Count > 0)
+        if (IsBrandsTabSelected && SelectedBrand != null)
         {
             DrawerType = "Brand";
             IsDrawerOpen = true;
