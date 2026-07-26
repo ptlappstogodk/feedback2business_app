@@ -517,7 +517,7 @@
                                     BackgroundColor="{StaticResource SidebarBackground}"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 10">
-                                <Label Text="{Binding SelectedBrand.LogoUrl}"
+                                <Label Text="{Binding BrandDrawerLogo}"
                                        TextColor="White"
                                        FontSize="20"
                                        HorizontalOptions="Center"
@@ -527,16 +527,16 @@
                             <!-- Name, Status & Subtitle -->
                             <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
                                 <HorizontalStackLayout Spacing="8">
-                                    <Label Text="{Binding SelectedBrand.Name}"
+                                    <Label Text="{Binding BrandDrawerTitle}"
                                            FontSize="16"
                                            FontAttributes="Bold"
                                            TextColor="{StaticResource TextPrimary}" />
-                                    <shared:StatusBadgeView Text="{Binding SelectedBrand.Status}"
-                                                            BadgeColor="{Binding SelectedBrand.StatusBadgeColor}"
-                                                            BadgeTextColor="{Binding SelectedBrand.StatusBadgeTextColor}"
+                                    <shared:StatusBadgeView Text="{Binding BrandDrawerStatus}"
+                                                            BadgeColor="{Binding BrandDrawerStatusBadgeColor}"
+                                                            BadgeTextColor="{Binding BrandDrawerStatusBadgeTextColor}"
                                                             VerticalOptions="Center" />
                                 </HorizontalStackLayout>
-                                <Label Text="{Binding SelectedBrand.SurveyCountText}"
+                                <Label Text="{Binding BrandDrawerSubtitle}"
                                        FontSize="12"
                                        TextColor="{StaticResource TextSecondary}" />
                             </VerticalStackLayout>
@@ -683,6 +683,7 @@
                             <Button Grid.Column="1"
                                     Text="Slet brand"
                                     Command="{Binding SletBrandCommand}"
+                                    IsVisible="{Binding IsNotCreatingBrand}"
                                     BackgroundColor="Transparent"
                                     TextColor="{StaticResource DangerRed}"
                                     HeightRequest="36"
