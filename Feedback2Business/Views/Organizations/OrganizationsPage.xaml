@@ -305,6 +305,26 @@
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
                                             <Border Margin="0,4" Padding="10,8" Style="{StaticResource InnerCardStyle}">
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroupList>
+                                                        <VisualStateGroup x:Name="CommonStates">
+                                                            <VisualState x:Name="Normal">
+                                                                <VisualState.Setters>
+                                                                    <Setter Property="Stroke" Value="{StaticResource BorderColor}" />
+                                                                    <Setter Property="StrokeThickness" Value="1" />
+                                                                    <Setter Property="BackgroundColor" Value="White" />
+                                                                </VisualState.Setters>
+                                                            </VisualState>
+                                                            <VisualState x:Name="Selected">
+                                                                <VisualState.Setters>
+                                                                    <Setter Property="Stroke" Value="{StaticResource PrimaryBlue}" />
+                                                                    <Setter Property="StrokeThickness" Value="2" />
+                                                                    <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBlueLight}" />
+                                                                </VisualState.Setters>
+                                                            </VisualState>
+                                                        </VisualStateGroup>
+                                                    </VisualStateGroupList>
+                                                </VisualStateManager.VisualStateGroups>
                                                 <Border.GestureRecognizers>
                                                     <TapGestureRecognizer Command="{Binding BindingContext.SelectBrandCommand, Source={x:Reference ThisPage}}"
                                                                           CommandParameter="{Binding .}" />
