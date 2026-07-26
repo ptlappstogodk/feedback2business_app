@@ -21,6 +21,7 @@ public class OverviewViewModel : ObservableObject
 
     public ICommand GoToOrganizationsCommand { get; }
     public ICommand GoToSurveysCommand { get; }
+    public ICommand OpenSurveyCommand { get; }
     public ICommand GoToUsersCommand { get; }
     public ICommand GoToActivityLogCommand { get; }
 
@@ -31,6 +32,24 @@ public class OverviewViewModel : ObservableObject
 
         GoToOrganizationsCommand = new RelayCommand(() => ShellVm.RequestNavigation("Organizations"));
         GoToSurveysCommand = new RelayCommand(() => ShellVm.RequestNavigation("Surveys"));
+        OpenSurveyCommand = new RelayCommand<SurveyModel>(survey =>
+        {
+            if (survey != null)
+            {
+                var brand = _data.GetBrands().FirstOrDefault(b => b.Id == survey.BrandId);
+                if (brand != null)
+                {
+                    var org = _data.GetOrganizations().FirstOrDefault(o => o.Id == brand.OrganizationId);
+                    if (org != null)
+                    {
+                        ShellVm.ActiveOrganization = org;
+                    }
+                    ShellVm.ActiveBrand = brand;
+                }
+                ShellVm.ActiveSurvey = survey;
+            }
+            ShellVm.RequestNavigation("Surveys");
+        });
         GoToUsersCommand = new RelayCommand(() => ShellVm.RequestNavigation("Users"));
         GoToActivityLogCommand = new RelayCommand(() => ShellVm.RequestNavigation("ActivityLog"));
 

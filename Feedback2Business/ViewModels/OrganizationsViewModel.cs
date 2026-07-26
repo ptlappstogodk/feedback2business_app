@@ -420,6 +420,7 @@ public class OrganizationsViewModel : ObservableObject
     public ICommand GemBrandCommand { get; }
     public ICommand SletBrandCommand { get; }
     public ICommand OpenSurveysForBrandCommand { get; }
+    public ICommand OpenSurveyCommand { get; }
 
     public OrganizationsViewModel(IMockDataService data, MainShellViewModel shellVm)
     {
@@ -443,6 +444,7 @@ public class OrganizationsViewModel : ObservableObject
         GemBrandCommand = new RelayCommand(GemBrand);
         SletBrandCommand = new RelayCommand(async () => await SletBrandAsync());
         OpenSurveysForBrandCommand = new RelayCommand(OpenSurveysForBrand);
+        OpenSurveyCommand = new RelayCommand<SurveyModel>(OpenSurvey);
     }
 
     private void LoadOrganizations()
@@ -752,6 +754,17 @@ public class OrganizationsViewModel : ObservableObject
 
         _shellVm.ActiveOrganization = SelectedOrganization;
         _shellVm.ActiveBrand = SelectedBrand;
+        _shellVm.ActiveSurvey = null;
+        _shellVm.RequestNavigation("Surveys");
+    }
+
+    private void OpenSurvey(SurveyModel? survey)
+    {
+        if (SelectedBrand == null || SelectedOrganization == null) return;
+
+        _shellVm.ActiveOrganization = SelectedOrganization;
+        _shellVm.ActiveBrand = SelectedBrand;
+        _shellVm.ActiveSurvey = survey;
         _shellVm.RequestNavigation("Surveys");
     }
 }

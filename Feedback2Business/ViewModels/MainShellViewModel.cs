@@ -13,6 +13,7 @@ public class MainShellViewModel : ObservableObject
     private string _breadcrumbSecondary = string.Empty;
     private OrganizationModel? _activeOrganization;
     private BrandModel? _activeBrand;
+    private SurveyModel? _activeSurvey;
     private UserModel? _currentUser;
     private UserModel? _loggedInUser;
 
@@ -67,6 +68,12 @@ public class MainShellViewModel : ObservableObject
     {
         get => _activeBrand;
         set => SetProperty(ref _activeBrand, value);
+    }
+
+    public SurveyModel? ActiveSurvey
+    {
+        get => _activeSurvey;
+        set => SetProperty(ref _activeSurvey, value);
     }
 
     private void LoadCurrentUser()

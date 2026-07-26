@@ -130,7 +130,8 @@
                                                 <Label Text="{Binding Version, StringFormat='v{0}'}" FontSize="11" TextColor="#0284C7" FontAttributes="Bold" />
                                             </Border>
                                             <Button Grid.Column="2" Text="Åbn"
-                                                    Command="{Binding BindingContext.GoToSurveysCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                                    Command="{Binding BindingContext.OpenSurveyCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                                    CommandParameter="{Binding .}"
                                                     Style="{StaticResource SecondaryButtonStyle}"
                                                     HeightRequest="28" FontSize="11" />
                                         </Grid>

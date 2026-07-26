@@ -634,6 +634,10 @@
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
                                             <Border Margin="0,4" Padding="10,8" Style="{StaticResource InnerCardStyle}">
+                                                <Border.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding BindingContext.OpenSurveyCommand, Source={x:Reference ThisPage}}"
+                                                                          CommandParameter="{Binding .}" />
+                                                </Border.GestureRecognizers>
                                                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center">
                                                     <Label Text="📋" FontSize="16" VerticalOptions="Center" />
                                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
@@ -642,7 +646,8 @@
                                                     </VerticalStackLayout>
                                                     <Button Grid.Column="2"
                                                             Text="Åbn"
-                                                            Command="{Binding BindingContext.OpenSurveysForBrandCommand, Source={x:Reference ThisPage}}"
+                                                            Command="{Binding BindingContext.OpenSurveyCommand, Source={x:Reference ThisPage}}"
+                                                            CommandParameter="{Binding .}"
                                                             Style="{StaticResource LinkButtonStyle}"
                                                             FontSize="11" />
                                                 </Grid>

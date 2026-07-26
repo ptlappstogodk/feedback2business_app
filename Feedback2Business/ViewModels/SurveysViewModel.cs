@@ -265,7 +265,16 @@ public class SurveysViewModel : ObservableObject
         var filteredSurveys = _data.GetSurveys(brand.Id);
         foreach (var s in filteredSurveys) Surveys.Add(s);
         brand.SurveyCount = Surveys.Count;
-        SelectedSurvey = Surveys.FirstOrDefault();
+
+        if (ShellVm.ActiveSurvey != null && Surveys.Any(s => s.Id == ShellVm.ActiveSurvey.Id))
+        {
+            SelectedSurvey = Surveys.First(s => s.Id == ShellVm.ActiveSurvey.Id);
+            ShellVm.ActiveSurvey = null;
+        }
+        else
+        {
+            SelectedSurvey = Surveys.FirstOrDefault();
+        }
     }
 
     private async void OnSurveySelected(SurveyModel? survey)
