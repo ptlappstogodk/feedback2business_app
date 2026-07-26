@@ -4,6 +4,7 @@ This file defines the coding standards, repository layout, build workflows, and 
 
 ## Development Stage & Compatibility
 * **Active Development**: This project is in the initial development phase and used by a single developer. Backwards compatibility is not needed for now.
+* **Error Handling**: Do not hide errors with `try-catch` or similar techniques to silence failures. Instead, fix the root cause or implement the required behavior properly.
 
 ## Codebase Architecture
 * **MVVM Setup**: Built on a clean, custom MVVM scaffolding using `ObservableObject` and `RelayCommand` under the `Feedback2Business` namespace.
@@ -31,7 +32,7 @@ This file defines the coding standards, repository layout, build workflows, and 
   ```
 
 ## Git & Collaboration Standards
-* **Automatic Commits**: Commit changes every time a task or set of changes is completed.
+* **Automatic Commits & Push**: Commit and push changes every time a task or set of changes is completed.
 * **Commit Attribution**: Always include a co-author attribution line at the bottom of every commit message:
   ```text
   Co-Authored-By: Oz <oz-agent@warp.dev>
